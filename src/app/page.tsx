@@ -22,6 +22,7 @@ export default function Home() {
 
   useEffect(() => {
     async function loadIfc() {
+      console.log("Loading IFC file");
       if (containerRef.current) {
         world.scene = new OBC.SimpleScene(components);
         world.renderer = new OBC.SimpleRenderer(components, containerRef.current);
