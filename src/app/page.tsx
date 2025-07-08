@@ -46,7 +46,7 @@ export default function Home() {
 
         // Set WASM file location
         fragmentIfcLoader.settings.wasm = {
-          path: '/web-ifc.wasm',
+          path: "/web-ifc.wasm",
           absolute: false
         };
 

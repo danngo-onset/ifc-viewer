@@ -1,6 +1,6 @@
-import { NextConfig } from 'next';
-import path from 'path';
-import fs from 'fs';
+import { NextConfig } from "next";
+import path from "path";
+import fs from "fs";
 
 const nextConfig: NextConfig = {
   webpack: (config, { isServer }) => {
@@ -14,14 +14,15 @@ const nextConfig: NextConfig = {
     if (!isServer) {
       const wasmPath = path.join(
         process.cwd(),
-        'node_modules',
-        'web-ifc',
-        'web-ifc.wasm'
+        "node_modules",
+        "web-ifc",
+        "web-ifc.wasm"
       );
+
       const publicWasmPath = path.join(
         process.cwd(),
-        'public',
-        'web-ifc.wasm'
+        "public",
+        "web-ifc.wasm"
       );
 
       if (fs.existsSync(wasmPath)) {
