@@ -52,12 +52,12 @@ export default function Home() {
 
         await fragmentIfcLoader.setup();
 
+        // optionally exclude categories that we don't want to convert to fragments
         const excludedCats = [
           WEBIFC.IFCTENDONANCHOR,
           WEBIFC.IFCREINFORCINGBAR,
           WEBIFC.IFCREINFORCINGELEMENT
         ];
-
         for (const cat of excludedCats) {
           fragmentIfcLoader.settings.excludedCategories.add(cat);
         }
