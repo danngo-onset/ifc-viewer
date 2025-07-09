@@ -2,23 +2,24 @@
 
 import { useEffect, useRef } from "react";
 
-import * as WEBIFC from "web-ifc";
 import * as BUI from "@thatopen/ui";
 import Stats from "stats.js";
 import * as OBC from "@thatopen/components";
+
+import api from "@/lib/api";
+import { FragmentsGroup } from "@thatopen/fragments";
 
 export default function Home() {
   const containerRef = useRef(null);
 
   const components = new OBC.Components();
-  const fragmentIfcLoader = components.get(OBC.IfcLoader);
+  const fragmentsManager = components.get(OBC.FragmentsManager);
   const worlds = components.get(OBC.Worlds);
   const world = worlds.create<
     OBC.SimpleScene,
     OBC.SimpleCamera,
     OBC.SimpleRenderer
   >();
-  const fragments = components.get(OBC.FragmentsManager);
 
   useEffect(() => {
     async function init() {
@@ -48,59 +49,6 @@ export default function Home() {
         stats.dom.style.position = "absolute";
         world.renderer.onBeforeUpdate.add(() => stats.begin());
         world.renderer.onAfterUpdate.add(() => stats.end());
-
-        
-        fragments.onFragmentsLoaded.add((model) => {
-          console.log(model);
-        });
-
-        // Set WASM file location
-        fragmentIfcLoader.settings.wasm = {
-          path: "/web-ifc.wasm",
-          absolute: false
-        };
-
-        await fragmentIfcLoader.setup();
-
-        // optionally exclude categories that we don't want to convert to fragments
-        const excludedCats = [
-          WEBIFC.IFCTENDONANCHOR,
-          WEBIFC.IFCREINFORCINGBAR,
-          WEBIFC.IFCREINFORCINGELEMENT
-        ];
-        for (const cat of excludedCats) {
-          fragmentIfcLoader.settings.excludedCategories.add(cat);
-        }
-
-        fragmentIfcLoader.settings.webIfc.COORDINATE_TO_ORIGIN = true;
-
-        // Try to load existing fragments from IndexedDB
-        const dbRequest = indexedDB.open("FragmentsDB", 1);
-        
-        dbRequest.onupgradeneeded = (event) => {
-          const db = (event.target as IDBOpenDBRequest).result;
-          if (!db.objectStoreNames.contains("fragments")) {
-            db.createObjectStore("fragments", { keyPath: "id" });
-          }
-        };
-        
-        dbRequest.onsuccess = (event) => {
-          const db = (event.target as IDBOpenDBRequest).result;
-          const transaction = db.transaction(["fragments"], "readonly");
-          const store = transaction.objectStore("fragments");
-          const request = store.get("model_fragments");
-          
-          request.onsuccess = (event) => {
-            const result = (event.target as IDBRequest).result;
-            if (result && result.data) {
-              const fragmentData = result.data; // Your Uint8Array
-              // Load fragments back into the viewer
-              const model = fragments.load(fragmentData);
-              world.scene.three.add(model);
-              console.log("Fragments loaded from IndexedDB");
-            }
-          };
-        };
       }
     }
 
@@ -108,10 +56,11 @@ export default function Home() {
 
     // Cleanup function that runs when component unmounts
     return () => {
-      fragments.dispose();
-      
-      // Also dispose of other components if needed
+      fragmentsManager.dispose();
       components.dispose();
+      world.scene.dispose();
+      world.camera.dispose();
+      world.dispose();
     };
   }, []);
 
@@ -121,18 +70,37 @@ export default function Home() {
     if (!file) return;
 
     try {
-      const data = await file.arrayBuffer();
-      const buffer = new Uint8Array(data);
-      const model = await fragmentIfcLoader.load(buffer);
-
-      model.setProperties(1, { name: "example" });
-
+      const formData = new FormData();
+      formData.append("file", file);
+    
+      const response = await api.post("/fragments", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        }
+      });
+      console.log(response.data);
+    
+      // Convert base64 fragments back to buffer
+      const binaryString = atob(response.data.fragments);
+      const buffer = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        buffer[i] = binaryString.charCodeAt(i);
+      }
+    
+      // Use fragments manager to load the processed fragments, not the IFC loader
+      const model: FragmentsGroup = fragmentsManager.load(buffer);
+      
+      // Add to scene
       world.scene.three.add(model);
-
-      await exportFragments();
+      
+      console.log(`✅ Loaded fragments with ${response.data.fragmentsCount} fragments`);
     } catch (error) {
-      console.error('Error loading IFC file:', error);
-      // You might want to show this error to the user in a more friendly way
+      console.error('Error loading fragments:', error);
+    } finally {
+      // Clear the file input to allow selecting the same file again
+      if (e.target) {
+        e.target.value = "";
+      }
     }
   }
 
@@ -144,36 +112,6 @@ export default function Home() {
     document.body.appendChild(link);
     link.click();
     link.remove();
-  }
-
-  async function exportFragments() {
-    if (!fragments.groups.size) return;
-
-    const group = Array.from(fragments.groups.values())[0];
-    const data = fragments.export(group);
-    
-    // Save to IndexedDB
-    const request = indexedDB.open("FragmentsDB", 1);
-    
-    request.onupgradeneeded = (event) => {
-      const db = (event.target as IDBOpenDBRequest).result;
-      if (!db.objectStoreNames.contains("fragments")) {
-        db.createObjectStore("fragments", { keyPath: "id" });
-      }
-    };
-    
-    request.onsuccess = (event) => {
-      const db = (event.target as IDBOpenDBRequest).result;
-      const transaction = db.transaction(["fragments"], "readwrite");
-      const store = transaction.objectStore("fragments");
-      store.put({ id: "model_fragments", data: data });
-      console.log("Fragments saved to IndexedDB");
-    };
-
-    /* const properties = group.getLocalProperties();
-    if (properties) {
-      download(new File([JSON.stringify(properties)], "small.json"));
-    } */
   }
 
   return (

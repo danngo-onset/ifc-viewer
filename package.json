@@ -12,12 +12,12 @@
     "@thatopen/components": "^2.4.11",
     "@thatopen/fragments": "^3.0.11",
     "@thatopen/ui": "^2.4.5",
+    "axios": "^1.10.0",
     "next": "15.3.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "stats.js": "^0.17.0",
-    "three": "^0.178.0",
-    "web-ifc": "^0.0.68"
+    "three": "^0.178.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
