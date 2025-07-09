@@ -21,8 +21,7 @@ export default function Home() {
   const fragments = components.get(OBC.FragmentsManager);
 
   useEffect(() => {
-    async function loadIfc() {
-      console.log("Loading IFC file");
+    async function init() {
       if (containerRef.current) {
         world.scene = new OBC.SimpleScene(components);
         world.renderer = new OBC.SimpleRenderer(components, containerRef.current);
@@ -63,10 +62,38 @@ export default function Home() {
         }
 
         fragmentIfcLoader.settings.webIfc.COORDINATE_TO_ORIGIN = true;
+
+        // Try to load existing fragments from IndexedDB
+        const dbRequest = indexedDB.open("FragmentsDB", 1);
+        
+        dbRequest.onupgradeneeded = (event) => {
+          const db = (event.target as IDBOpenDBRequest).result;
+          if (!db.objectStoreNames.contains("fragments")) {
+            db.createObjectStore("fragments", { keyPath: "id" });
+          }
+        };
+        
+        dbRequest.onsuccess = (event) => {
+          const db = (event.target as IDBOpenDBRequest).result;
+          const transaction = db.transaction(["fragments"], "readonly");
+          const store = transaction.objectStore("fragments");
+          const request = store.get("model_fragments");
+          
+          request.onsuccess = (event) => {
+            const result = (event.target as IDBRequest).result;
+            if (result && result.data) {
+              const fragmentData = result.data; // Your Uint8Array
+              // Load fragments back into the viewer
+              const model = fragments.load(fragmentData);
+              world.scene.three.add(model);
+              console.log("Fragments loaded from IndexedDB");
+            }
+          };
+        };
       }
     }
 
-    loadIfc();
+    init();
 
     // Cleanup function that runs when component unmounts
     return () => {
@@ -90,24 +117,86 @@ export default function Home() {
       model.setProperties(1, { name: "example" });
 
       world.scene.three.add(model);
+
+      await exportFragments();
     } catch (error) {
       console.error('Error loading IFC file:', error);
       // You might want to show this error to the user in a more friendly way
     }
   }
 
+  function download(file: File) {
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(file);
+    link.download = file.name;
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  }
+
+  async function exportFragments() {
+    if (!fragments.groups.size) return;
+
+    const group = Array.from(fragments.groups.values())[0];
+    const data = fragments.export(group);
+    
+    // Save to IndexedDB
+    const request = indexedDB.open("FragmentsDB", 1);
+    
+    request.onupgradeneeded = (event) => {
+      const db = (event.target as IDBOpenDBRequest).result;
+      if (!db.objectStoreNames.contains("fragments")) {
+        db.createObjectStore("fragments", { keyPath: "id" });
+      }
+    };
+    
+    request.onsuccess = (event) => {
+      const db = (event.target as IDBOpenDBRequest).result;
+      const transaction = db.transaction(["fragments"], "readwrite");
+      const store = transaction.objectStore("fragments");
+      store.put({ id: "model_fragments", data: data });
+      console.log("Fragments saved to IndexedDB");
+    };
+
+    /* const properties = group.getLocalProperties();
+    if (properties) {
+      download(new File([JSON.stringify(properties)], "small.json"));
+    } */
+  }
+
   return (
     <>
-      <input type="file" accept=".ifc" onChange={loadIfc} id="file-input" className="hidden" />
-      <label htmlFor="file-input" className="cursor-pointer border border-gray-300 rounded-md p-2 bg-blue-200">Select an IFC file</label>
+      <section className="flex justify-center items-center space-x-4 py-4 bg-gray-300">
+        <div>
+          <input type="file" 
+                 accept=".ifc" 
+                 onChange={loadIfc} 
+                 id="file-input" 
+                 className="hidden" />
 
-      <div 
+          <label 
+            htmlFor="file-input" 
+            className="cursor-pointer border border-gray-300 rounded-md p-2 bg-blue-400"
+          >
+            Select an IFC file
+          </label>
+        </div>
+
+        {/* <button
+          onClick={exportFragments}
+          className="cursor-pointer border border-gray-300 rounded-md p-2 bg-green-400"
+        >
+          Export Fragments
+        </button> */}
+      </section>
+      
+      <main 
         ref={containerRef} 
         id="container" 
-        className="bg-white! h-screen"
+        className="flex-1"
       >
-      </div>
+      </main>
     </>
-    
   );
 }
