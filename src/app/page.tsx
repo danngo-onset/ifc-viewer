@@ -190,7 +190,7 @@ export default function Home() {
             htmlFor="file-input" 
             className="cursor-pointer border border-gray-300 rounded-md p-2 bg-blue-400"
           >
-            Select an IFC file
+            Upload an IFC file
           </label>
         </div>
 
