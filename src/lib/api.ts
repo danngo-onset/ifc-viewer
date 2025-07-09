@@ -21,10 +21,6 @@ const api = axios.create({
   },
 });
 
-// Log the current API base URL for debugging
-console.log(`🌐 API Base URL: ${getApiBaseUrl()}`);
-console.log(`🏗️ Environment: ${process.env.NODE_ENV}`);
-
 // Request interceptor
 api.interceptors.request.use(
   config => config,
