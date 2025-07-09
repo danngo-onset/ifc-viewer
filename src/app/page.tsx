@@ -38,6 +38,17 @@ export default function Home() {
 
         world.scene.three.background = null; // optional
 
+        // Initialise Stats.js for performance monitoring
+        const stats = new Stats();
+        stats.showPanel(2); // 0: fps, 1: ms, 2: mb
+        document.body.append(stats.dom);
+        stats.dom.style.left = "50px";
+        stats.dom.style.top = "50px";
+        stats.dom.style.zIndex = "1000";
+        stats.dom.style.position = "absolute";
+        world.renderer.onBeforeUpdate.add(() => stats.begin());
+        world.renderer.onAfterUpdate.add(() => stats.end());
+
         
         fragments.onFragmentsLoaded.add((model) => {
           console.log(model);
