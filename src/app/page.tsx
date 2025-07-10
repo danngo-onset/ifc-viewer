@@ -13,13 +13,17 @@ export default function Home() {
   const containerRef = useRef(null);
 
   const components = new OBC.Components();
+
   const fragmentsManager = components.get(OBC.FragmentsManager);
+
   const worlds = components.get(OBC.Worlds);
   const world = worlds.create<
     OBC.SimpleScene,
     OBC.SimpleCamera,
     OBC.SimpleRenderer
   >();
+
+  const indexer = components.get(OBC.IfcRelationsIndexer);
 
   useEffect(() => {
     async function init() {
@@ -78,13 +82,7 @@ export default function Home() {
       });
       console.log(response.data);
     
-      const buffer = processFragments(response.data.fragments);
-    
-      // Use fragments manager to load the processed fragments, not the IFC loader
-      const model: FragmentsGroup = fragmentsManager.load(buffer);
-      
-      // Add to scene
-      world.scene.three.add(model);
+      loadFragmentsIntoModel(response.data.fragments, response.data.properties);
       
       console.log(`✅ Loaded fragments with ${response.data.fragmentsCount} fragments`);
     } catch (error) {
@@ -104,22 +102,23 @@ export default function Home() {
     const id = formData.get("id") as string;
     const response = await api.get(`/fragments/${id}`);
 
-    const buffer = processFragments(response.data.fragments);
-
-    const model: FragmentsGroup = fragmentsManager.load(buffer);
-
-    world.scene.three.add(model);
+    loadFragmentsIntoModel(response.data.fragments, response.data.properties);
   }
 
-  function processFragments(fragments: string) : Uint8Array<ArrayBuffer> {
+  async function loadFragmentsIntoModel(fragments: string, properties?: string) {
     // Convert base64 fragments back to buffer
     const binaryString = atob(fragments);
     const buffer = new Uint8Array(binaryString.length);
     for (let i = 0; i < binaryString.length; i++) {
       buffer[i] = binaryString.charCodeAt(i);
     }
-
-    return buffer;
+  
+    const model: FragmentsGroup = fragmentsManager.load(buffer);
+    
+    // Set properties on the model if available
+    if (properties) model.setLocalProperties(JSON.parse(properties));
+      
+    world.scene.three.add(model);
   }
 
   return (
@@ -163,8 +162,7 @@ export default function Home() {
         ref={containerRef} 
         id="container" 
         className="flex-1"
-      >
-      </main>
+      ></main>
     </>
   );
 }
