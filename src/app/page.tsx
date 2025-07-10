@@ -6,6 +6,7 @@ import * as BUI from "@thatopen/ui";
 import Stats from "stats.js";
 import * as OBC from "@thatopen/components";
 import { FragmentsGroup } from "@thatopen/fragments";
+import * as WEBIFC from "web-ifc";
 
 import api from "@/lib/api";
 
@@ -116,9 +117,87 @@ export default function Home() {
     const model: FragmentsGroup = fragmentsManager.load(buffer);
     
     // Set properties on the model if available
-    if (properties) model.setLocalProperties(JSON.parse(properties));
+    if (properties) {
+      const propertiesData = JSON.parse(properties);
+      console.log("🔍 Properties structure preview:", {
+        keys: Object.keys(propertiesData).slice(0, 5),
+        totalItems: Object.keys(propertiesData).length,
+        sampleProperty: propertiesData[Object.keys(propertiesData)[0]]
+      });
+      model.setLocalProperties(propertiesData);
+    }
       
     world.scene.three.add(model);
+
+    console.log("🔍 Model info before relations:");
+    console.log("  - Model hasProperties:", !!model.hasProperties);
+    console.log("  - Model items count:", model.items?.length || 0);
+    console.log("  - Model data size:", model.data.size);
+
+    console.log("🔧 Processing model relations...");
+    await indexer.process(model);
+    
+    console.log("🔍 Relations after processing:");
+    console.log("  - Indexer relationMaps keys:", Object.keys(indexer.relationMaps));
+    
+    // The relations should already be processed and available
+    // No need to serialize/deserialize - indexer.process() handles this
+    const modelKey = Object.keys(indexer.relationMaps)[0];
+    const existingRelations = modelKey ? indexer.relationMaps[modelKey] : null;
+    
+    console.log("🔍 Direct relations access:");
+    console.log("  - Model key:", modelKey);
+    console.log("  - Relations exist:", !!existingRelations);
+    console.log("  - Relations size:", existingRelations?.size || 0);
+    
+    if (existingRelations && existingRelations.size > 0) {
+      console.log("✅ Relations already processed and available");
+    } else {
+      console.log("❌ No relations found after processing");
+    }
+
+    // Debug model data to see IFC categories
+    console.log("🔍 IFC Categories in model:");
+    const categoryCount = new Map<number, number>();
+    for (const [expressID, data] of model.data) {
+      const category = data[1][1];
+      if (category !== undefined) {
+        categoryCount.set(category, (categoryCount.get(category) || 0) + 1);
+      }
+    }
+    console.log("  - IFCBUILDINGSTOREY (3124254112):", categoryCount.get(WEBIFC.IFCBUILDINGSTOREY) || 0);
+    console.log("  - Categories found:", Array.from(categoryCount.entries()).slice(0, 5));
+
+    const classifier = components.get(OBC.Classifier);
+    
+    console.log("🔧 Running spatial classification...");
+    await classifier.bySpatialStructure(model, {
+      isolate: new Set([WEBIFC.IFCBUILDINGSTOREY]),
+    });
+    
+    console.log("🔍 Classification results:");
+    console.log("  - Classifier list keys:", Object.keys(classifier.list));
+    if (classifier.list.spatialStructures) {
+      console.log("  - Spatial structures found:", Object.keys(classifier.list.spatialStructures));
+    } else {
+      console.log("  - ❌ No spatial structures created!");
+      
+      // Try without isolation to see if basic classification works
+      console.log("🔧 Trying basic classification without isolation...");
+      await classifier.bySpatialStructure(model);
+      console.log("  - After basic classification:", Object.keys(classifier.list));
+    }
+  }
+
+  async function explodeModel() {
+    console.log("Exploding model");
+    try {
+      const exploder = components.get(OBC.Exploder);
+
+      exploder.set(true);
+    } catch (error) {
+      console.error("Error exploding model:", error);
+    }
   }
 
   return (
@@ -156,6 +235,13 @@ export default function Home() {
             Load
           </button>
         </form>
+
+        <button 
+          onClick={explodeModel}
+          className="cursor-pointer border border-gray-300 rounded-md p-2 bg-red-400"
+        >
+          Explode Model
+        </button>
       </section>
       
       <main 
