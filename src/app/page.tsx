@@ -26,6 +26,8 @@ export default function Home() {
   >();
 
   const indexer = components.get(OBC.IfcRelationsIndexer);
+  const classifier = components.get(OBC.Classifier);
+  const exploder = components.get(OBC.Exploder);
 
   useEffect(() => {
     async function init() {
@@ -62,9 +64,13 @@ export default function Home() {
 
     // Cleanup function that runs when component unmounts
     return () => {
-      fragmentsManager.dispose();
       components.dispose();
+      fragmentsManager.dispose();
+      worlds.dispose();
       world.dispose();
+      indexer.dispose();
+      classifier.dispose();
+      exploder.dispose();
     };
   }, []);
 
@@ -88,7 +94,6 @@ export default function Home() {
     } catch (error) {
       console.error('Error loading fragments:', error);
     } finally {
-      // Clear the file input to allow selecting the same file again
       if (e.target) {
         e.target.value = "";
       }
@@ -123,13 +128,13 @@ export default function Home() {
       
     world.scene.three.add(model);
 
+    // set up the IFC relations to use the exploder effectively
     await indexer.process(model);
     
     // The relations should already be processed and available
     // No need to serialize/deserialize - indexer.process() handles this
 
-    const classifier = components.get(OBC.Classifier);
-    
+    // classify the items of the model by storey
     await classifier.bySpatialStructure(model, {
       isolate: new Set([WEBIFC.IFCBUILDINGSTOREY]),
     });
@@ -143,15 +148,8 @@ export default function Home() {
 
   let isExploded = false;
   async function explodeModel() {
-    console.log("Exploding model");
-    try {
-      const exploder = components.get(OBC.Exploder);
-
-      isExploded = !isExploded;
-      exploder.set(isExploded);
-    } catch (error) {
-      console.error("Error exploding model:", error);
-    }
+    isExploded = !isExploded;
+    exploder.set(isExploded);
   }
 
   return (
