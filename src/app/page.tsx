@@ -5,9 +5,9 @@ import { useEffect, useRef } from "react";
 import * as BUI from "@thatopen/ui";
 import Stats from "stats.js";
 import * as OBC from "@thatopen/components";
+import { FragmentsGroup } from "@thatopen/fragments";
 
 import api from "@/lib/api";
-import { FragmentsGroup } from "@thatopen/fragments";
 
 export default function Home() {
   const containerRef = useRef(null);
@@ -24,11 +24,11 @@ export default function Home() {
   useEffect(() => {
     async function init() {
       if (containerRef.current) {
-        world.scene = new OBC.SimpleScene(components);
-        world.renderer = new OBC.SimpleRenderer(components, containerRef.current);
-        world.camera = new OBC.SimpleCamera(components);
-
         components.init();
+
+        world.scene    = new OBC.SimpleScene(components);
+        world.renderer = new OBC.SimpleRenderer(components, containerRef.current);
+        world.camera   = new OBC.SimpleCamera(components);
 
         world.camera.controls.setLookAt(12, 6, 8, 0, 0, -10);
 
@@ -58,8 +58,6 @@ export default function Home() {
     return () => {
       fragmentsManager.dispose();
       components.dispose();
-      world.scene.dispose();
-      world.camera.dispose();
       world.dispose();
     };
   }, []);
@@ -80,12 +78,7 @@ export default function Home() {
       });
       console.log(response.data);
     
-      // Convert base64 fragments back to buffer
-      const binaryString = atob(response.data.fragments);
-      const buffer = new Uint8Array(binaryString.length);
-      for (let i = 0; i < binaryString.length; i++) {
-        buffer[i] = binaryString.charCodeAt(i);
-      }
+      const buffer = processFragments(response.data.fragments);
     
       // Use fragments manager to load the processed fragments, not the IFC loader
       const model: FragmentsGroup = fragmentsManager.load(buffer);
@@ -104,14 +97,29 @@ export default function Home() {
     }
   }
 
-  function download(file: File) {
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(file);
-    link.download = file.name;
+  async function loadById(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
 
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
+    const formData = new FormData(e.currentTarget);
+    const id = formData.get("id") as string;
+    const response = await api.get(`/fragments/${id}`);
+
+    const buffer = processFragments(response.data.fragments);
+
+    const model: FragmentsGroup = fragmentsManager.load(buffer);
+
+    world.scene.three.add(model);
+  }
+
+  function processFragments(fragments: string) : Uint8Array<ArrayBuffer> {
+    // Convert base64 fragments back to buffer
+    const binaryString = atob(fragments);
+    const buffer = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      buffer[i] = binaryString.charCodeAt(i);
+    }
+
+    return buffer;
   }
 
   return (
@@ -132,12 +140,23 @@ export default function Home() {
           </label>
         </div>
 
-        {/* <button
-          onClick={exportFragments}
-          className="cursor-pointer border border-gray-300 rounded-md p-2 bg-green-400"
-        >
-          Export Fragments
-        </button> */}
+        <form onSubmit={loadById} className="flex items-center space-x-2">
+          <label htmlFor="id" className="text-sm">
+            ID:
+          </label>
+
+          <input type="text" 
+                 id="id" 
+                 name="id"
+                 className="border border-black rounded-md p-2" />
+
+          <button 
+            type="submit" 
+            className="cursor-pointer border border-gray-300 rounded-md p-2 bg-green-400"
+          >
+            Load
+          </button>
+        </form>
       </section>
       
       <main 
