@@ -2,12 +2,8 @@
 
 import { useEffect, useRef } from "react";
 
-import * as BUI from "@thatopen/ui";
 import Stats from "stats.js";
 import * as OBC from "@thatopen/components";
-import { FragmentsGroup } from "@thatopen/fragments";
-
-import * as WEBIFC from "web-ifc";
 
 import api from "@/lib/api";
 
@@ -15,9 +11,7 @@ export default function Home() {
   const containerRef = useRef(null);
 
   const components = new OBC.Components();
-
   const fragmentsManager = components.get(OBC.FragmentsManager);
-
   const worlds = components.get(OBC.Worlds);
   const world = worlds.create<
     OBC.SimpleScene,
@@ -25,27 +19,45 @@ export default function Home() {
     OBC.SimpleRenderer
   >();
 
-  const indexer = components.get(OBC.IfcRelationsIndexer);
-  const classifier = components.get(OBC.Classifier);
-  const exploder = components.get(OBC.Exploder);
-
   useEffect(() => {
     async function init() {
       if (containerRef.current) {
-        components.init();
-
-        world.scene    = new OBC.SimpleScene(components);
-        world.renderer = new OBC.SimpleRenderer(components, containerRef.current);
-        world.camera   = new OBC.SimpleCamera(components);
-
-        world.camera.controls.setLookAt(12, 6, 8, 0, 0, -10);
-
+        world.scene = new OBC.SimpleScene(components);
         world.scene.setup();
+        world.scene.three.background = null; // optional
+
+        world.renderer = new OBC.SimpleRenderer(components, containerRef.current);
+
+        world.camera = new OBC.OrthoPerspectiveCamera(components);
+        await world.camera.controls.setLookAt(12, 6, 8, 0, 0, -10);
+
+        components.init();
 
         const grids = components.get(OBC.Grids);
         grids.create(world);
+      
+        const githubUrl = "https://thatopen.github.io/engine_fragment/resources/worker.mjs";
+        const fetchedUrl = await fetch(githubUrl);
+        const workerBlob = await fetchedUrl.blob();
+        const workerFile = new File([workerBlob], "worker.mjs", {
+          type: "text/javascript",
+        });
+        const workerUrl = URL.createObjectURL(workerFile);
+        fragmentsManager.init(workerUrl);
 
-        world.scene.three.background = null; // optional
+        world.camera.controls.addEventListener("rest", () =>
+          fragmentsManager.core.update(true),
+        );
+
+        // Ensures that once the Fragments model is loaded
+        // (converted from the IFC in this case),
+        // it utilizes the world camera for updates
+        // and is added to the scene.
+        fragmentsManager.list.onItemSet.add(({ value: model }) => {
+          model.useCamera(world.camera.three);
+          world.scene.three.add(model.object);
+          fragmentsManager.core.update(true);
+        });
 
         // Initialise Stats.js for performance monitoring
         const stats = new Stats();
@@ -62,15 +74,11 @@ export default function Home() {
 
     init();
 
-    // Cleanup function that runs when component unmounts
     return () => {
       components.dispose();
       fragmentsManager.dispose();
       worlds.dispose();
       world.dispose();
-      indexer.dispose();
-      classifier.dispose();
-      exploder.dispose();
     };
   }, []);
 
@@ -90,7 +98,12 @@ export default function Home() {
       });
       console.log(response.data);
     
-      loadFragmentsIntoModel(response.data.fragments, response.data.properties);
+      const buffer = Uint8Array.from(
+        atob(response.data.fragments), 
+        c => c.charCodeAt(0)
+      ).buffer;
+
+      fragmentsManager.core.load(buffer, { modelId: response.data.id });
     } catch (error) {
       console.error('Error loading fragments:', error);
     } finally {
@@ -107,49 +120,12 @@ export default function Home() {
     const id = formData.get("id") as string;
     const response = await api.get(`/fragments/${id}`);
 
-    loadFragmentsIntoModel(response.data.fragments, response.data.properties);
-  }
+    const buffer = Uint8Array.from(
+      atob(response.data.fragments), 
+      c => c.charCodeAt(0)
+    ).buffer;
 
-  async function loadFragmentsIntoModel(fragments: string, properties?: string) {
-    // Convert base64 fragments back to buffer
-    const binaryString = atob(fragments);
-    const buffer = new Uint8Array(binaryString.length);
-    for (let i = 0; i < binaryString.length; i++) {
-      buffer[i] = binaryString.charCodeAt(i);
-    }
-  
-    const model: FragmentsGroup = fragmentsManager.load(buffer);
-    
-    // Set properties on the model if available
-    if (properties) {
-      const propertiesData = JSON.parse(properties);
-      model.setLocalProperties(propertiesData);
-    }
-      
-    world.scene.three.add(model);
-
-    // set up the IFC relations to use the exploder effectively
-    await indexer.process(model);
-    
-    // The relations should already be processed and available
-    // No need to serialize/deserialize - indexer.process() handles this
-
-    // classify the items of the model by storey
-    await classifier.bySpatialStructure(model, {
-      isolate: new Set([WEBIFC.IFCBUILDINGSTOREY]),
-    });
-    
-    if (!classifier.list.spatialStructures) {
-      // Try without isolation to see if basic classification works
-      console.log("🔧 Trying basic classification without isolation...");
-      await classifier.bySpatialStructure(model);
-    } 
-  }
-
-  let isExploded = false;
-  async function explodeModel() {
-    isExploded = !isExploded;
-    exploder.set(isExploded);
+    fragmentsManager.core.load(buffer, { modelId: id });
   }
 
   return (
@@ -187,13 +163,6 @@ export default function Home() {
             Load
           </button>
         </form>
-
-        <button 
-          onClick={explodeModel}
-          className="cursor-pointer border border-gray-300 rounded-md p-2 bg-red-400"
-        >
-          Explode Model
-        </button>
       </section>
       
       <main 
