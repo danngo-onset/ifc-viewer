@@ -18,7 +18,7 @@ export default function Home() {
   const worlds = components.get(OBC.Worlds);
   const world = worlds.create<
     OBC.SimpleScene,
-    OBC.SimpleCamera,
+    OBC.OrthoPerspectiveCamera,
     OBC.SimpleRenderer
   >();
 
@@ -27,19 +27,18 @@ export default function Home() {
       if (containerRef.current) {
         world.scene = new OBC.SimpleScene(components);
         world.scene.setup();
-        world.scene.three.background = null; // optional
+        world.scene.three.background = null; // light scene
 
         world.renderer = new OBC.SimpleRenderer(components, containerRef.current);
 
-        //world.camera = new OBC.OrthoPerspectiveCamera(components);
-        world.camera = new OBC.SimpleCamera(components);
+        world.camera = new OBC.OrthoPerspectiveCamera(components);
         //world.camera.controls.maxSpeed = 15;
         //world.camera.controls.
         await world.camera.controls.setLookAt(12, 6, 8, 0, 0, -10, false);
         world.camera.controls.minZoom = 0.1;
         
         // Disable damping to stop continuous movement after scroll stops
-        world.camera.controls.dampingFactor = 0;
+        //world.camera.controls.dampingFactor = 0;
 
         components.init();
 
@@ -73,7 +72,7 @@ export default function Home() {
         });
 
         // Initialise Stats.js for performance monitoring
-        const stats = new Stats();
+        /* const stats = new Stats();
         stats.showPanel(2); // 0: fps, 1: ms, 2: mb
         document.body.append(stats.dom);
         stats.dom.style.left = "50px";
@@ -81,7 +80,7 @@ export default function Home() {
         stats.dom.style.zIndex = "1000";
         stats.dom.style.position = "absolute";
         world.renderer.onBeforeUpdate.add(() => stats.begin());
-        world.renderer.onAfterUpdate.add(() => stats.end());
+        world.renderer.onAfterUpdate.add(() => stats.end()); */
       }
     }
 
