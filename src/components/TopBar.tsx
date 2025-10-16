@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { SetStateAction, Dispatch, useEffect, useState } from "react";
 
 import * as OBC from "@thatopen/components";
 import * as OBF from "@thatopen/components-front";
@@ -7,37 +7,41 @@ import * as Accordion from "@radix-ui/react-accordion";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
 
 import api from "@/lib/api";
+import di from "@/lib/di";
+
+import Constants from "@/domain/Constants";
 
 interface TopBarProps {
   readonly isLoading: boolean;
-  readonly setIsLoading: (loading: boolean) => void;
-  readonly setLoadingMessage: (message: string) => void;
-  readonly initFragmentsManager: () => Promise<void>;
-  readonly fragmentsManager: OBC.FragmentsManager | null;
-  readonly areaMeasurer: OBF.AreaMeasurement | null;
+  readonly setIsLoading: Dispatch<SetStateAction<boolean>>;
+  readonly setLoadingMessage: Dispatch<SetStateAction<string>>;
 }
 
 const TopBar: React.FC<TopBarProps> = ({
   isLoading,
   setIsLoading,
   setLoadingMessage,
-  initFragmentsManager,
-  fragmentsManager,
-  areaMeasurer,
 }) => {
   const [areaMeasurementEnabled, setAreaMeasurementEnabled] = useState(false);
   const [areaMeasurementVisible, setAreaMeasurementVisible] = useState(false);
 
   useEffect(() => {
-    if (areaMeasurer) {
-      setAreaMeasurementEnabled(!!areaMeasurer.enabled);
-      setAreaMeasurementVisible(!!areaMeasurer.visible);
-    }
-  }, [areaMeasurer]);
+    // Check periodically until services are available, then stop
+    const interval = setInterval(() => {
+      const areaMeasurer = di.get<OBF.AreaMeasurement>(Constants.AreaMeasurementKey);
+      if (areaMeasurer) {
+        setAreaMeasurementEnabled(areaMeasurer.enabled);
+        setAreaMeasurementVisible(areaMeasurer.visible);
+        
+        clearInterval(interval); // Stop polling once found
+      }
+    }, 100);
+    
+    return () => clearInterval(interval);
+  }, []);
 
   async function loadIfc(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
-
     if (!file) return;
 
     setIsLoading(true);
@@ -61,7 +65,8 @@ const TopBar: React.FC<TopBarProps> = ({
         c => c.charCodeAt(0)
       ).buffer;
 
-      fragmentsManager?.core.load(buffer, { modelId: response.data.id });
+      const fragmentsManager = di.get<OBC.FragmentsManager>(Constants.FragmentsManagerKey);
+      await fragmentsManager?.core.load(buffer, { modelId: response.data.id });
     } catch (error) {
       console.error('Error loading fragments:', error);
       setIsLoading(false);
@@ -80,20 +85,25 @@ const TopBar: React.FC<TopBarProps> = ({
     
     if (!id.trim()) return;
 
-    setIsLoading(true);
-    setLoadingMessage(`Loading model: ${id}...`);
-
     try {
+      const fragmentsManager = di.get<OBC.FragmentsManager>(Constants.FragmentsManagerKey);
+      
+      if (!fragmentsManager) {
+        console.error("FragmentsManager not available yet");
+        return;
+      }
+      
+      setIsLoading(true);
+      setLoadingMessage(`Loading model: ${id}...`);
+
       const response = await api.get(`/fragments/${id}`);
-
-      setLoadingMessage("Processing fragments...");
-
+      
       const buffer = Uint8Array.from(
         atob(response.data.fragments), 
         c => c.charCodeAt(0)
       ).buffer;
 
-      fragmentsManager?.core.load(buffer, { modelId: id });
+      await fragmentsManager.core.load(buffer, { modelId: id });
     } catch (error) {
       console.error('Error loading fragments by ID:', error);
       setIsLoading(false);
@@ -183,6 +193,7 @@ const TopBar: React.FC<TopBarProps> = ({
                 onChange={(e) => {
                   const checked = e.target.checked;
                   setAreaMeasurementEnabled(checked);
+                  const areaMeasurer = di.get<OBF.AreaMeasurement>(Constants.AreaMeasurementKey);
                   if (areaMeasurer) areaMeasurer.enabled = checked;
                 }}
               />
@@ -200,6 +211,7 @@ const TopBar: React.FC<TopBarProps> = ({
                 onChange={(e) => {
                   const checked = e.target.checked;
                   setAreaMeasurementVisible(checked);
+                  const areaMeasurer = di.get<OBF.AreaMeasurement>(Constants.AreaMeasurementKey);
                   if (areaMeasurer) areaMeasurer.visible = checked;
                 }} 
               />
@@ -207,7 +219,10 @@ const TopBar: React.FC<TopBarProps> = ({
 
             <button 
               className="bg-gray-500 text-white px-2 py-1 rounded hover:bg-gray-600 text-center w-full !block"
-              onClick={() => areaMeasurer?.list.clear()}
+              onClick={() => {
+                const areaMeasurer = di.get<OBF.AreaMeasurement>(Constants.AreaMeasurementKey);
+                areaMeasurer?.list.clear();
+              }}
             >
               Delete all
             </button>
