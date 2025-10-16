@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { SetStateAction, Dispatch, useEffect, useState } from "react";
 
 import * as OBC from "@thatopen/components";
 import * as OBF from "@thatopen/components-front";
@@ -7,14 +7,14 @@ import * as Accordion from "@radix-ui/react-accordion";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
 
 import api from "@/lib/api";
-import { di } from "@/lib/di";
+import di from "@/lib/di";
 
-import { Constants } from "@/domain/Constants";
+import Constants from "@/domain/Constants";
 
 interface TopBarProps {
   readonly isLoading: boolean;
-  readonly setIsLoading: (loading: boolean) => void;
-  readonly setLoadingMessage: (message: string) => void;
+  readonly setIsLoading: Dispatch<SetStateAction<boolean>>;
+  readonly setLoadingMessage: Dispatch<SetStateAction<string>>;
 }
 
 const TopBar: React.FC<TopBarProps> = ({
@@ -30,8 +30,8 @@ const TopBar: React.FC<TopBarProps> = ({
     const interval = setInterval(() => {
       const areaMeasurer = di.get<OBF.AreaMeasurement>(Constants.AreaMeasurementKey);
       if (areaMeasurer) {
-        setAreaMeasurementEnabled(!!areaMeasurer.enabled);
-        setAreaMeasurementVisible(!!areaMeasurer.visible);
+        setAreaMeasurementEnabled(areaMeasurer.enabled);
+        setAreaMeasurementVisible(areaMeasurer.visible);
         
         clearInterval(interval); // Stop polling once found
       }
@@ -42,7 +42,6 @@ const TopBar: React.FC<TopBarProps> = ({
 
   async function loadIfc(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
-
     if (!file) return;
 
     setIsLoading(true);

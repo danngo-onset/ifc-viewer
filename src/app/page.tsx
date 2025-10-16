@@ -7,12 +7,12 @@ import * as OBF from "@thatopen/components-front";
 
 import * as THREE from "three";
 
-import { di } from "@/lib/di";
+import di from "@/lib/di";
 
 import LoadingSpinner from "@/components/LoadingSpinner";
 import TopBar from "@/components/TopBar";
 
-import { Constants } from "@/domain/Constants";
+import Constants from "@/domain/Constants";
 
 export default function Home() {
   const containerRef = useRef(null);
@@ -33,29 +33,11 @@ export default function Home() {
   useEffect(() => {
     async function init() {
       if (containerRef.current) {
-        world.scene = new OBC.SimpleScene(components);
-        world.scene.setup();
-        world.scene.three.background = null; // light scene
-
-        //world.renderer = new OBC.SimpleRenderer(components, containerRef.current);
-        world.renderer = new OBF.PostproductionRenderer(components, containerRef.current);
-
-        world.camera = new OBC.OrthoPerspectiveCamera(components);
-        //world.camera.controls.maxDistance = 300;
-        //world.camera.controls.infinityDolly = false;
-        await world.camera.controls.setLookAt(12, 6, 8, 0, 0, -10, false);
-        
-        // Disable damping to stop continuous movement after scroll stops
-        //world.camera.controls.dampingFactor = 0;
-
-        components.init();
-
-        const grids = components.get(OBC.Grids);
-        grids.create(world);
-      
-        await initFragmentsManager();
-
-        await initAreaMeasurement();
+        await Promise.all([
+          initWorld(),
+          initFragmentsManager(),
+          initAreaMeasurement()
+        ]);
       }
     }
 
@@ -78,6 +60,30 @@ export default function Home() {
       world.dispose();
     };
   }, []);
+
+  async function initWorld() {
+    if (!containerRef.current) return;
+
+    world.scene = new OBC.SimpleScene(components);
+    world.scene.setup();
+    world.scene.three.background = null; // light scene
+
+    //world.renderer = new OBC.SimpleRenderer(components, containerRef.current);
+    world.renderer = new OBF.PostproductionRenderer(components, containerRef.current);
+
+    world.camera = new OBC.OrthoPerspectiveCamera(components);
+    //world.camera.controls.maxDistance = 300;
+    //world.camera.controls.infinityDolly = false;
+    await world.camera.controls.setLookAt(12, 6, 8, 0, 0, -10, false);
+    
+    // Disable damping to stop continuous movement after scroll stops
+    //world.camera.controls.dampingFactor = 0;
+
+    components.init();
+
+    const grids = components.get(OBC.Grids);
+    grids.create(world);
+  }
 
   async function initFragmentsManager() {
     const fragmentsManager = components.get(OBC.FragmentsManager);
