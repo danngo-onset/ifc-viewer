@@ -1,15 +1,11 @@
-import React, { SetStateAction, Dispatch, useEffect, useState } from "react";
-
+import React, { SetStateAction, Dispatch } from "react";
 import * as OBC from "@thatopen/components";
-import * as OBF from "@thatopen/components-front";
-
-import * as Accordion from "@radix-ui/react-accordion";
-import { ChevronDownIcon } from "@radix-ui/react-icons";
 
 import api from "@/lib/api";
 import di from "@/lib/di";
-
 import Constants from "@/domain/Constants";
+
+import { AreaMeasurer } from "./BIM/AreaMeasurer";
 
 interface TopBarProps {
   readonly isLoading: boolean;
@@ -22,23 +18,6 @@ const TopBar: React.FC<TopBarProps> = ({
   setIsLoading,
   setLoadingMessage,
 }) => {
-  const [areaMeasurementEnabled, setAreaMeasurementEnabled] = useState(false);
-  const [areaMeasurementVisible, setAreaMeasurementVisible] = useState(false);
-
-  useEffect(() => {
-    // Check periodically until services are available, then stop
-    const interval = setInterval(() => {
-      const areaMeasurer = di.get<OBF.AreaMeasurement>(Constants.AreaMeasurementKey);
-      if (areaMeasurer) {
-        setAreaMeasurementEnabled(areaMeasurer.enabled);
-        setAreaMeasurementVisible(areaMeasurer.visible);
-        
-        clearInterval(interval); // Stop polling once found
-      }
-    }, 100);
-    
-    return () => clearInterval(interval);
-  }, []);
 
   async function loadIfc(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -167,68 +146,7 @@ const TopBar: React.FC<TopBarProps> = ({
         </button>
       </form>
 
-      <Accordion.Root type="single" collapsible className="relative z-10 w-48">
-        <Accordion.Item value="tools-panel" className="border border-gray-300 rounded-md bg-white">
-          <Accordion.Header>
-            <Accordion.Trigger className="flex items-center justify-between w-full px-3 py-2 hover:bg-gray-50">
-              <p>Area Measurement</p>
-
-              <ChevronDownIcon className="w-4 h-4" />
-            </Accordion.Trigger>
-          </Accordion.Header>
-
-          <Accordion.Content 
-            className="
-              px-3 py-2 bg-gray-50 border-t border-gray-200 absolute top-full left-0 right-0 shadow-lg space-y-3 
-              *:text-sm *:flex *:items-center *:justify-between
-            "
-          >
-            <div>
-              <label htmlFor="enabled">Enabled</label>
-
-              <input 
-                type="checkbox" 
-                id="enabled" 
-                checked={areaMeasurementEnabled}
-                onChange={(e) => {
-                  const checked = e.target.checked;
-                  setAreaMeasurementEnabled(checked);
-                  const areaMeasurer = di.get<OBF.AreaMeasurement>(Constants.AreaMeasurementKey);
-                  if (areaMeasurer) areaMeasurer.enabled = checked;
-                }}
-              />
-            </div>
-
-            <div>
-              <label htmlFor="measurement-visible">
-                Measurement Visible
-              </label>
-
-              <input 
-                type="checkbox" 
-                id="measurement-visible" 
-                checked={areaMeasurementVisible} 
-                onChange={(e) => {
-                  const checked = e.target.checked;
-                  setAreaMeasurementVisible(checked);
-                  const areaMeasurer = di.get<OBF.AreaMeasurement>(Constants.AreaMeasurementKey);
-                  if (areaMeasurer) areaMeasurer.visible = checked;
-                }} 
-              />
-            </div>
-
-            <button 
-              className="bg-gray-500 text-white px-2 py-1 rounded hover:bg-gray-600 text-center w-full !block"
-              onClick={() => {
-                const areaMeasurer = di.get<OBF.AreaMeasurement>(Constants.AreaMeasurementKey);
-                areaMeasurer?.list.clear();
-              }}
-            >
-              Delete all
-            </button>
-          </Accordion.Content>
-        </Accordion.Item>
-      </Accordion.Root>
+      <AreaMeasurer />
     </section>
   );
 };
