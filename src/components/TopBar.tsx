@@ -5,7 +5,8 @@ import api from "@/lib/api";
 import di from "@/lib/di";
 import Constants from "@/domain/Constants";
 
-import { AreaMeasurer } from "./BIM/AreaMeasurer";
+import AreaMeasurer from "./BIM/AreaMeasurer";
+import LengthMeasurer from "./BIM/LengthMeasurer";
 
 interface TopBarProps {
   readonly isLoading: boolean;
@@ -147,6 +148,8 @@ const TopBar: React.FC<TopBarProps> = ({
       </form>
 
       <AreaMeasurer />
+
+      <LengthMeasurer />
     </section>
   );
 };

@@ -1,48 +1,37 @@
 import { useEffect, useState } from "react";
-
 import * as OBF from "@thatopen/components-front";
-
 import { ChevronDownIcon } from "@radix-ui/react-icons";
 import * as Accordion from "@radix-ui/react-accordion";
 
-import di from "@/lib/di";
-
 import Constants from "@/domain/Constants";
+import useBimComponent from "@/hooks/useBimComponent";
 
-export const AreaMeasurer = () => {
-  const [areaMeasurementEnabled, setAreaMeasurementEnabled] = useState(false);
-  const [areaMeasurementVisible, setAreaMeasurementVisible] = useState(false);
+export default function AreaMeasurer() {
+  const [enabled, setEnabled] = useState(false);
+  const [visible, setVisible] = useState(false);
 
+  const measurer = useBimComponent<OBF.AreaMeasurement>(Constants.AreaMeasurementKey);
+
+  // Update state when measurer becomes available
   useEffect(() => {
-    // Check periodically until services are available, then stop
-    const interval = setInterval(() => {
-      const areaMeasurer = di.get<OBF.AreaMeasurement>(Constants.AreaMeasurementKey);
-      if (areaMeasurer) {
-        setAreaMeasurementEnabled(areaMeasurer.enabled);
-        setAreaMeasurementVisible(areaMeasurer.visible);
-        
-        clearInterval(interval); // Stop polling once found
-      }
-    }, 100);
-    
-    return () => clearInterval(interval);
-  }, []);
+    if (measurer) {
+      setEnabled(measurer.enabled);
+      setVisible(measurer.visible);
+    }
+  }, [measurer]);
 
   return (
     <Accordion.Root type="single" collapsible className="relative z-10 w-48">
       <Accordion.Item value="tools-panel" className="border border-gray-300 rounded-md bg-white">
         <Accordion.Header>
-          <Accordion.Trigger className="flex items-center justify-between w-full px-3 py-2 hover:bg-gray-50">
+          <Accordion.Trigger className="accordion-trigger">
             <p>Area Measurement</p>
             <ChevronDownIcon className="w-4 h-4" />
           </Accordion.Trigger>
         </Accordion.Header>
 
         <Accordion.Content 
-          className="
-            px-3 py-2 bg-gray-50 border-t border-gray-200 absolute top-full left-0 right-0 shadow-lg space-y-3 
-            *:text-sm *:flex *:items-center *:justify-between
-          "
+          className="accordion-content"
         >
           <div>
             <label htmlFor="area-measurement-enabled">Enabled</label>
@@ -50,39 +39,36 @@ export const AreaMeasurer = () => {
             <input 
               type="checkbox" 
               id="area-measurement-enabled" 
-              checked={areaMeasurementEnabled}
+              checked={enabled}
               onChange={(e) => {
                 const checked = e.target.checked;
-                setAreaMeasurementEnabled(checked);
+                setEnabled(checked);
 
-                const areaMeasurer = di.get<OBF.AreaMeasurement>(Constants.AreaMeasurementKey);
-                if (areaMeasurer) areaMeasurer.enabled = checked;
+                if (measurer) measurer.enabled = checked;
               }}
             />
           </div>
 
           <div>
             <label htmlFor="area-measurement-visible">Measurement Visible</label>
-            
+
             <input 
               type="checkbox" 
               id="area-measurement-visible" 
-              checked={areaMeasurementVisible} 
+              checked={visible} 
               onChange={(e) => {
                 const checked = e.target.checked;
-                setAreaMeasurementVisible(checked);
+                setVisible(checked);
 
-                const areaMeasurer = di.get<OBF.AreaMeasurement>(Constants.AreaMeasurementKey);
-                if (areaMeasurer) areaMeasurer.visible = checked;
+                if (measurer) measurer.visible = checked;
               }} 
             />
           </div>
 
           <button 
-            className="bg-gray-500 text-white px-2 py-1 rounded hover:bg-gray-600 text-center w-full !block"
+            className="button-gray"
             onClick={() => {
-              const areaMeasurer = di.get<OBF.AreaMeasurement>(Constants.AreaMeasurementKey);
-              areaMeasurer?.list.clear();
+              measurer?.list.clear();
             }}
           >
             Delete all

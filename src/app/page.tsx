@@ -3,15 +3,15 @@
 import { useEffect, useRef, useState } from "react";
 
 import * as OBC from "@thatopen/components";
-import * as OBF from "@thatopen/components-front";
 
 import di from "@/lib/di";
-import BimExtentions from "@/lib/extensions/bim-extensions";
+import BimUtilities from "@/lib/utils/bim-utils";
 
 import LoadingSpinner from "@/components/LoadingSpinner";
 import TopBar from "@/components/TopBar";
 
 import Constants from "@/domain/Constants";
+import { WorldType } from "@/domain/types/WorldType";
 
 export default function Home() {
   const containerRef = useRef<HTMLElement | null>(null);
@@ -23,26 +23,23 @@ export default function Home() {
     if (!container) return;
 
     const components = new OBC.Components();
-    const world = components.get(OBC.Worlds).create<
-      OBC.SimpleScene,
-      OBC.OrthoPerspectiveCamera,
-      //OBC.SimpleRenderer
-      OBF.PostproductionRenderer
-    >();
+    const world = components.get(OBC.Worlds)
+                            .create() as WorldType;
 
+    const bimUtilities = new BimUtilities(components, world, container);
     const cleanupFunctions: Array<() => void> = [];
 
     (async () => {
-      await BimExtentions.initWorld(components, world, container);
+      await bimUtilities.initWorld();
       
       const [
         fragmentsManagerCleanup, 
         areaMeasurementCleanup, 
         lengthMeasurementCleanup
       ] = await Promise.all([
-        BimExtentions.initFragmentsManager(components, world, setLoadingMessage, setIsLoading),
-        BimExtentions.initAreaMeasurement(components, world, container),
-        BimExtentions.initLengthMeasurement(components, world, container)
+        bimUtilities.initFragmentsManager(setLoadingMessage, setIsLoading),
+        bimUtilities.initAreaMeasurer(),
+        bimUtilities.initLengthMeasurer()
       ]);
 
       if (fragmentsManagerCleanup)  cleanupFunctions.push(fragmentsManagerCleanup);

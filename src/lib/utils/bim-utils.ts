@@ -9,49 +9,42 @@ import * as THREE from "three";
 import di from "@/lib/di";
 
 import Constants from "@/domain/Constants";
+import { WorldType } from "@/domain/types/WorldType";
 
-export default class BimExtensions {
-  static async initWorld(
-    components: OBC.Components, 
-    world: OBC.SimpleWorld<
-      OBC.SimpleScene, 
-      OBC.OrthoPerspectiveCamera, 
-      OBF.PostproductionRenderer
-    >, 
-    container: HTMLElement
-  ) {
-    world.scene = new OBC.SimpleScene(components);
-    world.scene.setup();
-    world.scene.three.background = null; // light scene
+export default class BimUtilities {
+  constructor(
+    private readonly components : OBC.Components,
+    private readonly world      : WorldType,
+    private readonly container  : HTMLElement
+  ) {}
+
+  async initWorld() {
+    this.world.scene = new OBC.SimpleScene(this.components);
+    this.world.scene.setup();
+    this.world.scene.three.background = null; // light scene
 
     //world.renderer = new OBC.SimpleRenderer(components, containerRef.current);
-    world.renderer = new OBF.PostproductionRenderer(components, container as HTMLElement);
+    this.world.renderer = new OBF.PostproductionRenderer(this.components, this.container as HTMLElement);
 
-    world.camera = new OBC.OrthoPerspectiveCamera(components);
+    this.world.camera = new OBC.OrthoPerspectiveCamera(this.components);
     //world.camera.controls.maxDistance = 300;
     //world.camera.controls.infinityDolly = false;
-    await world.camera.controls.setLookAt(12, 6, 8, 0, 0, -10, false);
+    await this.world.camera.controls.setLookAt(12, 6, 8, 0, 0, -10, false);
     
     // Disable damping to stop continuous movement after scroll stops
     //world.camera.controls.dampingFactor = 0;
 
-    components.init();
+    this.components.init();
 
-    const grids = components.get(OBC.Grids);
-    grids.create(world);
+    const grids = this.components.get(OBC.Grids);
+    grids.create(this.world);
   }
 
-  static async initFragmentsManager(
-    components: OBC.Components, 
-    world: OBC.SimpleWorld<
-      OBC.SimpleScene, 
-      OBC.OrthoPerspectiveCamera, 
-      OBF.PostproductionRenderer
-    >, 
+  async initFragmentsManager(
     setLoadingMessage: Dispatch<SetStateAction<string>>,
     setIsLoading: Dispatch<SetStateAction<boolean>>
   ) {
-    const fragmentsManager = components.get(OBC.FragmentsManager);
+    const fragmentsManager = this.components.get(OBC.FragmentsManager);
 
     const githubUrl = "https://thatopen.github.io/engine_fragment/resources/worker.mjs";
     const fetchedUrl = await fetch(githubUrl);
@@ -64,11 +57,11 @@ export default class BimExtensions {
     fragmentsManager.init(workerUrl);
 
     const cameraRestHandler = async () => await fragmentsManager.core.update(true);
-    world.camera.controls.addEventListener("rest", cameraRestHandler);
+    this.world.camera.controls.addEventListener("rest", cameraRestHandler);
 
     const modelSetHandler = async ({ value: model }: { value: FragmentsModel }) => {
-      model.useCamera(world.camera.three);
-      world.scene.three.add(model.object);
+      model.useCamera(this.world.camera.three);
+      this.world.scene.three.add(model.object);
       
       setLoadingMessage("Rendering model...");
       await fragmentsManager.core.update(true);
@@ -82,33 +75,29 @@ export default class BimExtensions {
       }
       await fragmentsManager.core.update(true);
     };
-    world.onCameraChanged.add(cameraChangeHandler);
+    this.world.onCameraChanged.add(cameraChangeHandler);
 
     di.register(Constants.FragmentsManagerKey, fragmentsManager);
 
     return () => {
       URL.revokeObjectURL(workerUrl);
-      world.camera.controls.removeEventListener("rest", cameraRestHandler);
-      world.onCameraChanged.remove(cameraChangeHandler);
+      this.world.camera.controls.removeEventListener("rest", cameraRestHandler);
+      this.world.onCameraChanged.remove(cameraChangeHandler);
       fragmentsManager.list.onItemSet.remove(modelSetHandler);
     };
   }
 
-  static async initAreaMeasurement(
-    components: OBC.Components, 
-    world: OBC.World, 
-    container: HTMLElement
-  ) {
-    const areaMeasurer = components.get(OBF.AreaMeasurement);
-    areaMeasurer.world = world;
-    areaMeasurer.color = new THREE.Color("#494CB6");
-    areaMeasurer.enabled = true;
-    areaMeasurer.mode = "square";
+  async initAreaMeasurer() {
+    const measurer = this.components.get(OBF.AreaMeasurement);
+    measurer.world = this.world;
+    measurer.color = new THREE.Color("#494CB6");
+    measurer.enabled = true;
+    measurer.mode = "square";
 
     const enterKeyHandler = (e: KeyboardEvent) => {
       if (!(e.code === "Enter" || e.code === "NumpadEnter")) return;
       try {
-        areaMeasurer.endCreation();
+        measurer.endCreation();
       } catch (error) {
         console.error("Error ending measurement creation:", error);
       }
@@ -118,8 +107,8 @@ export default class BimExtensions {
     const deleteKeyHandler = (e: KeyboardEvent) => {
       if (e.code === "Delete" || e.code === "Backspace") {
         try {
-          if (areaMeasurer.list.size > 0) {
-            areaMeasurer.delete();
+          if (measurer.list.size > 0) {
+            measurer.delete();
           }
         } catch (error) {
           console.error("Error deleting measurement:", error);
@@ -128,67 +117,64 @@ export default class BimExtensions {
     };
     window.addEventListener("keydown", deleteKeyHandler);
     
-    const dblclickHandler = async () => await areaMeasurer.create();
-    if (container) container.addEventListener("dblclick", dblclickHandler);
+    const dblclickHandler = async () => await measurer.create();
+    if (this.container) this.container.addEventListener("dblclick", dblclickHandler);
 
     const zoomHandler = async (area: OBF.Area) => {
-      if (!area.boundingBox || !world.camera.controls) return;
+      if (!area.boundingBox || !this.world.camera.controls) return;
 
       const sphere = new THREE.Sphere();
       area.boundingBox.getBoundingSphere(sphere);
-      await world.camera.controls.fitToSphere(sphere, true);
+      await this.world.camera.controls.fitToSphere(sphere, true);
     };
-    areaMeasurer.list.onItemAdded.add(zoomHandler);
+    measurer.list.onItemAdded.add(zoomHandler);
 
-    di.register(Constants.AreaMeasurementKey, areaMeasurer);
+    di.register(Constants.AreaMeasurementKey, measurer);
 
     return () => {
       window.removeEventListener("keydown", enterKeyHandler);
       window.removeEventListener("keydown", deleteKeyHandler);
-      if (container) container.removeEventListener("dblclick", dblclickHandler);
-      areaMeasurer.list.onItemAdded.remove(zoomHandler);
+      if (this.container) this.container.removeEventListener("dblclick", dblclickHandler);
+      measurer.list.onItemAdded.remove(zoomHandler);
     };
   }
 
-  static async initLengthMeasurement(
-    components: OBC.Components, 
-    world: OBC.World, 
-    container: HTMLElement
-  ) {
-    const lengthMeasurer = components.get(OBF.LengthMeasurement);
-    lengthMeasurer.world = world;
-    lengthMeasurer.color = new THREE.Color("#494CB6");
-    lengthMeasurer.enabled = false;
+  async initLengthMeasurer() {
+    const measurer = this.components.get(OBF.LengthMeasurement);
+    measurer.world = this.world;
+    measurer.color = new THREE.Color("#494CB6");
+    measurer.enabled = false;
+    measurer.mode = "free";
 
-    const dblclickHandler = () => lengthMeasurer.create();
-    if (container) container.addEventListener("dblclick", dblclickHandler);
+    const dblclickHandler = () => measurer.create();
+    if (this.container) this.container.addEventListener("dblclick", dblclickHandler);
 
     const keydownHandler = (event: KeyboardEvent) => {
       if ((event.code === "Delete" || event.code === "Backspace") 
-       && lengthMeasurer.list.size > 0) {
-        lengthMeasurer.delete();
+       && measurer.list.size > 0) {
+        measurer.delete();
       }
     };
     window.addEventListener("keydown", keydownHandler);
 
     const zoomHandler = (line: OBF.Line) => {
-      if (!world.camera.controls) return;
+      if (!this.world.camera.controls) return;
 
       const center = new THREE.Vector3();
       line.getCenter(center);
 
       const radius = line.distance() / 3;
       const sphere = new THREE.Sphere(center, radius);
-      world.camera.controls.fitToSphere(sphere, true);
+      this.world.camera.controls.fitToSphere(sphere, true);
     };
-    lengthMeasurer.list.onItemAdded.add(zoomHandler);
+    measurer.list.onItemAdded.add(zoomHandler);
 
-    di.register(Constants.LengthMeasurementKey, lengthMeasurer);
+    di.register(Constants.LengthMeasurementKey, measurer);
 
     return () => {
       window.removeEventListener("keydown", keydownHandler);
-      if (container) container.removeEventListener("dblclick", dblclickHandler);
-      lengthMeasurer.list.onItemAdded.remove(zoomHandler);
+      if (this.container) this.container.removeEventListener("dblclick", dblclickHandler);
+      measurer.list.onItemAdded.remove(zoomHandler);
     };
   }
 }

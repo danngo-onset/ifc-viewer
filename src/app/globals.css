@@ -17,3 +17,17 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.accordion-trigger {
+  @apply flex items-center justify-between w-full px-3 py-2 hover:bg-gray-50;
+}
+
+.accordion-content {
+  @apply 
+    px-3 py-2 bg-gray-50 border-t border-gray-200 absolute top-full left-0 right-0 shadow-lg space-y-3 
+    *:text-sm *:flex *:items-center *:justify-between;
+}
+
+.button-gray {
+  @apply bg-gray-500 text-white px-2 py-1 rounded hover:bg-gray-600 text-center w-full !block;
+}
