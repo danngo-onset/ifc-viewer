@@ -36,8 +36,8 @@ export default class BimUtilities {
 
     this.components.init();
 
-    const grids = this.components.get(OBC.Grids);
-    grids.create(this.world);
+    /* const grids = this.components.get(OBC.Grids);
+    grids.create(this.world); */
   }
 
   async initFragmentsManager(
