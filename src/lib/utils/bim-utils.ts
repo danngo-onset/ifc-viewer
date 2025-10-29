@@ -2,11 +2,13 @@ import { Dispatch, SetStateAction } from "react";
 
 import * as OBC from "@thatopen/components";
 import * as OBF from "@thatopen/components-front";
-import { FragmentsModel } from "@thatopen/fragments";
+import { FragmentsModel, ItemData } from "@thatopen/fragments";
 
 import * as THREE from "three";
 
 import di from "@/lib/di";
+
+import useBimComponent from "@/hooks/useBimComponent";
 
 import Constants from "@/domain/Constants";
 import { WorldType } from "@/domain/types/WorldType";
@@ -175,6 +177,49 @@ export default class BimUtilities {
       window.removeEventListener("keydown", keydownHandler);
       if (this.container) this.container.removeEventListener("dblclick", dblclickHandler);
       measurer.list.onItemAdded.remove(zoomHandler);
+    };
+  }
+
+  async initHighlighter(fragmentsManager: OBC.FragmentsManager) {
+    const world = this.world;
+    this.components.get(OBC.Raycasters)
+                   .get(world);
+    
+    const highlighter = this.components.get(OBF.Highlighter);
+    highlighter.setup({
+      world,
+      selectMaterialDefinition: {
+        color: new THREE.Color("#BCF124"),
+        opacity: 1,
+        transparent: false,
+        renderedFaces: 0
+      }
+    });
+
+    const highlightHandler = async (modelIdMap: OBC.ModelIdMap) => {
+      //console.log("something was selected");
+      
+      const promises: Array<Promise<ItemData[]>> = [];
+      for (const [modelId, localIds] of Object.entries(modelIdMap)) {
+        const model = fragmentsManager.list.get(modelId);
+        if (!model) continue;
+
+        promises.push(model.getItemsData([...localIds]));
+      }
+
+      const data = (await Promise.all(promises)).flat();
+      //console.log(data);
+    }
+    highlighter.events.select.onHighlight.add(highlightHandler);
+
+    const clearHandler = () => {/* console.log("Selection was cleared") */};
+    highlighter.events.select.onClear.add(clearHandler);
+
+    //di.register(Constants.HighlighterKey, highlighter);
+
+    return () => {
+      highlighter.events.select.onHighlight.remove(highlightHandler);
+      highlighter.events.select.onClear.remove(clearHandler);
     };
   }
 }

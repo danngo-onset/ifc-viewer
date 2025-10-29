@@ -42,6 +42,12 @@ export default function Home() {
         bimUtilities.initLengthMeasurer()
       ]);
 
+      const fragmentsManager = di.get<OBC.FragmentsManager>(Constants.FragmentsManagerKey);
+      if (fragmentsManager) {
+        const highlighterCleanup = await bimUtilities.initHighlighter(fragmentsManager);
+        if (highlighterCleanup) cleanupFunctions.push(highlighterCleanup);
+      }
+
       if (fragmentsManagerCleanup)  cleanupFunctions.push(fragmentsManagerCleanup);
       if (areaMeasurementCleanup)   cleanupFunctions.push(areaMeasurementCleanup);
       if (lengthMeasurementCleanup) cleanupFunctions.push(lengthMeasurementCleanup);
