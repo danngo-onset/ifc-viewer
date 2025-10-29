@@ -51,6 +51,9 @@ export default function Home() {
       if (fragmentsManagerCleanup)  cleanupFunctions.push(fragmentsManagerCleanup);
       if (areaMeasurementCleanup)   cleanupFunctions.push(areaMeasurementCleanup);
       if (lengthMeasurementCleanup) cleanupFunctions.push(lengthMeasurementCleanup);
+
+      const orbitHoldCleanup = bimUtilities.initOrbitLockOnHold();
+      if (orbitHoldCleanup) cleanupFunctions.push(orbitHoldCleanup);
     })();
 
     return () => {

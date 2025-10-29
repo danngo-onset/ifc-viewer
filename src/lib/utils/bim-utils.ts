@@ -8,8 +8,6 @@ import * as THREE from "three";
 
 import di from "@/lib/di";
 
-import useBimComponent from "@/hooks/useBimComponent";
-
 import Constants from "@/domain/Constants";
 import { WorldType } from "@/domain/types/WorldType";
 
@@ -220,6 +218,39 @@ export default class BimUtilities {
     return () => {
       highlighter.events.select.onHighlight.remove(highlightHandler);
       highlighter.events.select.onClear.remove(clearHandler);
+    };
+  }
+
+  /**
+   * Initialize behavior to set the orbit point to the clicked location when holding left mouse.
+   * The camera will rotate around the picked point since orbit uses the current target.
+   */
+  initOrbitLockOnHold() {
+    const raycasters = this.components.get(OBC.Raycasters);
+
+    const onMouseDown = async (event: MouseEvent) => {
+      if (event.button !== 0) return; // only left mouse button
+      //if (!this.world?.camera?.three || !this.world?.scene?.three) return;
+
+      const simpleRaycaster = raycasters.get(this.world);
+      const intersection = await simpleRaycaster.castRay();
+      if (!intersection) return;
+      const point = intersection.point;
+      // Set the orbit target to the picked point; keep current camera position
+      try {
+        // camera-controls API exposed by OrthoPerspectiveCamera
+        await this.world.camera.controls.setTarget(point.x, point.y, point.z, false);
+      } catch {
+        // Fallback: preserve position and update lookAt target
+        const pos = this.world.camera.controls.getPosition(new THREE.Vector3());
+        await this.world.camera.controls.setLookAt(pos.x, pos.y, pos.z, point.x, point.y, point.z, false);
+      }
+    };
+
+    this.container.addEventListener("mousedown", onMouseDown, { passive: true });
+
+    return () => {
+      this.container.removeEventListener("mousedown", onMouseDown);
     };
   }
 }
