@@ -50,9 +50,7 @@ export default function Home() {
     return () => {
       cleanupFunctions.forEach(cleanup => cleanup());
       
-      di.dispose(Constants.FragmentsManagerKey);
-      di.dispose(Constants.AreaMeasurementKey);
-      di.dispose(Constants.LengthMeasurementKey);
+      di.disposeAll();
       components.dispose();
       world.dispose();
     };
