@@ -18,6 +18,9 @@ export default class BimUtilities {
     private readonly container  : HTMLElement
   ) {}
 
+  private orbitLockOnMouseDown?: (event: MouseEvent) => void;
+  private orbitLockActive = true;
+
   async initWorld() {
     this.world.scene = new OBC.SimpleScene(this.components);
     this.world.scene.setup();
@@ -247,10 +250,40 @@ export default class BimUtilities {
       }
     };
 
+    this.orbitLockOnMouseDown = onMouseDown;
     this.container.addEventListener("mousedown", onMouseDown, { passive: true });
 
+    const enable = () => {
+      if (this.orbitLockActive) return;
+      if (this.orbitLockOnMouseDown) {
+        this.container.addEventListener("mousedown", this.orbitLockOnMouseDown, { passive: true });
+        this.orbitLockActive = true;
+      }
+    };
+
+    const disable = () => {
+      if (!this.orbitLockActive) return;
+      if (this.orbitLockOnMouseDown) {
+        this.container.removeEventListener("mousedown", this.orbitLockOnMouseDown);
+        this.orbitLockActive = false;
+      }
+    };
+
+    const orbitService = {
+      enabled: true,
+      setEnabled: (value: boolean) => {
+        if (value) enable(); else disable();
+        orbitService.enabled = value;
+      }
+    };
+    di.register(Constants.OrbitLockKey, orbitService);
+
     return () => {
-      this.container.removeEventListener("mousedown", onMouseDown);
+      if (this.orbitLockOnMouseDown) {
+        this.container.removeEventListener("mousedown", this.orbitLockOnMouseDown);
+      }
+      this.orbitLockOnMouseDown = undefined;
+      this.orbitLockActive = false;
     };
   }
 }

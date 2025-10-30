@@ -1,4 +1,4 @@
-import React, { SetStateAction, Dispatch } from "react";
+import React, { SetStateAction, Dispatch, useEffect, useState } from "react";
 import * as OBC from "@thatopen/components";
 
 import api from "@/lib/api";
@@ -19,6 +19,12 @@ const TopBar: React.FC<TopBarProps> = ({
   setIsLoading,
   setLoadingMessage,
 }) => {
+  const [orbitLock, setOrbitLock] = useState(true);
+
+  useEffect(() => {
+    const service = di.get<{ enabled: boolean; setEnabled: (v: boolean) => void }>(Constants.OrbitLockKey);
+    if (service) setOrbitLock(service.enabled);
+  }, []);
 
   async function loadIfc(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -150,6 +156,20 @@ const TopBar: React.FC<TopBarProps> = ({
       <AreaMeasurer />
 
       <LengthMeasurer />
+
+      <label className="flex items-center space-x-2 text-sm">
+        <input
+          type="checkbox"
+          checked={orbitLock}
+          onChange={(e) => {
+            const checked = e.target.checked;
+            setOrbitLock(checked);
+            const service = di.get<{ enabled: boolean; setEnabled: (v: boolean) => void }>(Constants.OrbitLockKey);
+            service?.setEnabled(checked);
+          }}
+        />
+        <span>Lock orbit to click</span>
+      </label>
     </section>
   );
 };
