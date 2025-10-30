@@ -1,12 +1,15 @@
 import React, { SetStateAction, Dispatch, useEffect, useState } from "react";
-import * as OBC from "@thatopen/components";
+
+import type * as OBC from "@thatopen/components";
+import type * as OBF from "@thatopen/components-front";
 
 import api from "@/lib/api";
 import di from "@/lib/di";
+
+import useBimComponent from "@/hooks/useBimComponent";
+
 import Constants from "@/domain/Constants";
 import type { OrbitLockToggle } from "@/domain/types/OrbitLockToggle";
-import useBimComponent from "@/hooks/useBimComponent";
-import type * as OBF from "@thatopen/components-front";
 
 import AreaMeasurer from "./BIM/AreaMeasurer";
 import LengthMeasurer from "./BIM/LengthMeasurer";
@@ -22,15 +25,14 @@ const TopBar: React.FC<TopBarProps> = ({
   setIsLoading,
   setLoadingMessage,
 }) => {
-  const [orbitLock, setOrbitLock] = useState(true);
   const orbitToggle = useBimComponent<OrbitLockToggle>(Constants.OrbitLockKey);
-  const highlighter = useBimComponent<OBF.Highlighter>(Constants.HighlighterKey);
-  const [highlighterEnabled, setHighlighterEnabled] = useState(false);
-  
+  const [orbitLock, setOrbitLock] = useState(false);
   useEffect(() => {
     if (orbitToggle) setOrbitLock(orbitToggle.enabled);
   }, [orbitToggle]);
 
+  const highlighter = useBimComponent<OBF.Highlighter>(Constants.HighlighterKey);
+  const [highlighterEnabled, setHighlighterEnabled] = useState(false);
   useEffect(() => {
     if (highlighter) setHighlighterEnabled(highlighter.enabled);
   }, [highlighter]);

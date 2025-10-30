@@ -1,7 +1,7 @@
 import * as THREE from "three";
 
 import Constants from "@/domain/Constants";
-import { WorldType } from "@/domain/types/WorldType";
+import type { WorldType } from "@/domain/types/WorldType";
 
 export default class BimExtensions {
   static createOrbitLockMarker(world: WorldType, point: THREE.Vector3): THREE.Mesh { 

@@ -6,8 +6,8 @@ export default class Constants {
   public static readonly OrbitLockKey         = "orbitLock";
 
   public static readonly Color = {
-    Measurer: "#494CB6",
-    Highlighter: "#BCF124",
-    OrbitLock: "#FF0000",
+    Measurer    : "#494CB6",
+    Highlighter : "#BCF124",
+    OrbitLock   : "#FF0000",
   }
 }

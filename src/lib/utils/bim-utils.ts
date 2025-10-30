@@ -2,15 +2,15 @@ import { Dispatch, SetStateAction } from "react";
 
 import * as OBC from "@thatopen/components";
 import * as OBF from "@thatopen/components-front";
-import { FragmentsModel, ItemData } from "@thatopen/fragments";
+import type { FragmentsModel, ItemData } from "@thatopen/fragments";
 
 import * as THREE from "three";
 
 import di from "@/lib/di";
 
 import Constants from "@/domain/Constants";
-import { WorldType } from "@/domain/types/WorldType";
-import { OrbitLockToggle } from "@/domain/types/OrbitLockToggle";
+import type { WorldType } from "@/domain/types/WorldType";
+import type { OrbitLockToggle } from "@/domain/types/OrbitLockToggle";
 
 import BimExtensions from "@/lib/extensions/bim-extensions";
 
