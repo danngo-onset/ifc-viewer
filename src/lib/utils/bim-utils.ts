@@ -10,6 +10,7 @@ import di from "@/lib/di";
 
 import Constants from "@/domain/Constants";
 import { WorldType } from "@/domain/types/WorldType";
+import { OrbitLockToggle } from "@/domain/types/OrbitLockToggle";
 
 export default class BimUtilities {
   constructor(
@@ -20,6 +21,7 @@ export default class BimUtilities {
 
   private orbitLockOnMouseDown?: (event: MouseEvent) => void;
   private orbitLockActive = true;
+  private orbitLockMarker?: THREE.Mesh;
 
   async initWorld() {
     this.world.scene = new OBC.SimpleScene(this.components);
@@ -239,6 +241,10 @@ export default class BimUtilities {
       const intersection = await simpleRaycaster.castRay();
       if (!intersection) return;
       const point = intersection.point;
+      
+      // Create or update orbit lock marker
+      this.updateOrbitLockMarker(point);
+      
       // Set the orbit target to the picked point; keep current camera position
       try {
         // camera-controls API exposed by OrthoPerspectiveCamera
@@ -266,17 +272,15 @@ export default class BimUtilities {
       if (this.orbitLockOnMouseDown) {
         this.container.removeEventListener("mousedown", this.orbitLockOnMouseDown);
         this.orbitLockActive = false;
+        this.removeOrbitLockMarker();
       }
     };
 
-    const orbitService = {
-      enabled: true,
-      setEnabled: (value: boolean) => {
-        if (value) enable(); else disable();
-        orbitService.enabled = value;
-      }
+    const orbitToggle: OrbitLockToggle = {
+      enabled: this.orbitLockActive,
+      setEnabled: (value: boolean) => value ? enable() : disable()
     };
-    di.register(Constants.OrbitLockKey, orbitService);
+    di.register(Constants.OrbitLockKey, orbitToggle);
 
     return () => {
       if (this.orbitLockOnMouseDown) {
@@ -284,6 +288,44 @@ export default class BimUtilities {
       }
       this.orbitLockOnMouseDown = undefined;
       this.orbitLockActive = false;
+      this.removeOrbitLockMarker();
     };
+  }
+
+  private updateOrbitLockMarker(point: THREE.Vector3) {
+    this.removeOrbitLockMarker();
+    
+    const geometry = new THREE.CircleGeometry(0.5, 16);
+    const material = new THREE.MeshBasicMaterial({ 
+      color: 0xff0000, 
+      transparent: true, 
+      opacity: 0.8,
+      side: THREE.DoubleSide
+    });
+    
+    this.orbitLockMarker = new THREE.Mesh(geometry, material);
+    this.orbitLockMarker.position.copy(point);
+    
+    // Orient the circle to face the camera
+    this.orbitLockMarker.lookAt(
+      this.world.camera.three.position.x,
+      this.world.camera.three.position.y,
+      this.world.camera.three.position.z
+    );
+    
+    this.world.scene.three.add(this.orbitLockMarker);
+  }
+
+  private removeOrbitLockMarker() {
+    if (this.orbitLockMarker) {
+      this.world.scene.three.remove(this.orbitLockMarker);
+      this.orbitLockMarker.geometry.dispose();
+      if (Array.isArray(this.orbitLockMarker.material)) {
+        this.orbitLockMarker.material.forEach(mat => mat.dispose());
+      } else {
+        this.orbitLockMarker.material.dispose();
+      }
+      this.orbitLockMarker = undefined;
+    }
   }
 }
