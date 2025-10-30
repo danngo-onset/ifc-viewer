@@ -1,15 +1,12 @@
-import { SetStateAction, Dispatch, useEffect, useState } from "react";
+import { SetStateAction, Dispatch } from "react";
 
 import type * as OBC from "@thatopen/components";
-import type * as OBF from "@thatopen/components-front";
 
 import api from "@/lib/api";
 import di from "@/lib/di";
 
-import useBimComponent from "@/hooks/useBimComponent";
 
 import Constants from "@/domain/Constants";
-import type { OrbitLockToggle } from "@/domain/types/OrbitLockToggle";
 
 import SideDrawer from "./SideDrawer";
 
