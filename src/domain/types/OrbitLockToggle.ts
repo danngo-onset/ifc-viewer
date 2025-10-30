@@ -1,4 +1,4 @@
 export type OrbitLockToggle = {
-  readonly enabled: boolean;
-  readonly setEnabled: (value: boolean) => void;
+  readonly enabled    : boolean;
+  readonly setEnabled : (value: boolean) => void;
 }
