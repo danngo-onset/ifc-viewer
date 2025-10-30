@@ -1,9 +1,15 @@
-import React, { SetStateAction, Dispatch } from "react";
-import * as OBC from "@thatopen/components";
+import React, { SetStateAction, Dispatch, useEffect, useState } from "react";
+
+import type * as OBC from "@thatopen/components";
+import type * as OBF from "@thatopen/components-front";
 
 import api from "@/lib/api";
 import di from "@/lib/di";
+
+import useBimComponent from "@/hooks/useBimComponent";
+
 import Constants from "@/domain/Constants";
+import type { OrbitLockToggle } from "@/domain/types/OrbitLockToggle";
 
 import AreaMeasurer from "./BIM/AreaMeasurer";
 import LengthMeasurer from "./BIM/LengthMeasurer";
@@ -19,6 +25,17 @@ const TopBar: React.FC<TopBarProps> = ({
   setIsLoading,
   setLoadingMessage,
 }) => {
+  const orbitToggle = useBimComponent<OrbitLockToggle>(Constants.OrbitLockKey);
+  const [orbitLock, setOrbitLock] = useState(false);
+  useEffect(() => {
+    if (orbitToggle) setOrbitLock(orbitToggle.enabled);
+  }, [orbitToggle]);
+
+  const highlighter = useBimComponent<OBF.Highlighter>(Constants.HighlighterKey);
+  const [highlighterEnabled, setHighlighterEnabled] = useState(false);
+  useEffect(() => {
+    if (highlighter) setHighlighterEnabled(highlighter.enabled);
+  }, [highlighter]);
 
   async function loadIfc(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -150,6 +167,39 @@ const TopBar: React.FC<TopBarProps> = ({
       <AreaMeasurer />
 
       <LengthMeasurer />
+
+      <span className="flex items-center space-x-2 text-sm">
+        <input
+          id="highlighter-enabled"
+          type="checkbox"
+          checked={highlighterEnabled}
+          disabled={isLoading || !highlighter}
+          onChange={(e) => {
+            if (!highlighter) return;
+            const checked = e.target.checked;
+            setHighlighterEnabled(checked);
+            highlighter.enabled = checked;
+          }}
+        />
+
+        <label htmlFor="highlighter-enabled">Enable Highlighter</label>
+      </span>
+
+      <span className="flex items-center space-x-2 text-sm">
+        <input
+          id="orbit-lock-enabled"
+          type="checkbox"
+          checked={orbitLock}
+          disabled={isLoading || !orbitToggle}
+          onChange={(e) => {
+            const checked = e.target.checked;
+            setOrbitLock(checked);
+            orbitToggle?.setEnabled(checked);
+          }}
+        />
+
+        <label htmlFor="orbit-lock-enabled">Enable Camera Orbit Lock</label>
+      </span>
     </section>
   );
 };

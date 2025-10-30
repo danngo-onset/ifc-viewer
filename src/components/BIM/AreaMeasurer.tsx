@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import * as OBF from "@thatopen/components-front";
+
+import type * as OBF from "@thatopen/components-front";
+
 import { ChevronDownIcon } from "@radix-ui/react-icons";
 import * as Accordion from "@radix-ui/react-accordion";
 

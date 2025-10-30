@@ -10,8 +10,7 @@ import BimUtilities from "@/lib/utils/bim-utils";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import TopBar from "@/components/TopBar";
 
-import Constants from "@/domain/Constants";
-import { WorldType } from "@/domain/types/WorldType";
+import type { WorldType } from "@/domain/types/WorldType";
 
 export default function Home() {
   const containerRef = useRef<HTMLElement | null>(null);
@@ -35,22 +34,22 @@ export default function Home() {
       const [
         fragmentsManagerCleanup, 
         areaMeasurementCleanup, 
-        lengthMeasurementCleanup
+        lengthMeasurementCleanup,
+        orbitLockCleanup
       ] = await Promise.all([
         bimUtilities.initFragmentsManager(setLoadingMessage, setIsLoading),
         bimUtilities.initAreaMeasurer(),
-        bimUtilities.initLengthMeasurer()
+        bimUtilities.initLengthMeasurer(),
+        bimUtilities.initOrbitLock()
       ]);
 
-      const fragmentsManager = di.get<OBC.FragmentsManager>(Constants.FragmentsManagerKey);
-      if (fragmentsManager) {
-        const highlighterCleanup = await bimUtilities.initHighlighter(fragmentsManager);
-        if (highlighterCleanup) cleanupFunctions.push(highlighterCleanup);
-      }
-
+      const highlighterCleanup = await bimUtilities.initHighlighter();
+        
       if (fragmentsManagerCleanup)  cleanupFunctions.push(fragmentsManagerCleanup);
       if (areaMeasurementCleanup)   cleanupFunctions.push(areaMeasurementCleanup);
       if (lengthMeasurementCleanup) cleanupFunctions.push(lengthMeasurementCleanup);
+      if (orbitLockCleanup)         cleanupFunctions.push(orbitLockCleanup); 
+      if (highlighterCleanup)       cleanupFunctions.push(highlighterCleanup);
     })();
 
     return () => {

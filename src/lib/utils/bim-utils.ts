@@ -2,16 +2,17 @@ import { Dispatch, SetStateAction } from "react";
 
 import * as OBC from "@thatopen/components";
 import * as OBF from "@thatopen/components-front";
-import { FragmentsModel, ItemData } from "@thatopen/fragments";
+import type { FragmentsModel, ItemData } from "@thatopen/fragments";
 
 import * as THREE from "three";
 
 import di from "@/lib/di";
 
-import useBimComponent from "@/hooks/useBimComponent";
-
 import Constants from "@/domain/Constants";
-import { WorldType } from "@/domain/types/WorldType";
+import type { WorldType } from "@/domain/types/WorldType";
+import type { OrbitLockToggle } from "@/domain/types/OrbitLockToggle";
+
+import BimExtensions from "@/lib/extensions/bim-extensions";
 
 export default class BimUtilities {
   constructor(
@@ -19,6 +20,10 @@ export default class BimUtilities {
     private readonly world      : WorldType,
     private readonly container  : HTMLElement
   ) {}
+
+  private orbitLockOnMouseDown?: (event: MouseEvent) => void;
+  private orbitLockActive = false;
+  private orbitLockMarker?: THREE.Mesh;
 
   async initWorld() {
     this.world.scene = new OBC.SimpleScene(this.components);
@@ -92,7 +97,7 @@ export default class BimUtilities {
   async initAreaMeasurer() {
     const measurer = this.components.get(OBF.AreaMeasurement);
     measurer.world = this.world;
-    measurer.color = new THREE.Color("#494CB6");
+    measurer.color = new THREE.Color(Constants.Color.Measurer);
     measurer.enabled = true;
     measurer.mode = "square";
 
@@ -144,7 +149,7 @@ export default class BimUtilities {
   async initLengthMeasurer() {
     const measurer = this.components.get(OBF.LengthMeasurement);
     measurer.world = this.world;
-    measurer.color = new THREE.Color("#494CB6");
+    measurer.color = new THREE.Color(Constants.Color.Measurer);
     measurer.enabled = false;
     measurer.mode = "free";
 
@@ -180,7 +185,10 @@ export default class BimUtilities {
     };
   }
 
-  async initHighlighter(fragmentsManager: OBC.FragmentsManager) {
+  async initHighlighter() {
+    const fragmentsManager = di.get<OBC.FragmentsManager>(Constants.FragmentsManagerKey);
+    if (!fragmentsManager) return;
+
     const world = this.world;
     this.components.get(OBC.Raycasters)
                    .get(world);
@@ -189,7 +197,7 @@ export default class BimUtilities {
     highlighter.setup({
       world,
       selectMaterialDefinition: {
-        color: new THREE.Color("#BCF124"),
+        color: new THREE.Color(Constants.Color.Highlighter),
         opacity: 1,
         transparent: false,
         renderedFaces: 0
@@ -197,8 +205,6 @@ export default class BimUtilities {
     });
 
     const highlightHandler = async (modelIdMap: OBC.ModelIdMap) => {
-      //console.log("something was selected");
-      
       const promises: Array<Promise<ItemData[]>> = [];
       for (const [modelId, localIds] of Object.entries(modelIdMap)) {
         const model = fragmentsManager.list.get(modelId);
@@ -215,11 +221,73 @@ export default class BimUtilities {
     const clearHandler = () => {/* console.log("Selection was cleared") */};
     highlighter.events.select.onClear.add(clearHandler);
 
-    //di.register(Constants.HighlighterKey, highlighter);
+    highlighter.enabled = false;
+    di.register(Constants.HighlighterKey, highlighter);
 
     return () => {
       highlighter.events.select.onHighlight.remove(highlightHandler);
       highlighter.events.select.onClear.remove(clearHandler);
+    };
+  }
+
+  /**
+   * Initialise behaviour to set the orbit point to the clicked location when holding left mouse.
+   * The camera will rotate around the picked point since orbit uses the current target.
+   */
+  initOrbitLock() {
+    const onMouseDown = async (event: MouseEvent) => {
+      if (event.button !== 0 || !this.orbitLockActive) return; // only left mouse button
+
+      // Each raycaster is associated with a specific world.
+      const raycaster = this.components.get(OBC.Raycasters)
+                                       .get(this.world);
+
+      const intersection = await raycaster.castRay();
+      if (!intersection) return;
+
+      const point = intersection.point;
+      
+      BimExtensions.removeOrbitLockMarker(this.world, this.orbitLockMarker);
+      this.orbitLockMarker = BimExtensions.createOrbitLockMarker(this.world, point);
+      
+      // Set the orbit target to the picked point, keep current camera position
+      // camera-controls API exposed by OrthoPerspectiveCamera
+      await this.world.camera.controls.setTarget(point.x, point.y, point.z, false);
+      
+      // Fallback: preserve position and update lookAt target
+      /* const pos = this.world.camera.controls.getPosition(new THREE.Vector3());
+      await this.world.camera.controls.setLookAt(pos.x, pos.y, pos.z, point.x, point.y, point.z, false); */
+    };
+
+    this.orbitLockOnMouseDown = onMouseDown;
+    this.container.addEventListener("mousedown", onMouseDown, { passive: true });
+
+    const orbitToggle: OrbitLockToggle = {
+      enabled: this.orbitLockActive,
+      setEnabled: (value: boolean) => {
+        if (value) {
+          if (this.orbitLockOnMouseDown && !this.orbitLockActive) {
+            this.container.addEventListener("mousedown", this.orbitLockOnMouseDown, { passive: true });
+            this.orbitLockActive = true;
+          }
+        } else {
+          if (this.orbitLockOnMouseDown && this.orbitLockActive) {
+            this.container.removeEventListener("mousedown", this.orbitLockOnMouseDown);
+            this.orbitLockActive = false;
+            BimExtensions.removeOrbitLockMarker(this.world, this.orbitLockMarker);
+          }
+        }
+      }
+    };
+    di.register(Constants.OrbitLockKey, orbitToggle);
+
+    return () => {
+      if (this.orbitLockOnMouseDown) {
+        this.container.removeEventListener("mousedown", this.orbitLockOnMouseDown);
+      }
+      this.orbitLockOnMouseDown = undefined;
+      this.orbitLockActive = false;
+      BimExtensions.removeOrbitLockMarker(this.world, this.orbitLockMarker);
     };
   }
 }

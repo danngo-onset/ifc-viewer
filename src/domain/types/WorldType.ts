@@ -1,5 +1,5 @@
-import * as OBC from "@thatopen/components";
-import * as OBF from "@thatopen/components-front";
+import type * as OBC from "@thatopen/components";
+import type * as OBF from "@thatopen/components-front";
 
 export type WorldType = OBC.SimpleWorld<
   OBC.SimpleScene, 
