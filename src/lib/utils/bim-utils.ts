@@ -12,6 +12,8 @@ import Constants from "@/domain/Constants";
 import { WorldType } from "@/domain/types/WorldType";
 import { OrbitLockToggle } from "@/domain/types/OrbitLockToggle";
 
+import BimExtensions from "@/lib/extensions/bim-extensions";
+
 export default class BimUtilities {
   constructor(
     private readonly components : OBC.Components,
@@ -203,8 +205,6 @@ export default class BimUtilities {
     });
 
     const highlightHandler = async (modelIdMap: OBC.ModelIdMap) => {
-      //console.log("something was selected");
-      
       const promises: Array<Promise<ItemData[]>> = [];
       for (const [modelId, localIds] of Object.entries(modelIdMap)) {
         const model = fragmentsManager.list.get(modelId);
@@ -221,6 +221,7 @@ export default class BimUtilities {
     const clearHandler = () => {/* console.log("Selection was cleared") */};
     highlighter.events.select.onClear.add(clearHandler);
 
+    highlighter.enabled = false;
     di.register(Constants.HighlighterKey, highlighter);
 
     return () => {
@@ -230,60 +231,53 @@ export default class BimUtilities {
   }
 
   /**
-   * Initialize behavior to set the orbit point to the clicked location when holding left mouse.
+   * Initialise behaviour to set the orbit point to the clicked location when holding left mouse.
    * The camera will rotate around the picked point since orbit uses the current target.
    */
-  initOrbitLockOnHold() {
-    const casters = this.components.get(OBC.Raycasters);
-
+  initOrbitLock() {
     const onMouseDown = async (event: MouseEvent) => {
       if (event.button !== 0 || !this.orbitLockActive) return; // only left mouse button
-      //if (!this.world?.camera?.three || !this.world?.scene?.three) return;
 
       // Each raycaster is associated with a specific world.
-      const raycaster = casters.get(this.world);
+      const raycaster = this.components.get(OBC.Raycasters)
+                                       .get(this.world);
+
       const intersection = await raycaster.castRay();
       if (!intersection) return;
 
       const point = intersection.point;
       
-      // Create or update orbit lock marker
-      this.updateOrbitLockMarker(point);
+      BimExtensions.removeOrbitLockMarker(this.world, this.orbitLockMarker);
+      this.orbitLockMarker = BimExtensions.createOrbitLockMarker(this.world, point);
       
-      // Set the orbit target to the picked point; keep current camera position
-      try {
-        // camera-controls API exposed by OrthoPerspectiveCamera
-        await this.world.camera.controls.setTarget(point.x, point.y, point.z, false);
-      } catch {
-        // Fallback: preserve position and update lookAt target
-        const pos = this.world.camera.controls.getPosition(new THREE.Vector3());
-        await this.world.camera.controls.setLookAt(pos.x, pos.y, pos.z, point.x, point.y, point.z, false);
-      }
+      // Set the orbit target to the picked point, keep current camera position
+      // camera-controls API exposed by OrthoPerspectiveCamera
+      await this.world.camera.controls.setTarget(point.x, point.y, point.z, false);
+      
+      // Fallback: preserve position and update lookAt target
+      /* const pos = this.world.camera.controls.getPosition(new THREE.Vector3());
+      await this.world.camera.controls.setLookAt(pos.x, pos.y, pos.z, point.x, point.y, point.z, false); */
     };
 
     this.orbitLockOnMouseDown = onMouseDown;
     this.container.addEventListener("mousedown", onMouseDown, { passive: true });
 
-    const enable = () => {
-      if (this.orbitLockActive) return;
-      if (this.orbitLockOnMouseDown) {
-        this.container.addEventListener("mousedown", this.orbitLockOnMouseDown, { passive: true });
-        this.orbitLockActive = true;
-      }
-    };
-
-    const disable = () => {
-      if (!this.orbitLockActive) return;
-      if (this.orbitLockOnMouseDown) {
-        this.container.removeEventListener("mousedown", this.orbitLockOnMouseDown);
-        this.orbitLockActive = false;
-        this.removeOrbitLockMarker();
-      }
-    };
-
     const orbitToggle: OrbitLockToggle = {
       enabled: this.orbitLockActive,
-      setEnabled: (value: boolean) => value ? enable() : disable()
+      setEnabled: (value: boolean) => {
+        if (value) {
+          if (this.orbitLockOnMouseDown && !this.orbitLockActive) {
+            this.container.addEventListener("mousedown", this.orbitLockOnMouseDown, { passive: true });
+            this.orbitLockActive = true;
+          }
+        } else {
+          if (this.orbitLockOnMouseDown && this.orbitLockActive) {
+            this.container.removeEventListener("mousedown", this.orbitLockOnMouseDown);
+            this.orbitLockActive = false;
+            BimExtensions.removeOrbitLockMarker(this.world, this.orbitLockMarker);
+          }
+        }
+      }
     };
     di.register(Constants.OrbitLockKey, orbitToggle);
 
@@ -293,44 +287,7 @@ export default class BimUtilities {
       }
       this.orbitLockOnMouseDown = undefined;
       this.orbitLockActive = false;
-      this.removeOrbitLockMarker();
+      BimExtensions.removeOrbitLockMarker(this.world, this.orbitLockMarker);
     };
-  }
-
-  private updateOrbitLockMarker(point: THREE.Vector3) {
-    this.removeOrbitLockMarker();
-    
-    const geometry = new THREE.CircleGeometry(0.5, 16);
-    const material = new THREE.MeshBasicMaterial({ 
-      color: Constants.Color.OrbitLock, 
-      transparent: true, 
-      opacity: 0.8,
-      side: THREE.DoubleSide
-    });
-    
-    this.orbitLockMarker = new THREE.Mesh(geometry, material);
-    this.orbitLockMarker.position.copy(point);
-    
-    // Orient the circle to face the camera
-    this.orbitLockMarker.lookAt(
-      this.world.camera.three.position.x,
-      this.world.camera.three.position.y,
-      this.world.camera.three.position.z
-    );
-    
-    this.world.scene.three.add(this.orbitLockMarker);
-  }
-
-  private removeOrbitLockMarker() {
-    if (this.orbitLockMarker) {
-      this.world.scene.three.remove(this.orbitLockMarker);
-      this.orbitLockMarker.geometry.dispose();
-      if (Array.isArray(this.orbitLockMarker.material)) {
-        this.orbitLockMarker.material.forEach(mat => mat.dispose());
-      } else {
-        this.orbitLockMarker.material.dispose();
-      }
-      this.orbitLockMarker = undefined;
-    }
   }
 }

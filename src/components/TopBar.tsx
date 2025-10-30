@@ -26,11 +26,13 @@ const TopBar: React.FC<TopBarProps> = ({
   const orbitToggle = useBimComponent<OrbitLockToggle>(Constants.OrbitLockKey);
   const highlighter = useBimComponent<OBF.Highlighter>(Constants.HighlighterKey);
   const [highlighterEnabled, setHighlighterEnabled] = useState(false);
+  
   useEffect(() => {
     if (orbitToggle) setOrbitLock(orbitToggle.enabled);
   }, [orbitToggle]);
+
   useEffect(() => {
-    if (highlighter) setHighlighterEnabled(Boolean(highlighter.enabled));
+    if (highlighter) setHighlighterEnabled(highlighter.enabled);
   }, [highlighter]);
 
   async function loadIfc(e: React.ChangeEvent<HTMLInputElement>) {
@@ -164,8 +166,9 @@ const TopBar: React.FC<TopBarProps> = ({
 
       <LengthMeasurer />
 
-      <label className="flex items-center space-x-2 text-sm">
+      <span className="flex items-center space-x-2 text-sm">
         <input
+          id="highlighter-enabled"
           type="checkbox"
           checked={highlighterEnabled}
           disabled={isLoading || !highlighter}
@@ -176,11 +179,13 @@ const TopBar: React.FC<TopBarProps> = ({
             highlighter.enabled = checked;
           }}
         />
-        <span>Enable Highlighter</span>
-      </label>
 
-      <label className="flex items-center space-x-2 text-sm">
+        <label htmlFor="highlighter-enabled">Enable Highlighter</label>
+      </span>
+
+      <span className="flex items-center space-x-2 text-sm">
         <input
+          id="orbit-lock-enabled"
           type="checkbox"
           checked={orbitLock}
           disabled={isLoading || !orbitToggle}
@@ -190,8 +195,9 @@ const TopBar: React.FC<TopBarProps> = ({
             orbitToggle?.setEnabled(checked);
           }}
         />
-        <span>Lock orbit to click</span>
-      </label>
+
+        <label htmlFor="orbit-lock-enabled">Enable Camera Orbit Lock</label>
+      </span>
     </section>
   );
 };

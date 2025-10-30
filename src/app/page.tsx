@@ -35,12 +35,12 @@ export default function Home() {
         fragmentsManagerCleanup, 
         areaMeasurementCleanup, 
         lengthMeasurementCleanup,
-        orbitHoldCleanup
+        orbitLockCleanup
       ] = await Promise.all([
         bimUtilities.initFragmentsManager(setLoadingMessage, setIsLoading),
         bimUtilities.initAreaMeasurer(),
         bimUtilities.initLengthMeasurer(),
-        bimUtilities.initOrbitLockOnHold()
+        bimUtilities.initOrbitLock()
       ]);
 
       const highlighterCleanup = await bimUtilities.initHighlighter();
@@ -48,7 +48,7 @@ export default function Home() {
       if (fragmentsManagerCleanup)  cleanupFunctions.push(fragmentsManagerCleanup);
       if (areaMeasurementCleanup)   cleanupFunctions.push(areaMeasurementCleanup);
       if (lengthMeasurementCleanup) cleanupFunctions.push(lengthMeasurementCleanup);
-      if (orbitHoldCleanup)         cleanupFunctions.push(orbitHoldCleanup); 
+      if (orbitLockCleanup)         cleanupFunctions.push(orbitLockCleanup); 
       if (highlighterCleanup)       cleanupFunctions.push(highlighterCleanup);
     })();
 
