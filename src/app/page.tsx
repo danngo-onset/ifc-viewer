@@ -40,7 +40,7 @@ export default function Home() {
         bimUtilities.initFragmentsManager(setLoadingMessage, setIsLoading),
         bimUtilities.initAreaMeasurer(),
         bimUtilities.initLengthMeasurer(),
-        bimUtilities.initOrbitLock()
+        bimUtilities.initCameraOrbitLock()
       ]);
 
       const highlighterCleanup = await bimUtilities.initHighlighter();

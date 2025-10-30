@@ -234,7 +234,7 @@ export default class BimUtilities {
    * Initialise behaviour to set the orbit point to the clicked location when holding left mouse.
    * The camera will rotate around the picked point since orbit uses the current target.
    */
-  initOrbitLock() {
+  initCameraOrbitLock() {
     const onMouseDown = async (event: MouseEvent) => {
       if (event.button !== 0 || !this.orbitLockActive) return; // only left mouse button
 
