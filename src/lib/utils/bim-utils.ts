@@ -20,7 +20,7 @@ export default class BimUtilities {
   ) {}
 
   private orbitLockOnMouseDown?: (event: MouseEvent) => void;
-  private orbitLockActive = true;
+  private orbitLockActive = false;
   private orbitLockMarker?: THREE.Mesh;
 
   async initWorld() {
@@ -218,7 +218,7 @@ export default class BimUtilities {
     const clearHandler = () => {/* console.log("Selection was cleared") */};
     highlighter.events.select.onClear.add(clearHandler);
 
-    //di.register(Constants.HighlighterKey, highlighter);
+    di.register(Constants.HighlighterKey, highlighter);
 
     return () => {
       highlighter.events.select.onHighlight.remove(highlightHandler);
@@ -234,7 +234,7 @@ export default class BimUtilities {
     const raycasters = this.components.get(OBC.Raycasters);
 
     const onMouseDown = async (event: MouseEvent) => {
-      if (event.button !== 0) return; // only left mouse button
+      if (event.button !== 0 || !this.orbitLockActive) return; // only left mouse button
       //if (!this.world?.camera?.three || !this.world?.scene?.three) return;
 
       const simpleRaycaster = raycasters.get(this.world);

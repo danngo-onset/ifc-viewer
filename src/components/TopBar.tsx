@@ -6,6 +6,7 @@ import di from "@/lib/di";
 import Constants from "@/domain/Constants";
 import type { OrbitLockToggle } from "@/domain/types/OrbitLockToggle";
 import useBimComponent from "@/hooks/useBimComponent";
+import type * as OBF from "@thatopen/components-front";
 
 import AreaMeasurer from "./BIM/AreaMeasurer";
 import LengthMeasurer from "./BIM/LengthMeasurer";
@@ -23,9 +24,14 @@ const TopBar: React.FC<TopBarProps> = ({
 }) => {
   const [orbitLock, setOrbitLock] = useState(true);
   const orbitToggle = useBimComponent<OrbitLockToggle>(Constants.OrbitLockKey);
+  const highlighter = useBimComponent<OBF.Highlighter>(Constants.HighlighterKey);
+  const [highlighterEnabled, setHighlighterEnabled] = useState(false);
   useEffect(() => {
     if (orbitToggle) setOrbitLock(orbitToggle.enabled);
   }, [orbitToggle]);
+  useEffect(() => {
+    if (highlighter) setHighlighterEnabled(Boolean(highlighter.enabled));
+  }, [highlighter]);
 
   async function loadIfc(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -157,6 +163,21 @@ const TopBar: React.FC<TopBarProps> = ({
       <AreaMeasurer />
 
       <LengthMeasurer />
+
+      <label className="flex items-center space-x-2 text-sm">
+        <input
+          type="checkbox"
+          checked={highlighterEnabled}
+          disabled={isLoading || !highlighter}
+          onChange={(e) => {
+            if (!highlighter) return;
+            const checked = e.target.checked;
+            setHighlighterEnabled(checked);
+            highlighter.enabled = checked;
+          }}
+        />
+        <span>Enable Highlighter</span>
+      </label>
 
       <label className="flex items-center space-x-2 text-sm">
         <input
