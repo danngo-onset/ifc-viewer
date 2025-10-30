@@ -95,7 +95,7 @@ export default class BimUtilities {
   async initAreaMeasurer() {
     const measurer = this.components.get(OBF.AreaMeasurement);
     measurer.world = this.world;
-    measurer.color = new THREE.Color("#494CB6");
+    measurer.color = new THREE.Color(Constants.Color.Measurer);
     measurer.enabled = true;
     measurer.mode = "square";
 
@@ -147,7 +147,7 @@ export default class BimUtilities {
   async initLengthMeasurer() {
     const measurer = this.components.get(OBF.LengthMeasurement);
     measurer.world = this.world;
-    measurer.color = new THREE.Color("#494CB6");
+    measurer.color = new THREE.Color(Constants.Color.Measurer);
     measurer.enabled = false;
     measurer.mode = "free";
 
@@ -183,7 +183,10 @@ export default class BimUtilities {
     };
   }
 
-  async initHighlighter(fragmentsManager: OBC.FragmentsManager) {
+  async initHighlighter() {
+    const fragmentsManager = di.get<OBC.FragmentsManager>(Constants.FragmentsManagerKey);
+    if (!fragmentsManager) return;
+
     const world = this.world;
     this.components.get(OBC.Raycasters)
                    .get(world);
@@ -192,7 +195,7 @@ export default class BimUtilities {
     highlighter.setup({
       world,
       selectMaterialDefinition: {
-        color: new THREE.Color("#BCF124"),
+        color: new THREE.Color(Constants.Color.Highlighter),
         opacity: 1,
         transparent: false,
         renderedFaces: 0
@@ -231,15 +234,17 @@ export default class BimUtilities {
    * The camera will rotate around the picked point since orbit uses the current target.
    */
   initOrbitLockOnHold() {
-    const raycasters = this.components.get(OBC.Raycasters);
+    const casters = this.components.get(OBC.Raycasters);
 
     const onMouseDown = async (event: MouseEvent) => {
       if (event.button !== 0 || !this.orbitLockActive) return; // only left mouse button
       //if (!this.world?.camera?.three || !this.world?.scene?.three) return;
 
-      const simpleRaycaster = raycasters.get(this.world);
-      const intersection = await simpleRaycaster.castRay();
+      // Each raycaster is associated with a specific world.
+      const raycaster = casters.get(this.world);
+      const intersection = await raycaster.castRay();
       if (!intersection) return;
+
       const point = intersection.point;
       
       // Create or update orbit lock marker
@@ -297,7 +302,7 @@ export default class BimUtilities {
     
     const geometry = new THREE.CircleGeometry(0.5, 16);
     const material = new THREE.MeshBasicMaterial({ 
-      color: 0xff0000, 
+      color: Constants.Color.OrbitLock, 
       transparent: true, 
       opacity: 0.8,
       side: THREE.DoubleSide
