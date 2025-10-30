@@ -1,14 +1,12 @@
-import type React from "react";
-
-interface LoadingSpinnerProps {
-  isVisible: boolean;
-  message?: string;
+type LoadingSpinnerProps = {
+  readonly isVisible: boolean;
+  readonly message?: string;
 }
 
-const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ 
+export default function LoadingSpinner({ 
   isVisible, 
   message = "Loading model..." 
-}) => {
+}: LoadingSpinnerProps) {
   if (!isVisible) return null;
 
   return (
@@ -23,5 +21,3 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
     </div>
   );
 };
-
-export default LoadingSpinner;
