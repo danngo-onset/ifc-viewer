@@ -4,6 +4,8 @@ import * as OBC from "@thatopen/components";
 import api from "@/lib/api";
 import di from "@/lib/di";
 import Constants from "@/domain/Constants";
+import type { OrbitLockToggle } from "@/domain/types/OrbitLockToggle";
+import useBimComponent from "@/hooks/useBimComponent";
 
 import AreaMeasurer from "./BIM/AreaMeasurer";
 import LengthMeasurer from "./BIM/LengthMeasurer";
@@ -20,11 +22,10 @@ const TopBar: React.FC<TopBarProps> = ({
   setLoadingMessage,
 }) => {
   const [orbitLock, setOrbitLock] = useState(true);
-
+  const orbitToggle = useBimComponent<OrbitLockToggle>(Constants.OrbitLockKey);
   useEffect(() => {
-    const service = di.get<{ enabled: boolean; setEnabled: (v: boolean) => void }>(Constants.OrbitLockKey);
-    if (service) setOrbitLock(service.enabled);
-  }, []);
+    if (orbitToggle) setOrbitLock(orbitToggle.enabled);
+  }, [orbitToggle]);
 
   async function loadIfc(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -161,11 +162,11 @@ const TopBar: React.FC<TopBarProps> = ({
         <input
           type="checkbox"
           checked={orbitLock}
+          disabled={isLoading || !orbitToggle}
           onChange={(e) => {
             const checked = e.target.checked;
             setOrbitLock(checked);
-            const service = di.get<{ enabled: boolean; setEnabled: (v: boolean) => void }>(Constants.OrbitLockKey);
-            service?.setEnabled(checked);
+            orbitToggle?.setEnabled(checked);
           }}
         />
         <span>Lock orbit to click</span>
