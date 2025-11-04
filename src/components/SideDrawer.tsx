@@ -6,6 +6,7 @@ import AreaMeasurer from "./BIM/AreaMeasurer";
 import LengthMeasurer from "./BIM/LengthMeasurer";
 import Highlighter from "./BIM/Highlighter";
 import CameraOrbitLock from "./BIM/CameraOrbitLock";
+import ModelInspector from "./BIM/ModelInspector";
 
 type SideDrawerProps = {
   readonly isLoading: boolean;
@@ -41,6 +42,8 @@ export default function SideDrawer({
         </div>
 
         <section className="p-4 text-sm text-gray-600 flex flex-col gap-4">
+          <ModelInspector isLoading={isLoading} />
+
           <AreaMeasurer />
 
           <LengthMeasurer />
