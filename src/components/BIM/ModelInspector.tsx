@@ -16,14 +16,55 @@ type TreeNodeProps = {
   readonly item: SpatialTreeItem;
   readonly modelId: string;
   readonly level: number;
-  readonly onSelect: (modelId: string, localId: number | null) => void;
+  readonly onSelect: (modelId: string, item: SpatialTreeItem) => void;
+  readonly searchTerm?: string;
 };
 
-function TreeNode({ item, modelId, level, onSelect }: TreeNodeProps) {
-  const [expanded, setExpanded] = useState(level < 2); // Auto-expand first 2 levels
+// Helper function to check if a node or its children match the search term
+function nodeMatchesSearch(item: SpatialTreeItem, searchTerm: string): boolean {
+  if (!searchTerm) return false;
+  const term = searchTerm.toLowerCase();
+  const displayName = (item.category || `Item ${item.localId ?? "Unknown"}`).toLowerCase();
+  const localIdStr = item.localId?.toString().toLowerCase() || "";
+  
+  if (displayName.includes(term) || localIdStr.includes(term)) {
+    return true;
+  }
+  
+  // Check children recursively
+  if (item.children) {
+    return item.children.some(child => nodeMatchesSearch(child, searchTerm));
+  }
+  
+  return false;
+}
+
+// Removed visual highlight of search matches per request
+
+function TreeNode({ item, modelId, level, onSelect, searchTerm = "" }: TreeNodeProps) {
   const hasChildren = item.children && item.children.length > 0;
   const displayName = item.category || `Item ${item.localId ?? "Unknown"}`;
   const indent = level * 16;
+  
+  // Check if this node or its children match the search
+  const matchesSearch = searchTerm ? nodeMatchesSearch(item, searchTerm) : false;
+  const hasMatchingChildren = searchTerm && item.children 
+    ? item.children.some(child => nodeMatchesSearch(child, searchTerm))
+    : false;
+  
+  // Auto-expand if it matches search or has matching children, otherwise default to first 2 levels
+  const shouldAutoExpand = searchTerm ? (matchesSearch || hasMatchingChildren) : (level < 2);
+  const [expanded, setExpanded] = useState(shouldAutoExpand);
+  
+  // Update expanded state when search term changes
+  useEffect(() => {
+    if (searchTerm) {
+      setExpanded(matchesSearch || hasMatchingChildren);
+    } else {
+      // Reset to default expansion when search is cleared
+      setExpanded(level < 2);
+    }
+  }, [searchTerm, matchesSearch, hasMatchingChildren, level]);
 
   return (
     <div className="select-none">
@@ -31,9 +72,13 @@ function TreeNode({ item, modelId, level, onSelect }: TreeNodeProps) {
         className="flex items-center gap-1 px-2 py-1 hover:bg-blue-50 cursor-pointer text-xs transition-colors"
         style={{ paddingLeft: `${8 + indent}px` }}
         onClick={() => {
-          if (item.localId !== null) {
-            onSelect(modelId, item.localId);
-          }
+          console.log("[TreeNode] Clicked on node:", {
+            modelId,
+            localId: item.localId,
+            category: item.category,
+            hasChildren: hasChildren
+          });
+          onSelect(modelId, item);
         }}
         onDoubleClick={(e) => {
           if (hasChildren) {
@@ -71,6 +116,7 @@ function TreeNode({ item, modelId, level, onSelect }: TreeNodeProps) {
               modelId={modelId}
               level={level + 1}
               onSelect={onSelect}
+              searchTerm={searchTerm}
             />
           ))}
         </div>
@@ -81,8 +127,37 @@ function TreeNode({ item, modelId, level, onSelect }: TreeNodeProps) {
 
 export default function ModelInspector({ isLoading }: ModelTreeProps) {
   const [trees, setTrees] = useState<Array<{ modelId: string; tree: SpatialTreeItem }>>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const fragmentsManager = di.get<OBC.FragmentsManager>(Constants.FragmentsManagerKey);
   const highlighter = useBimComponent<OBF.Highlighter>(Constants.HighlighterKey);
+
+  // Returns a pruned copy of the tree with only matching branches
+  function filterTree(item: SpatialTreeItem, term: string): SpatialTreeItem | null {
+    if (!term) return item;
+
+    const matchesSelf = nodeMatchesSearch(item, term);
+    const filteredChildren = (item.children || [])
+      .map(child => filterTree(child, term))
+      .filter((c): c is SpatialTreeItem => c !== null);
+
+    if (matchesSelf || filteredChildren.length > 0) {
+      return {
+        ...item,
+        children: filteredChildren.length > 0 ? filteredChildren : undefined
+      } as SpatialTreeItem;
+    }
+
+    return null;
+  }
+
+  useEffect(() => {
+    console.log("[ModelInspector] Highlighter component state:", {
+      highlighter: !!highlighter,
+      enabled: highlighter?.enabled,
+      hasConfig: !!highlighter?.config,
+      selectName: highlighter?.config?.selectName
+    });
+  }, [highlighter]);
 
   useEffect(() => {
     if (!fragmentsManager) return;
@@ -137,17 +212,103 @@ export default function ModelInspector({ isLoading }: ModelTreeProps) {
     };
   }, [fragmentsManager]);
 
-  const handleNodeSelect = async (modelId: string, localId: number | null) => {
-    if (!highlighter || localId === null) return;
+  function collectLocalIds(item: SpatialTreeItem, acc: Set<number>) {
+    if (item.localId !== null && item.localId !== undefined) {
+      acc.add(item.localId);
+    }
+    if (item.children) {
+      for (const child of item.children) collectLocalIds(child, acc);
+    }
+  }
+
+  const handleNodeSelect = async (modelId: string, item: SpatialTreeItem) => {
+    console.log("[ModelInspector] handleNodeSelect called", { modelId, localId: item.localId, category: item.category });
+    
+    if (!highlighter) {
+      console.warn("[ModelInspector] Highlighter is null/undefined");
+      return;
+    }
+    
+    // Build a set of IDs to highlight. If the node has children (category/group),
+    // collect all descendant leaf IDs; otherwise highlight the single item.
+    let idsToHighlight = new Set<number>();
+    collectLocalIds(item, idsToHighlight);
+    if (idsToHighlight.size === 0) {
+      console.warn("[ModelInspector] No localIds found for node; nothing to highlight");
+      return;
+    }
+
+    console.log("[ModelInspector] Highlighter state:", {
+      enabled: highlighter.enabled,
+      hasConfig: !!highlighter.config,
+      selectName: highlighter.config?.selectName
+    });
+
+    if (!highlighter.enabled) {
+      console.warn("[ModelInspector] Highlighter is not enabled");
+      return;
+    }
 
     // Create ModelIdMap for highlighting
-    const modelIdMap: OBC.ModelIdMap = {
-      [modelId]: new Set([localId])
-    };
+    // If this is a category node (e.g., IFCROOF), filter descendants by type to avoid highlighting unrelated items
+    try {
+      const fm = di.get<OBC.FragmentsManager>(Constants.FragmentsManagerKey);
+      const model = fm?.list.get(modelId);
+      const requestedType = item.category || undefined;
+      if (model && requestedType) {
+        const candidateIds = Array.from(idsToHighlight);
+        const items: any[] = await Promise.all(
+          candidateIds.map((id) => (model as any).getItemData(id))
+        );
+        const filteredIds: number[] = items
+          .filter((d: any) => !!d && d.type === requestedType)
+          .map((d: any) => d.id as number);
+        const filtered = new Set<number>(filteredIds);
+        if (filtered.size > 0) {
+          idsToHighlight = filtered;
+        }
+      }
+    } catch (e) {
+      console.warn("[ModelInspector] Type-filtering failed, using collected IDs", e);
+    }
+
+    const modelIdMap: OBC.ModelIdMap = { [modelId]: idsToHighlight };
+
+    console.log("[ModelInspector] Created ModelIdMap:", {
+      modelIdMap,
+      modelId,
+      requestedLocalId: item.localId,
+      setSize: modelIdMap[modelId]?.size,
+      category: item.category,
+      exampleFew: Array.from(idsToHighlight).slice(0, 10)
+    });
+
+    // Verify the model exists in fragmentsManager
+    const fragmentsManager = di.get<OBC.FragmentsManager>(Constants.FragmentsManagerKey);
+    if (fragmentsManager) {
+      const model = fragmentsManager.list.get(modelId);
+      console.log("[ModelInspector] Model verification:", {
+        modelExists: !!model,
+        modelId,
+        modelKeys: fragmentsManager.list.keys ? Array.from(fragmentsManager.list.keys()) : "N/A"
+      });
+    }
 
     // Highlight the selected item using the selection name from config
     const selectName = highlighter.config.selectName;
-    await highlighter.highlightByID(selectName, modelIdMap, true, false);
+    console.log("[ModelInspector] About to call highlightByID:", {
+      selectName,
+      modelIdMap,
+      autoFit: true,
+      highlight: false
+    });
+
+    try {
+      await highlighter.highlightByID(selectName, modelIdMap, true, false);
+      console.log("[ModelInspector] highlightByID completed successfully");
+    } catch (error) {
+      console.error("[ModelInspector] Error calling highlightByID:", error);
+    }
   };
 
   if (trees.length === 0) {
@@ -181,7 +342,45 @@ export default function ModelInspector({ isLoading }: ModelTreeProps) {
         </Accordion.Header>
         <Accordion.Content className="accordion-content">
           <div className="flex flex-col gap-2 max-h-96 overflow-y-auto">
-            {trees.map(({ modelId, tree }) => (
+            {/* Search input */}
+            <div className="sticky top-0 bg-white z-10 pb-2 border-b">
+              <input
+                type="text"
+                placeholder="Search nodes by name or ID..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-2 py-1.5 text-xs border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm("")}
+                  className="mt-1 text-xs text-gray-500 hover:text-gray-700"
+                >
+                  Clear search
+                </button>
+              )}
+            </div>
+            
+            {(searchTerm
+              ? trees.map(({ modelId, tree }) => {
+                  const filtered = filterTree(tree, searchTerm);
+                  if (!filtered) return null;
+                  return (
+                    <div key={modelId} className="border rounded p-2">
+                      <div className="font-semibold text-xs mb-1 pb-1 border-b text-gray-700">
+                        Model: {modelId}
+                      </div>
+                <TreeNode
+                  item={filtered}
+                  modelId={modelId}
+                  level={0}
+                  onSelect={handleNodeSelect}
+                  searchTerm={searchTerm}
+                />
+                    </div>
+                  );
+                })
+              : trees.map(({ modelId, tree }) => (
               <div key={modelId} className="border rounded p-2">
                 <div className="font-semibold text-xs mb-1 pb-1 border-b text-gray-700">
                   Model: {modelId}
@@ -191,9 +390,13 @@ export default function ModelInspector({ isLoading }: ModelTreeProps) {
                   modelId={modelId}
                   level={0}
                   onSelect={handleNodeSelect}
+                  searchTerm={searchTerm}
                 />
               </div>
-            ))}
+            )))}
+            {searchTerm && trees.every(({ tree }) => filterTree(tree, searchTerm) === null) && (
+              <div className="text-xs text-gray-500 p-2">No results found.</div>
+            )}
           </div>
         </Accordion.Content>
       </Accordion.Item>

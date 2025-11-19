@@ -221,7 +221,7 @@ export default class BimUtilities {
     const clearHandler = () => {/* console.log("Selection was cleared") */};
     highlighter.events.select.onClear.add(clearHandler);
 
-    highlighter.enabled = false;
+    //highlighter.enabled = false;
     di.register(Constants.HighlighterKey, highlighter);
 
     return () => {
