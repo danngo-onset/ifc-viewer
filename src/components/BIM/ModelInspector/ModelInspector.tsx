@@ -229,30 +229,76 @@ export const ModelInspector = ({ isLoading }: ModelInspectorProps) => {
     );
   }
 
+  // Check if THIS node matches (not its descendants)
+  function nodeMatchesSelf(item: SpatialTreeItem, searchTerm: string): boolean {
+    if (!searchTerm) return false;
+    
+    const term = searchTerm.toLowerCase();
+    const displayName = (item.category || `Item ${item.localId ?? "Unknown"}`).toLowerCase();
+    const localIdStr = item.localId?.toString().toLowerCase() || "";
+    
+    return displayName.includes(term) || localIdStr.includes(term);
+  }
+
+  // Helper to include all descendants with reference tracking
+  function includeAllDescendants(node: SpatialTreeItem): SpatialTreeItem & { __originalRef?: SpatialTreeItem } {
+    const included = { ...node } as SpatialTreeItem & { __originalRef?: SpatialTreeItem };
+    included.__originalRef = node;
+    
+    if (node.children) {
+      included.children = node.children.map(child => includeAllDescendants(child));
+    }
+    
+    return included;
+  }
+
   // Returns a pruned copy of the tree with only matching branches
   // Store reference to original node for later lookup
   function filterTree(item: SpatialTreeItem, searchQuery: string, originalRef?: SpatialTreeItem) : SpatialTreeItem | null {
     if (!searchQuery) return item;
 
-    const matchesSelf = BimExtensions.nodeMatchesSearch(item, searchQuery);
+    const matchesSelf = nodeMatchesSelf(item, searchQuery);
+    
+    console.log('[filterTree]', {
+      category: item.category,
+      localId: item.localId,
+      matchesSelf,
+      hasChildren: !!item.children,
+      childrenCount: item.children?.length || 0
+    });
+    
+    // If this node matches, include it with ALL its descendants
+    if (matchesSelf) {
+      console.log('[filterTree] Node matches - including all descendants:', item.category || `localId:${item.localId}`);
+      return includeAllDescendants(originalRef || item);
+    }
+    
+    // Otherwise, check if any children match
     const filteredChildren = (item.children || [])
       .map(child => filterTree(child, searchQuery, child))
       .filter(c => c !== null);
 
-    if (matchesSelf || filteredChildren.length > 0) {
+    console.log('[filterTree] After filtering children:', {
+      category: item.category,
+      localId: item.localId,
+      filteredChildrenCount: filteredChildren.length
+    });
+
+    // Include this node only if it has matching descendants
+    if (filteredChildren.length > 0) {
       const filtered = {
         ...item,
-        // Only show children that match the search
-        // When clicked, we'll find the original node to collect all IDs
-        children: filteredChildren.length > 0 ? filteredChildren : undefined
+        children: filteredChildren
       } as SpatialTreeItem & { __originalRef?: SpatialTreeItem };
       
       // Store reference to original node for lookup
       filtered.__originalRef = originalRef || item;
       
+      console.log('[filterTree] Including node with filtered children:', item.category || `localId:${item.localId}`);
       return filtered;
     }
 
+    console.log('[filterTree] Excluding node:', item.category || `localId:${item.localId}`);
     return null;
   }
 
