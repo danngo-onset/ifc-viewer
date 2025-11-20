@@ -152,7 +152,6 @@ export const ModelInspector = ({ isLoading }: ModelInspectorProps) => {
     const selectName = highlighter.config.selectName;
     try {
       await highlighter.highlightByID(selectName, modelIdMap, true, false);
-      console.log("[ModelInspector] highlightByID completed successfully");
     } catch (error) {
       console.error("[ModelInspector] Error calling highlightByID:", error);
     }
