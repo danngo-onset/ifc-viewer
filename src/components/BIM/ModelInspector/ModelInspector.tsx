@@ -122,13 +122,6 @@ export const ModelInspector = ({ isLoading }: ModelInspectorProps) => {
     if (!highlighter || !fragmentsManager) return;
     if (!highlighter.enabled) return;
     
-    console.log("[ModelInspector] handleNodeSelect called", { 
-      localId: item.localId, 
-      category: item.category,
-      hasChildren: !!item.children,
-      childrenCount: item.children?.length || 0
-    });
-    
     // Use the original reference stored during filtering, or fall back to tree search
     const itemWithRef = item as SpatialTreeItem & { __originalRef?: SpatialTreeItem };
     let originalNode: SpatialTreeItem | null | undefined = itemWithRef.__originalRef;
@@ -139,13 +132,6 @@ export const ModelInspector = ({ isLoading }: ModelInspectorProps) => {
       originalNode = originalTree ? findNodeInOriginalTree(originalTree, item) : null;
     }
     
-    console.log("[ModelInspector] Original node lookup", {
-      foundOriginal: !!originalNode,
-      originalHasChildren: !!originalNode?.children,
-      originalChildrenCount: originalNode?.children?.length || 0,
-      usedStoredRef: !!itemWithRef.__originalRef
-    });
-    
     // Use original node if found, otherwise use the filtered item
     const nodeToCollect = originalNode || item;
     
@@ -154,10 +140,7 @@ export const ModelInspector = ({ isLoading }: ModelInspectorProps) => {
     let idsToHighlight = new Set<number>();
     collectLocalIds(nodeToCollect, idsToHighlight);
     
-    console.log("[ModelInspector] Collected IDs", { count: idsToHighlight.size });
-    
     if (idsToHighlight.size === 0) {
-      console.log("[ModelInspector] No localIds found for node; nothing to highlight");
       return;
     }
 
@@ -259,17 +242,8 @@ export const ModelInspector = ({ isLoading }: ModelInspectorProps) => {
 
     const matchesSelf = nodeMatchesSelf(item, searchQuery);
     
-    console.log('[filterTree]', {
-      category: item.category,
-      localId: item.localId,
-      matchesSelf,
-      hasChildren: !!item.children,
-      childrenCount: item.children?.length || 0
-    });
-    
     // If this node matches, include it with ALL its descendants
     if (matchesSelf) {
-      console.log('[filterTree] Node matches - including all descendants:', item.category || `localId:${item.localId}`);
       return includeAllDescendants(originalRef || item);
     }
     
@@ -277,12 +251,6 @@ export const ModelInspector = ({ isLoading }: ModelInspectorProps) => {
     const filteredChildren = (item.children || [])
       .map(child => filterTree(child, searchQuery, child))
       .filter(c => c !== null);
-
-    console.log('[filterTree] After filtering children:', {
-      category: item.category,
-      localId: item.localId,
-      filteredChildrenCount: filteredChildren.length
-    });
 
     // Include this node only if it has matching descendants
     if (filteredChildren.length > 0) {
@@ -294,11 +262,9 @@ export const ModelInspector = ({ isLoading }: ModelInspectorProps) => {
       // Store reference to original node for lookup
       filtered.__originalRef = originalRef || item;
       
-      console.log('[filterTree] Including node with filtered children:', item.category || `localId:${item.localId}`);
       return filtered;
     }
 
-    console.log('[filterTree] Excluding node:', item.category || `localId:${item.localId}`);
     return null;
   }
 
