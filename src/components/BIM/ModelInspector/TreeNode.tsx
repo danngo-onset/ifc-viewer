@@ -25,7 +25,7 @@ export default function TreeNode({
   
   // Check if this node or its children match the search
   const matchesSearch = searchQuery ? BimExtensions.nodeMatchesSearch(item, searchQuery) 
-                                   : false;
+                                    : false;
 
   const hasMatchingChildren = searchQuery && item.children 
     ? item.children.some(child => BimExtensions.nodeMatchesSearch(child, searchQuery))
@@ -49,8 +49,6 @@ export default function TreeNode({
   return (
     <div className="select-none">
       <div
-        className="flex items-center gap-1 px-2 py-1 hover:bg-blue-50 cursor-pointer text-xs transition-colors"
-        style={{ paddingLeft: `${8 + indent}px` }}
         onClick={() => onSelect(modelId, item)}
         onDoubleClick={(e) => {
           if (hasChildren) {
@@ -58,6 +56,8 @@ export default function TreeNode({
             setExpanded(!expanded);
           }
         }}
+        style={{ paddingLeft: `${8 + indent}px` }}
+        className="flex items-center gap-1 px-2 py-1 hover:bg-blue-50 cursor-pointer text-xs transition-colors"
       >
         {hasChildren && (
           <button
@@ -73,7 +73,7 @@ export default function TreeNode({
           </button>
         )}
 
-        {!hasChildren && <span className="w-4" />}
+        {!hasChildren && <span className="w-0 -ml-0.5" />}
 
         <p className="flex-1 truncate">{displayName}</p>
 
@@ -84,7 +84,7 @@ export default function TreeNode({
       
       {hasChildren && expanded && (
         <div>
-          {item.children!.map((child, index) => (
+          {item.children?.map((child, index) => (
             <TreeNode
               key={`${child.localId}-${index}`}
               item={child}

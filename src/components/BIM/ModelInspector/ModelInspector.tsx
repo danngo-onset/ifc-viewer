@@ -20,8 +20,8 @@ type ModelInspectorProps = {
 };
 
 export const ModelInspector = ({ isLoading }: ModelInspectorProps) => {
-  const [trees, setTrees] = useState<Array<{ modelId: string; tree: SpatialTreeItem }>>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [trees, setTrees] = useState<Array<{ modelId: string; tree: SpatialTreeItem }>>([]);
   
   const fragmentsManager = useBimComponent<OBC.FragmentsManager>(Constants.FragmentsManagerKey);
   const highlighter = useBimComponent<OBF.Highlighter>(Constants.HighlighterKey);
@@ -29,7 +29,7 @@ export const ModelInspector = ({ isLoading }: ModelInspectorProps) => {
   useEffect(() => {
     if (!fragmentsManager) return;
 
-    const loadTreeForModel = async (
+    const loadModelTree = async (
       modelId: string, 
       model: FragmentsModel, 
       maxRetries = 10
@@ -58,7 +58,7 @@ export const ModelInspector = ({ isLoading }: ModelInspectorProps) => {
       const newTrees = new Array<{ modelId: string; tree: SpatialTreeItem }>();
       
       for (const [modelId, model] of fragmentsManager.list) {
-        const tree = await loadTreeForModel(modelId, model);
+        const tree = await loadModelTree(modelId, model);
         if (tree) {
           newTrees.push({ modelId, tree });
         }
@@ -82,13 +82,13 @@ export const ModelInspector = ({ isLoading }: ModelInspectorProps) => {
     };
   }, [fragmentsManager]);
 
-  function collectLocalIds(item: SpatialTreeItem, acc: Set<number>) {
+  function collectLocalIds(item: SpatialTreeItem, accumulator: Set<number>) {
     if (item.localId !== null && item.localId !== undefined) {
-      acc.add(item.localId);
+      accumulator.add(item.localId);
     }
     
     if (item.children) {
-      for (const child of item.children) collectLocalIds(child, acc);
+      for (const child of item.children) collectLocalIds(child, accumulator);
     }
   }
 
@@ -113,24 +113,18 @@ export const ModelInspector = ({ isLoading }: ModelInspectorProps) => {
 
       if (model && requestedType) {
         const candidateIds = Array.from(idsToHighlight);
-
-        /* const items = await Promise.all(
-          candidateIds.map((id) => (model as any).getItemData(id))
-        ); */
         const items = await model.getItemsData(candidateIds);
-
-        /* const filteredIds = items
-          .filter((d: any) => !!d && d.type === requestedType)
-          .map((d: any) => d.id as number); */
 
         const filteredIds = items
           .filter(d => {
             if (!d || !d.type) return false;
             if (Array.isArray(d.type)) return false;
+
             return d.type.value === requestedType;
           })
           .map(d => {
             if (!d.id || Array.isArray(d.id)) return null;
+            
             return d.id.value;
           })
           .filter(id=> id !== null) as number[];
@@ -212,7 +206,6 @@ export const ModelInspector = ({ isLoading }: ModelInspectorProps) => {
 
         <Accordion.Content className="accordion-content">
           <div className="flex flex-col gap-2 max-h-96 overflow-y-auto">
-            {/* Search input */}
             <div className="sticky top-0 bg-white z-10 pb-2 border-b">
               <input
                 type="text"
@@ -234,25 +227,25 @@ export const ModelInspector = ({ isLoading }: ModelInspectorProps) => {
             
             {(searchQuery
               ? trees.map(({ modelId, tree }) => {
-                  const filtered = filterTree(tree, searchQuery);
-                  if (!filtered) return null;
+                const filtered = filterTree(tree, searchQuery);
+                if (!filtered) return null;
 
-                  return (
-                    <div key={modelId} className="border rounded p-2">
-                      <p className="font-semibold text-xs mb-1 pb-1 border-b text-gray-700">
-                        Model: {modelId}
-                      </p>
+                return (
+                  <div key={modelId} className="border rounded p-2">
+                    <p className="font-semibold text-xs mb-1 pb-1 border-b text-gray-700">
+                      Model: {modelId}
+                    </p>
 
-                      <TreeNode
-                        item={filtered}
-                        modelId={modelId}
-                        level={0}
-                        onSelect={handleNodeSelect}
-                        searchQuery={searchQuery}
-                      />
-                    </div>
-                  );
-                })
+                    <TreeNode
+                      item={filtered}
+                      modelId={modelId}
+                      level={0}
+                      onSelect={handleNodeSelect}
+                      searchQuery={searchQuery}
+                    />
+                  </div>
+                );
+              })
               : trees.map(({ modelId, tree }) => (
               <div key={modelId} className="border rounded p-2">
                 <p className="font-semibold text-xs mb-1 pb-1 border-b text-gray-700">
