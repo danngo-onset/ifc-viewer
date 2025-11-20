@@ -8,7 +8,7 @@ import * as Accordion from "@radix-ui/react-accordion";
 import Constants from "@/domain/Constants";
 import useBimComponent from "@/hooks/useBimComponent";
 
-export default function AreaMeasurer() {
+export const AreaMeasurer = () => {
   const [enabled, setEnabled] = useState(false);
   const [visible, setVisible] = useState(false);
 

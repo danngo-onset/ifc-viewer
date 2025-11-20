@@ -3,8 +3,8 @@ import { SetStateAction, Dispatch } from "react";
 import type * as OBC from "@thatopen/components";
 
 import api from "@/lib/api";
-import di from "@/lib/di";
 
+import useBimComponent from "@/hooks/useBimComponent";
 
 import Constants from "@/domain/Constants";
 
@@ -21,6 +21,8 @@ export default function TopBar({
   setIsLoading,
   setLoadingMessage,
 }: TopBarProps) {
+  const fragmentsManager = useBimComponent<OBC.FragmentsManager>(Constants.FragmentsManagerKey);
+
   async function loadIfc(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -46,7 +48,6 @@ export default function TopBar({
         c => c.charCodeAt(0)
       ).buffer;
 
-      const fragmentsManager = di.get<OBC.FragmentsManager>(Constants.FragmentsManagerKey);
       await fragmentsManager?.core.load(buffer, { modelId: response.data.id });
     } catch (error) {
       console.error('Error loading fragments:', error);
@@ -67,8 +68,6 @@ export default function TopBar({
     if (!id.trim()) return;
 
     try {
-      const fragmentsManager = di.get<OBC.FragmentsManager>(Constants.FragmentsManagerKey);
-      
       if (!fragmentsManager) {
         console.error("FragmentsManager not available yet");
         return;

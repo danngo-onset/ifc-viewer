@@ -12,8 +12,6 @@ import Constants from "@/domain/Constants";
 import type { WorldType } from "@/domain/types/WorldType";
 import type { OrbitLockToggle } from "@/domain/types/OrbitLockToggle";
 
-import BimExtensions from "@/lib/extensions/bim-extensions";
-
 export default class BimUtilities {
   constructor(
     private readonly components : OBC.Components,
@@ -247,8 +245,8 @@ export default class BimUtilities {
 
       const point = intersection.point;
       
-      BimExtensions.removeOrbitLockMarker(this.world, this.orbitLockMarker);
-      this.orbitLockMarker = BimExtensions.createOrbitLockMarker(this.world, point);
+      this.removeOrbitLockMarker();
+      this.orbitLockMarker = this.createOrbitLockMarker(point);
       
       // Set the orbit target to the picked point, keep current camera position
       // camera-controls API exposed by OrthoPerspectiveCamera
@@ -274,7 +272,7 @@ export default class BimUtilities {
           if (this.orbitLockOnMouseDown && this.orbitLockActive) {
             this.container.removeEventListener("mousedown", this.orbitLockOnMouseDown);
             this.orbitLockActive = false;
-            BimExtensions.removeOrbitLockMarker(this.world, this.orbitLockMarker);
+            this.removeOrbitLockMarker();
           }
         }
       }
@@ -287,7 +285,43 @@ export default class BimUtilities {
       }
       this.orbitLockOnMouseDown = undefined;
       this.orbitLockActive = false;
-      BimExtensions.removeOrbitLockMarker(this.world, this.orbitLockMarker);
+      this.removeOrbitLockMarker();
     };
+  }
+
+  private createOrbitLockMarker(point: THREE.Vector3): THREE.Mesh { 
+    const geometry = new THREE.CircleGeometry(0.5, 16);
+    const material = new THREE.MeshBasicMaterial({ 
+      color: Constants.Color.OrbitLock, 
+      transparent: true, 
+      opacity: 0.8,
+      side: THREE.DoubleSide
+    });
+    
+    const orbitLockMarker = new THREE.Mesh(geometry, material);
+    orbitLockMarker.position.copy(point);
+    
+    // Orient the circle to face the camera
+    const pos = this.world.camera.three.position;
+    orbitLockMarker.lookAt(pos.x, pos.y, pos.z);
+    
+    this.world.scene.three.add(orbitLockMarker);
+
+    return orbitLockMarker;
+  }
+
+  private removeOrbitLockMarker() {
+    if (!this.orbitLockMarker) return;
+
+    this.world.scene.three.remove(this.orbitLockMarker);
+    this.orbitLockMarker.geometry.dispose();
+
+    if (Array.isArray(this.orbitLockMarker.material)) {
+      this.orbitLockMarker.material.forEach(m => m.dispose());
+    } else {
+      this.orbitLockMarker.material.dispose();
+    }
+
+    this.orbitLockMarker = undefined;
   }
 }

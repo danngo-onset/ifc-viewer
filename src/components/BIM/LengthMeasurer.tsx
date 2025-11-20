@@ -9,7 +9,7 @@ import Constants from "@/domain/Constants";
 
 import useBimComponent from "@/hooks/useBimComponent";
 
-export default function LengthMeasurer() {
+export const LengthMeasurer = () => {
   const [enabled, setEnabled] = useState(false);
   const [visible, setVisible] = useState(false);
 

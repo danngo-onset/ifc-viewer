@@ -2,11 +2,10 @@ import { useState, useEffect, useRef } from "react";
 
 import { HamburgerMenuIcon, Cross1Icon } from "@radix-ui/react-icons";
 
-import AreaMeasurer from "./BIM/AreaMeasurer";
-import LengthMeasurer from "./BIM/LengthMeasurer";
-import Highlighter from "./BIM/Highlighter";
-import CameraOrbitLock from "./BIM/CameraOrbitLock";
-import ModelInspector from "./BIM/ModelInspector";
+import { 
+  AreaMeasurer, LengthMeasurer, Highlighter, 
+  CameraOrbitLock, ModelInspector 
+} from "@/components/BIM";
 
 type SideDrawerProps = {
   readonly isLoading: boolean;
@@ -80,13 +79,13 @@ export default function SideDrawer({
 
         {/* Resize handle */}
         {open && (
-          <div
-            className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-blue-500 active:bg-blue-600 transition-colors z-10"
+          <span
             onMouseDown={(e) => {
               e.preventDefault();
               e.stopPropagation();
               setIsResizing(true);
             }}
+            className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-blue-500 active:bg-blue-600 transition-colors z-10"
           />
         )}
 
