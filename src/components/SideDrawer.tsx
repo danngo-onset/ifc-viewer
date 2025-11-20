@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import { HamburgerMenuIcon, Cross1Icon } from "@radix-ui/react-icons";
 
-import AreaMeasurer from "./BIM/AreaMeasurer";
-import LengthMeasurer from "./BIM/LengthMeasurer";
-import Highlighter from "./BIM/Highlighter";
-import CameraOrbitLock from "./BIM/CameraOrbitLock";
+import { 
+  AreaMeasurer, LengthMeasurer, Highlighter, 
+  CameraOrbitLock, ModelInspector 
+} from "@/components/BIM";
 
 type SideDrawerProps = {
   readonly isLoading: boolean;
@@ -14,6 +14,41 @@ export default function SideDrawer({
   isLoading 
 }: SideDrawerProps) {
   const [open, setOpen] = useState(false);
+  const [width, setWidth] = useState(320); // Default width: w-80 = 320px
+  const [isResizing, setIsResizing] = useState(false);
+  const drawerRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (!isResizing) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      e.preventDefault();
+      const newWidth = e.clientX;
+      const minWidth = 200;
+      const maxWidth = window.innerWidth * 0.9;
+      setWidth(Math.max(minWidth, Math.min(maxWidth, newWidth)));
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(false);
+      document.body.style.userSelect = "";
+      document.body.style.cursor = "";
+    };
+
+    // Disable text selection and set cursor during resize
+    document.body.style.userSelect = "none";
+    document.body.style.cursor = "col-resize";
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+      document.body.style.userSelect = "";
+      document.body.style.cursor = "";
+    };
+  }, [isResizing]);
 
   return (
     <>
@@ -27,7 +62,9 @@ export default function SideDrawer({
       )}
 
       <aside
-        className={`flex flex-col fixed inset-y-0 left-0 z-[1000] h-full w-80 max-w-[90vw] overflow-y-auto bg-white shadow-xl border-r transform transition-transform duration-300 ${open ? 'translate-x-0' : '-translate-x-full'}`}
+        ref={drawerRef}
+        className={`flex flex-col fixed inset-y-0 left-0 z-[1000] h-full overflow-y-auto bg-white shadow-xl border-r transform transition-transform duration-300 ${open ? 'translate-x-0' : '-translate-x-full'}`}
+        style={{ width: `${width}px` }}
       >
         <div className="flex items-center justify-between p-4 border-b">
           <button
@@ -40,7 +77,21 @@ export default function SideDrawer({
           <p className="text-sm font-medium">Menu</p>
         </div>
 
+        {/* Resize handle */}
+        {open && (
+          <span
+            onMouseDown={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsResizing(true);
+            }}
+            className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-blue-500 active:bg-blue-600 transition-colors z-10"
+          />
+        )}
+
         <section className="p-4 text-sm text-gray-600 flex flex-col gap-4">
+          <ModelInspector isLoading={isLoading} />
+
           <AreaMeasurer />
 
           <LengthMeasurer />

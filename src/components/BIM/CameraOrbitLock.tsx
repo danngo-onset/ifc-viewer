@@ -9,9 +9,9 @@ type CameraOrbitLockProps = {
   readonly isLoading: boolean;
 }
 
-export default function CameraOrbitLock({ 
+export const CameraOrbitLock = ({ 
   isLoading 
-}: CameraOrbitLockProps) {
+}: CameraOrbitLockProps) => {
   const [orbitLockEnabled, setOrbitLockEnabled] = useState(false);
 
   const orbitToggle = useBimComponent<OrbitLockToggle>(Constants.OrbitLockKey);

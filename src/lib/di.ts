@@ -14,6 +14,7 @@ class DIContainer {
     this.containers.set(key, instance);
   }
 
+  /** Shouldn't be called directly in components, use useBimComponent hook instead */
   get<T>(key: string): T | null {
     return this.containers.get(key) || null;
   }

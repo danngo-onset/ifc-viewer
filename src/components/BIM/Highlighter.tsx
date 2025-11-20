@@ -10,9 +10,9 @@ type HighlighterProps = {
   readonly isLoading: boolean;
 }
 
-export default function Highlighter({ 
+export const Highlighter = ({ 
   isLoading 
-}: HighlighterProps) {
+}: HighlighterProps) => {
   const [highlighterEnabled, setHighlighterEnabled] = useState(false);
   
   const highlighter = useBimComponent<OBF.Highlighter>(Constants.HighlighterKey);
