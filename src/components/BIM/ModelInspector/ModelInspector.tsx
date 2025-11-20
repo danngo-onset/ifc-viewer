@@ -95,14 +95,19 @@ export const ModelInspector = ({ isLoading }: ModelInspectorProps) => {
   // Find a node in the original tree by matching its properties
   function findNodeInOriginalTree(tree: SpatialTreeItem, targetItem: SpatialTreeItem): SpatialTreeItem | null {
     // For nodes with localId, match by localId (most specific)
-    if (targetItem.localId !== null && targetItem.localId !== undefined) {
+    if (
+      targetItem.localId !== null
+   && targetItem.localId !== undefined
+    ) {
       if (tree.localId === targetItem.localId) {
         return tree;
       }
     } else {
       // For category nodes without localId, match by category
-      if (tree.category === targetItem.category && 
-          tree.localId === targetItem.localId) {
+      if (
+        tree.category === targetItem.category 
+     && tree.localId === targetItem.localId
+      ) {
         return tree;
       }
     }
@@ -123,13 +128,16 @@ export const ModelInspector = ({ isLoading }: ModelInspectorProps) => {
     if (!highlighter.enabled) return;
     
     // Use the original reference stored during filtering, or fall back to tree search
-    const itemWithRef = item as SpatialTreeItem & { __originalRef?: SpatialTreeItem };
-    let originalNode: SpatialTreeItem | null | undefined = itemWithRef.__originalRef;
+    const itemWithRef = item as SpatialTreeItem & { 
+      originalRef: SpatialTreeItem | null
+    };
+    let originalNode = itemWithRef.originalRef;
     
     if (!originalNode) {
       // Fallback: Find the clicked node in the original unfiltered tree
       const originalTree = trees.find(t => t.modelId === modelId)?.tree;
-      originalNode = originalTree ? findNodeInOriginalTree(originalTree, item) : null;
+      originalNode = originalTree ? findNodeInOriginalTree(originalTree, item) 
+                                  : null;
     }
     
     // Use original node if found, otherwise use the filtered item
@@ -212,21 +220,12 @@ export const ModelInspector = ({ isLoading }: ModelInspectorProps) => {
     );
   }
 
-  // Check if THIS node matches (not its descendants)
-  function nodeMatchesSelf(item: SpatialTreeItem, searchTerm: string): boolean {
-    if (!searchTerm) return false;
-    
-    const term = searchTerm.toLowerCase();
-    const displayName = (item.category || `Item ${item.localId ?? "Unknown"}`).toLowerCase();
-    const localIdStr = item.localId?.toString().toLowerCase() || "";
-    
-    return displayName.includes(term) || localIdStr.includes(term);
-  }
-
   // Helper to include all descendants with reference tracking
-  function includeAllDescendants(node: SpatialTreeItem): SpatialTreeItem & { __originalRef?: SpatialTreeItem } {
-    const included = { ...node } as SpatialTreeItem & { __originalRef?: SpatialTreeItem };
-    included.__originalRef = node;
+  function includeAllDescendants(
+    node: SpatialTreeItem
+  ) : SpatialTreeItem & { originalRef: SpatialTreeItem } {
+    const included = { ...node } as SpatialTreeItem & { originalRef: SpatialTreeItem };
+    included.originalRef = node;
     
     if (node.children) {
       included.children = node.children.map(child => includeAllDescendants(child));
@@ -237,12 +236,15 @@ export const ModelInspector = ({ isLoading }: ModelInspectorProps) => {
 
   // Returns a pruned copy of the tree with only matching branches
   // Store reference to original node for later lookup
-  function filterTree(item: SpatialTreeItem, searchQuery: string, originalRef?: SpatialTreeItem) : SpatialTreeItem | null {
+  function filterTree(
+    item: SpatialTreeItem, 
+    searchQuery: string, 
+    originalRef?: SpatialTreeItem
+  ) : SpatialTreeItem | null {
     if (!searchQuery) return item;
 
-    const matchesSelf = nodeMatchesSelf(item, searchQuery);
-    
     // If this node matches, include it with ALL its descendants
+    const matchesSelf = BimExtensions.nodeMatchesSelf(item, searchQuery);
     if (matchesSelf) {
       return includeAllDescendants(originalRef || item);
     }
@@ -257,10 +259,10 @@ export const ModelInspector = ({ isLoading }: ModelInspectorProps) => {
       const filtered = {
         ...item,
         children: filteredChildren
-      } as SpatialTreeItem & { __originalRef?: SpatialTreeItem };
+      } as SpatialTreeItem & { originalRef?: SpatialTreeItem };
       
       // Store reference to original node for lookup
-      filtered.__originalRef = originalRef || item;
+      filtered.originalRef = originalRef || item;
       
       return filtered;
     }
@@ -337,8 +339,12 @@ export const ModelInspector = ({ isLoading }: ModelInspectorProps) => {
               </div>
             )))}
 
-            {searchQuery && trees.every(({ tree }) => filterTree(tree, searchQuery, tree) === null) && (
-              <p className="text-xs text-gray-500 p-2">No results found.</p>
+            {searchQuery
+          && trees.every(({ tree }) => filterTree(tree, searchQuery, tree) === null)
+          && (
+              <p className="text-xs text-gray-500 p-2">
+                No results found.
+              </p>
             )}
           </div>
         </Accordion.Content>
