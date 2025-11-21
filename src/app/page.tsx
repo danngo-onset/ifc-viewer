@@ -2,15 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import * as OBC from "@thatopen/components";
-
 import di from "@/lib/di";
 import BimUtilities from "@/lib/utils/bim-utils";
 
 import LoadingSpinner from "@/components/LoadingSpinner";
 import TopBar from "@/components/TopBar";
-
-import type { WorldType } from "@/domain/types/WorldType";
 
 export default function Home() {
   const containerRef = useRef<HTMLElement | null>(null);
@@ -21,11 +17,8 @@ export default function Home() {
     const container = containerRef.current;
     if (!container) return;
 
-    const components = new OBC.Components();
-    const world = components.get(OBC.Worlds)
-                            .create() as WorldType;
+    const bimUtilities = new BimUtilities(container);
 
-    const bimUtilities = new BimUtilities(components, world, container);
     const cleanupFunctions: Array<() => void> = [];
 
     (async () => {
@@ -56,8 +49,7 @@ export default function Home() {
       cleanupFunctions.forEach(cleanup => cleanup());
       
       di.disposeAll();
-      components.dispose();
-      world.dispose();
+      bimUtilities.dispose();
     };
   }, []);
 

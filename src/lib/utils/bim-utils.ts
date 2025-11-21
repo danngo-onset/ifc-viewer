@@ -12,12 +12,16 @@ import Constants from "@/domain/Constants";
 import type { WorldType } from "@/domain/types/WorldType";
 import type { OrbitLockToggle } from "@/domain/types/OrbitLockToggle";
 
+/** Utility class for functions that need injected dependencies */
 export default class BimUtilities {
-  constructor(
-    private readonly components : OBC.Components,
-    private readonly world      : WorldType,
-    private readonly container  : HTMLElement
-  ) {}
+  private readonly components : OBC.Components;
+  private readonly world      : WorldType;
+
+  constructor(private readonly container: HTMLElement) {
+    this.components = new OBC.Components();
+    this.world = this.components.get(OBC.Worlds)
+                                .create() as WorldType;
+  }
 
   private orbitLockOnMouseDown?: (event: MouseEvent) => void;
   private orbitLockActive = false;
@@ -323,5 +327,10 @@ export default class BimUtilities {
     }
 
     this.orbitLockMarker = undefined;
+  }
+
+  dispose() {
+    this.components.dispose();
+    this.world.dispose();
   }
 }
