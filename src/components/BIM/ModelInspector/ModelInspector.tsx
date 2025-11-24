@@ -158,7 +158,7 @@ export const ModelInspector = ({ isLoading }: ModelInspectorProps) => {
 
   if (trees.length === 0) {
     return (
-      <Accordion.Root type="single" collapsible className="relative z-10 w-full">
+      <Accordion.Root type="single" collapsible className="w-full">
         <Accordion.Item value="model-tree" className="border border-gray-300 rounded-md bg-white">
           <Accordion.Header>
             <Accordion.Trigger className="accordion-trigger">
@@ -168,7 +168,7 @@ export const ModelInspector = ({ isLoading }: ModelInspectorProps) => {
             </Accordion.Trigger>
           </Accordion.Header>
 
-          <Accordion.Content className="accordion-content">
+          <Accordion.Content className="accordion-content-scrollable">
             <div className="p-2 text-sm text-gray-500">
               {isLoading ? "Loading model structure..." : "No models loaded"}
             </div>
@@ -179,7 +179,7 @@ export const ModelInspector = ({ isLoading }: ModelInspectorProps) => {
   }
 
   return (
-    <Accordion.Root type="single" collapsible className="relative z-10 w-full">
+    <Accordion.Root type="single" collapsible className="w-full">
       <Accordion.Item value="model-tree" className="border border-gray-300 rounded-md bg-white">
         <Accordion.Header>
           <Accordion.Trigger className="accordion-trigger">
@@ -189,8 +189,8 @@ export const ModelInspector = ({ isLoading }: ModelInspectorProps) => {
           </Accordion.Trigger>
         </Accordion.Header>
 
-        <Accordion.Content className="accordion-content">
-          <div className="flex flex-col gap-2 max-h-96 overflow-y-auto">
+        <Accordion.Content className="accordion-content-scrollable">
+          <div className="flex flex-col gap-2">
             <div className="sticky top-0 bg-white z-10 pb-2 border-b">
               <input
                 type="text"

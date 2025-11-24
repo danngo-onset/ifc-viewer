@@ -63,7 +63,7 @@ export default function SideDrawer({
 
       <aside
         ref={drawerRef}
-        className={`flex flex-col fixed inset-y-0 left-0 z-[1000] h-full overflow-y-auto bg-white shadow-xl border-r transform transition-transform duration-300 ${open ? 'translate-x-0' : '-translate-x-full'}`}
+        className={`flex flex-col fixed inset-y-0 left-0 z-[1000] h-full bg-white shadow-xl border-r transform transition-transform duration-300 overflow-hidden ${open ? 'translate-x-0' : '-translate-x-full'}`}
         style={{ width: `${width}px` }}
       >
         <div className="flex items-center justify-between p-4 border-b">
@@ -89,17 +89,19 @@ export default function SideDrawer({
           />
         )}
 
-        <section className="p-4 text-sm text-gray-600 flex flex-col gap-4">
-          <ModelInspector isLoading={isLoading} />
+        <div className="flex-1 overflow-y-auto">
+          <section className="p-4 text-sm text-gray-600 flex flex-col gap-4">
+            <ModelInspector isLoading={isLoading} />
 
-          <AreaMeasurer />
+            <AreaMeasurer />
 
-          <LengthMeasurer />
+            <LengthMeasurer />
 
-          <Highlighter isLoading={isLoading} />
+            <Highlighter isLoading={isLoading} />
 
-          <CameraOrbitLock isLoading={isLoading} />
-        </section>
+            <CameraOrbitLock isLoading={isLoading} />
+          </section>
+        </div>
       </aside>
     </>
   );

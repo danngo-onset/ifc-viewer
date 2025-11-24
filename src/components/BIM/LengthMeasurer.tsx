@@ -23,7 +23,7 @@ export const LengthMeasurer = () => {
   }, [measurer]);
 
   return (
-    <Accordion.Root type="single" collapsible className="relative z-10 w-52">
+    <Accordion.Root type="single" collapsible className="w-full">
       <Accordion.Item value="tools-panel" className="border border-gray-300 rounded-md bg-white">
         <Accordion.Header>
           <Accordion.Trigger className="accordion-trigger">
