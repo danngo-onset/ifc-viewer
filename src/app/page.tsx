@@ -7,6 +7,7 @@ import BimUtilities from "@/lib/utils/bim-utils";
 
 import LoadingSpinner from "@/components/LoadingSpinner";
 import TopBar from "@/components/TopBar";
+import BottomToolBar from "@/components/BottomToolBar";
 
 export default function Home() {
   const containerRef = useRef<HTMLElement | null>(null);
@@ -68,6 +69,8 @@ export default function Home() {
         id="container" 
         className="flex-1"
       ></main>
+
+      <BottomToolBar />
     </>
   );
 };
