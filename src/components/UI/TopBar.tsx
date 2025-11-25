@@ -8,7 +8,7 @@ import useBimComponent from "@/hooks/useBimComponent";
 
 import Constants from "@/domain/Constants";
 
-import SideDrawer from "./SideDrawer";
+import { SideDrawer } from "./";
 
 type TopBarProps = {
   readonly isLoading: boolean;
@@ -16,11 +16,11 @@ type TopBarProps = {
   readonly setLoadingMessage: Dispatch<SetStateAction<string>>;
 }
 
-export default function TopBar({
+export const TopBar = ({
   isLoading,
   setIsLoading,
   setLoadingMessage,
-}: TopBarProps) {
+}: TopBarProps) => {
   const fragmentsManager = useBimComponent<OBC.FragmentsManager>(Constants.FragmentsManagerKey);
 
   async function loadIfc(e: React.ChangeEvent<HTMLInputElement>) {

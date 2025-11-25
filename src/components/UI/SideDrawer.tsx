@@ -3,16 +3,16 @@ import { useState, useEffect, useRef } from "react";
 import { HamburgerMenuIcon, Cross1Icon } from "@radix-ui/react-icons";
 
 import { 
-  AreaMeasurer, LengthMeasurer, Highlighter, 
+  LengthMeasurer, Highlighter, 
   CameraOrbitLock, ModelInspector 
 } from "@/components/BIM";
 
 type SideDrawerProps = {
   readonly isLoading: boolean;
 }
-export default function SideDrawer({ 
+export const SideDrawer = ({ 
   isLoading 
-}: SideDrawerProps) {
+}: SideDrawerProps) => {
   const [open, setOpen] = useState(false);
   const [width, setWidth] = useState(320); // Default width: w-80 = 320px
   const [isResizing, setIsResizing] = useState(false);
@@ -92,8 +92,6 @@ export default function SideDrawer({
         <div className="flex-1 overflow-y-auto">
           <section className="p-4 text-sm text-gray-600 flex flex-col gap-4">
             <ModelInspector isLoading={isLoading} />
-
-            <AreaMeasurer />
 
             <LengthMeasurer />
 

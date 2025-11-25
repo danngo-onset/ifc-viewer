@@ -5,9 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import di from "@/lib/di";
 import BimUtilities from "@/lib/utils/bim-utils";
 
-import LoadingSpinner from "@/components/LoadingSpinner";
-import TopBar from "@/components/TopBar";
-import BottomToolBar from "@/components/BottomToolBar";
+import { LoadingSpinner, TopBar, BottomToolbar } from "@/components/UI";
 
 export default function Home() {
   const containerRef = useRef<HTMLElement | null>(null);
@@ -70,7 +68,7 @@ export default function Home() {
         className="flex-1"
       ></main>
 
-      <BottomToolBar />
+      <BottomToolbar />
     </>
   );
 };
