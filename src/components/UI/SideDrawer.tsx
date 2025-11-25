@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { HamburgerMenuIcon, Cross1Icon } from "@radix-ui/react-icons";
 
 import { 
-  LengthMeasurer, Highlighter, 
+  Highlighter, 
   CameraOrbitLock, ModelInspector 
 } from "@/components/BIM";
 
@@ -92,8 +92,6 @@ export const SideDrawer = ({
         <div className="flex-1 overflow-y-auto">
           <section className="p-4 text-sm text-gray-600 flex flex-col gap-4">
             <ModelInspector isLoading={isLoading} />
-
-            <LengthMeasurer />
 
             <Highlighter isLoading={isLoading} />
 
