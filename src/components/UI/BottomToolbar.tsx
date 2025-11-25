@@ -16,10 +16,12 @@ import { AreaMeasurer, LengthMeasurer } from "../BIM";
 import type { OrbitLockToggle } from "@/domain/types/OrbitLockToggle";
 
 export const BottomToolbar = () => {
-  const [enabled, setEnabled] = useState(false);
-  const [showOptions, setShowOptions] = useState(false);
+  const [enabledArea, setEnabledArea] = useState(false);
+  const [showOptionsArea, setShowOptionsArea] = useState(false);
+
   const [enabledLength, setEnabledLength] = useState(false);
   const [showOptionsLength, setShowOptionsLength] = useState(false);
+
   const [orbitLockEnabled, setOrbitLockEnabled] = useState(false);
 
   const areaContainerRef = useRef<HTMLDivElement>(null);
@@ -31,7 +33,7 @@ export const BottomToolbar = () => {
 
   useEffect(() => {
     if (measurer) {
-      setEnabled(measurer.enabled);
+      setEnabledArea(measurer.enabled);
     }
   }, [measurer]);
 
@@ -53,8 +55,8 @@ export const BottomToolbar = () => {
       const target = event.target as Node;
       
       // Check if click is outside area container (includes panel since panel is absolutely positioned inside)
-      if (showOptions && areaContainerRef.current && !areaContainerRef.current.contains(target)) {
-        setShowOptions(false);
+      if (showOptionsArea && areaContainerRef.current && !areaContainerRef.current.contains(target)) {
+        setShowOptionsArea(false);
       }
       
       // Check if click is outside length container
@@ -68,11 +70,11 @@ export const BottomToolbar = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [showOptions, showOptionsLength]);
+  }, [showOptionsArea, showOptionsLength]);
 
   const handleToggleEnabled = () => {
-    const newEnabled = !enabled;
-    setEnabled(newEnabled);
+    const newEnabled = !enabledArea;
+    setEnabledArea(newEnabled);
     if (measurer) measurer.enabled = newEnabled;
   };
 
@@ -93,24 +95,24 @@ export const BottomToolbar = () => {
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2">
       <div className="bg-white border border-gray-300 rounded-lg shadow-xl p-2 flex items-end gap-2">
         <div ref={areaContainerRef} className="relative flex flex-col items-center">
-          {showOptions && <AreaMeasurer />}
+          {showOptionsArea && <AreaMeasurer />}
 
           <ChevronUpIcon 
-            onClick={() => setShowOptions(!showOptions)}
-            className={`mb-1 p-1 hover:bg-gray-100 rounded transition-all w-8 h-8 cursor-pointer ${showOptions ? 'rotate-180' : ''}`}
+            onClick={() => setShowOptionsArea(!showOptionsArea)}
+            className={`mb-1 p-1 hover:bg-gray-100 rounded transition-all w-8 h-8 cursor-pointer ${showOptionsArea ? 'rotate-180' : ''}`}
           />
 
           <WithTooltip message="Area Measurer">
             <button
               onClick={handleToggleEnabled}
               className={`p-3 rounded-lg transition-all ${
-                enabled 
+                enabledArea 
                   ? 'bg-blue-500 text-white shadow-md' 
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
               aria-label="Area Measurer"
             >
-              <IconRulerCombined classes={`w-6 h-6 ${enabled ? "text-gray-100" : ""}`} />
+              <IconRulerCombined classes={`w-6 h-6 ${enabledArea ? "text-gray-100" : ""}`} />
             </button>
           </WithTooltip>
         </div>
