@@ -7,14 +7,12 @@ import Constants from "@/domain/Constants";
 import useBimComponent from "@/hooks/useBimComponent";
 
 export const LengthMeasurer = () => {
-  const [enabled, setEnabled] = useState(false);
   const [visible, setVisible] = useState(false);
 
   const measurer = useBimComponent<OBF.LengthMeasurement>(Constants.LengthMeasurementKey);
 
   useEffect(() => {
     if (measurer) {
-      setEnabled(measurer.enabled);
       setVisible(measurer.visible);
     }
   }, [measurer]);

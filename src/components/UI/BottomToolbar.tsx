@@ -11,20 +11,23 @@ import Constants from "@/domain/Constants";
 import useBimComponent from "@/hooks/useBimComponent";
 
 import { WithTooltip } from "./WithTooltip";
-import { IconRulerCombined, IconRuler } from "./icons";
+import { IconRulerCombined, IconRuler, IconCamera } from "./icons";
 import { AreaMeasurer, LengthMeasurer } from "../BIM";
+import type { OrbitLockToggle } from "@/domain/types/OrbitLockToggle";
 
 export const BottomToolbar = () => {
   const [enabled, setEnabled] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [enabledLength, setEnabledLength] = useState(false);
   const [showOptionsLength, setShowOptionsLength] = useState(false);
+  const [orbitLockEnabled, setOrbitLockEnabled] = useState(false);
 
   const areaContainerRef = useRef<HTMLDivElement>(null);
   const lengthContainerRef = useRef<HTMLDivElement>(null);
 
   const measurer = useBimComponent<OBF.AreaMeasurement>(Constants.AreaMeasurementKey);
   const lengthMeasurer = useBimComponent<OBF.LengthMeasurement>(Constants.LengthMeasurementKey);
+  const orbitToggle = useBimComponent<OrbitLockToggle>(Constants.OrbitLockKey);
 
   useEffect(() => {
     if (measurer) {
@@ -37,6 +40,12 @@ export const BottomToolbar = () => {
       setEnabledLength(lengthMeasurer.enabled);
     }
   }, [lengthMeasurer]);
+
+  useEffect(() => {
+    if (orbitToggle) {
+      setOrbitLockEnabled(orbitToggle.enabled);
+    }
+  }, [orbitToggle]);
 
   // Handle click outside to close options
   useEffect(() => {
@@ -73,9 +82,16 @@ export const BottomToolbar = () => {
     if (lengthMeasurer) lengthMeasurer.enabled = newEnabled;
   };
 
+  const handleToggleOrbitLock = () => {
+    if (!orbitToggle) return;
+    const newEnabled = !orbitLockEnabled;
+    setOrbitLockEnabled(newEnabled);
+    orbitToggle.setEnabled(newEnabled);
+  };
+
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2">
-      <div className="bg-white border border-gray-300 rounded-lg shadow-xl p-2 flex items-center gap-2">
+      <div className="bg-white border border-gray-300 rounded-lg shadow-xl p-2 flex items-end gap-2">
         <div ref={areaContainerRef} className="relative flex flex-col items-center">
           {showOptions && <AreaMeasurer />}
 
@@ -121,6 +137,20 @@ export const BottomToolbar = () => {
             </button>
           </WithTooltip>
         </div>
+
+        <WithTooltip message="Lock Camera Distance">
+          <button
+            onClick={handleToggleOrbitLock}
+            className={`p-3 rounded-lg transition-all ${
+              orbitLockEnabled 
+                ? 'bg-blue-500 text-white shadow-md' 
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+            aria-label="Camera Orbit Lock"
+          >
+            <IconCamera classes={`w-6 h-6 ${orbitLockEnabled ? "text-gray-100" : ""}`} />
+          </button>
+        </WithTooltip>
       </div>
     </div>
   );

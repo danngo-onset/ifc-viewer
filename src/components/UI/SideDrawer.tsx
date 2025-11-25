@@ -3,8 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { HamburgerMenuIcon, Cross1Icon } from "@radix-ui/react-icons";
 
 import { 
-  Highlighter, 
-  CameraOrbitLock, ModelInspector 
+  Highlighter, ModelInspector 
 } from "@/components/BIM";
 
 type SideDrawerProps = {
@@ -94,8 +93,6 @@ export const SideDrawer = ({
             <ModelInspector isLoading={isLoading} />
 
             <Highlighter isLoading={isLoading} />
-
-            <CameraOrbitLock isLoading={isLoading} />
           </section>
         </div>
       </aside>
