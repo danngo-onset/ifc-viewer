@@ -3,10 +3,10 @@ type LoadingSpinnerProps = {
   readonly message?: string;
 }
 
-export default function LoadingSpinner({ 
-  isVisible, 
+export const LoadingSpinner = ({ 
+  isVisible = false, 
   message = "Loading model..." 
-}: LoadingSpinnerProps) {
+}: LoadingSpinnerProps) => {
   if (!isVisible) return null;
 
   return (
