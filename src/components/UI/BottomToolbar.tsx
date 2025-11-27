@@ -135,7 +135,6 @@ export const BottomToolbar = () => {
                   ? 'bg-blue-500 text-white shadow-md' 
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
-              aria-label="Area Measurer"
             >
               <IconRulerCombined classes={`w-6 h-6 ${areaMeasurerEnabled ? "text-gray-100" : ""}`} />
             </button>
@@ -158,7 +157,6 @@ export const BottomToolbar = () => {
                   ? 'bg-blue-500 text-white shadow-md' 
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
-              aria-label="Length Measurer"
             >
               <IconRuler classes={`w-6 h-6 ${lengthMeasurerEnabled ? "text-gray-100" : ""}`} />
             </button>
