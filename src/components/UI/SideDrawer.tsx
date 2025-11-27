@@ -2,9 +2,7 @@ import { useState, useEffect, useRef } from "react";
 
 import { HamburgerMenuIcon, Cross1Icon } from "@radix-ui/react-icons";
 
-import { 
-  Highlighter, ModelInspector 
-} from "@/components/BIM";
+import { ModelInspector } from "@/components/BIM";
 
 type SideDrawerProps = {
   readonly isLoading: boolean;
@@ -76,7 +74,7 @@ export const SideDrawer = ({
           <p className="text-sm font-medium">Menu</p>
         </div>
 
-        {/* Resize handle */}
+        {/* Resize handler */}
         {open && (
           <span
             onMouseDown={(e) => {
@@ -91,8 +89,6 @@ export const SideDrawer = ({
         <div className="flex-1 overflow-y-auto">
           <section className="p-4 text-sm text-gray-600 flex flex-col gap-4">
             <ModelInspector isLoading={isLoading} />
-
-            <Highlighter isLoading={isLoading} />
           </section>
         </div>
       </aside>

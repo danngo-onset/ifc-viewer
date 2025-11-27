@@ -21,6 +21,10 @@ export const LengthMeasurer = () => {
     <section 
       className="w-64 flex flex-col space-y-3 absolute bottom-full mb-3 left-1/2 -translate-x-1/2 bg-white border border-gray-300 rounded-lg shadow-lg p-4 *:text-sm *:flex *:items-center *:justify-between"
     >
+      <ul className="flex-col items-start! list-disc list-inside">
+        <li>Double Click to measure</li>
+      </ul>
+
       <div>
         <label htmlFor="length-measurement-visible">Measurement Visible</label>
 
