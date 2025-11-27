@@ -19,9 +19,9 @@ export const LengthMeasurer = () => {
 
   return (
     <section 
-      className="w-64 flex flex-col space-y-3 absolute bottom-full mb-3 left-1/2 -translate-x-1/2 bg-white border border-gray-300 rounded-lg shadow-lg p-4 *:text-sm *:flex *:items-center *:justify-between"
+      className="w-64 bim-component-container"
     >
-      <ul className="flex-col items-start! list-disc list-inside">
+      <ul className="bim-component-guide">
         <li>Double Click to measure</li>
       </ul>
 
@@ -44,7 +44,7 @@ export const LengthMeasurer = () => {
       {/* Rectangular dimensions represent measurements aligned to the X and Y axes when viewed in 2D.
         These dimensions complete the triangle formed by the linear dimension. */}
       <button 
-        className="button-gray"
+        className="btn-gray"
         onClick={() => {
           if (!measurer) return;
 
@@ -57,7 +57,7 @@ export const LengthMeasurer = () => {
       </button>
 
       <button 
-        className="button-gray"
+        className="btn-gray"
         onClick={() => {
           if (!measurer) return;
 
@@ -72,7 +72,7 @@ export const LengthMeasurer = () => {
       {/* Projection dimensions represent the measurements projected onto the planes 
       defined by the normal direction of each click used to create the initial measurement.*/}
       <button 
-        className="button-gray"
+        className="btn-gray"
         onClick={() => {
           if (!measurer) return;
 
@@ -85,7 +85,7 @@ export const LengthMeasurer = () => {
       </button>
 
       <button 
-        className="button-gray"
+        className="btn-gray"
         onClick={() => {
           if (!measurer) return;
 
@@ -99,7 +99,7 @@ export const LengthMeasurer = () => {
       </button>
 
       <button 
-        className="button-gray"
+        className="btn-gray"
         onClick={() => {
           measurer?.list.clear();
         }}

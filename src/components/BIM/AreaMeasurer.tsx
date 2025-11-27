@@ -19,9 +19,9 @@ export const AreaMeasurer = () => {
 
     return (
       <section 
-        className="w-48 flex flex-col space-y-3 absolute bottom-full mb-3 left-1/2 -translate-x-1/2 bg-white border border-gray-300 rounded-lg shadow-lg p-4 *:text-sm *:flex *:items-center *:justify-between"
+        className="w-48 bim-component-container"
       >
-        <ul className="flex-col items-start! list-disc list-inside">
+        <ul className="bim-component-guide">
           <li>Double Click to measure</li>
         </ul>
 
@@ -42,7 +42,7 @@ export const AreaMeasurer = () => {
         </div>
 
         <button 
-          className="button-gray"
+          className="btn-gray"
           onClick={() => {
             measurer?.list.clear();
           }}
