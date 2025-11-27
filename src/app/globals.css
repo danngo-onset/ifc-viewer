@@ -34,7 +34,7 @@ body {
 }
 
 .accordion-content-scrollable[data-state="open"] {
-  max-height: 400px;
+  max-height: 80vh;
 }
 
 .accordion-content-scrollable[data-state="closed"] {
