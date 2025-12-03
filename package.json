@@ -15,7 +15,7 @@
     "@thatopen/components-front": "3.1.7",
     "@thatopen/ui": "^2.4.5",
     "axios": "^1.12.0",
-    "next": "15.4.7",
+    "next": "15.4.8",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "stats.js": "^0.17.0",
