@@ -21,6 +21,8 @@ export default class BimUtilities {
     this.components = new OBC.Components();
     this.world = this.components.get(OBC.Worlds)
                                 .create() as WorldType;
+    
+    di.register(Constants.ComponentsKey, this.components);
   }
 
   private orbitLockOnMouseDown?: (event: MouseEvent) => void;
@@ -205,6 +207,7 @@ export default class BimUtilities {
         renderedFaces: 0
       }
     });
+    highlighter.zoomToSelection = true;
 
     const highlightHandler = async (modelIdMap: OBC.ModelIdMap) => {
       const promises: Array<Promise<ItemData[]>> = [];
