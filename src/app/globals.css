@@ -19,28 +19,6 @@ body {
   overflow: hidden;
 }
 
-.accordion-trigger {
-  @apply flex items-center justify-between w-full px-3 py-2 hover:bg-gray-50;
-}
-
-/* Scrollable accordion content for large trees */
-.accordion-content-scrollable {
-  @apply 
-    px-3 py-2 bg-gray-50 border-t border-gray-200 shadow space-y-3 
-    *:text-sm *:flex *:items-center *:justify-between;
-  overflow-y: auto;
-  max-height: 0;
-  transition: max-height 150ms ease-out;
-}
-
-.accordion-content-scrollable[data-state="open"] {
-  max-height: 80vh;
-}
-
-.accordion-content-scrollable[data-state="closed"] {
-  max-height: 0;
-}
-
 .btn-gray {
   @apply bg-gray-500 text-white px-2 py-1 rounded hover:bg-gray-600 text-center w-full !block;
 }

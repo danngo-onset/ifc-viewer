@@ -1,4 +1,4 @@
 export * from "./AreaMeasurer";
 export * from "./LengthMeasurer";
 export * from "./Highlighter";
-export * from "./ModelInspector/ModelInspector";
+export * from "./ModelInspector";
