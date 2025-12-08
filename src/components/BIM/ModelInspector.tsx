@@ -88,6 +88,6 @@ export const ModelInspector = ({ isLoading }: ModelInspectorProps) => {
   }
 
   return (
-    <div className="overflow-auto" ref={panelContainerRef} />
+    <div className="overflow-auto max-h-[80vh]" ref={panelContainerRef} />
   );
 };
