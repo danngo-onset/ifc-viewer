@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 
 import { HamburgerMenuIcon, Cross1Icon } from "@radix-ui/react-icons";
 
-import { ModelInspector } from "@/components/BIM";
+import { ItemInspector, ModelInspector } from "@/components/BIM";
 
 type SideDrawerProps = {
   readonly isLoading: boolean;
@@ -87,8 +87,10 @@ export const SideDrawer = ({
         )}
 
         <div className="flex-1 overflow-y-auto">
-          <section className="p-4 text-sm text-gray-600 flex flex-col gap-4">
+          <section className="p-4 text-sm text-gray-600 flex flex-col gap-4 h-full">
             <ModelInspector isLoading={isLoading} />
+            
+            <ItemInspector isLoading={isLoading} />
           </section>
         </div>
       </aside>

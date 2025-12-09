@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-import type * as OBF from "@thatopen/components-front";
+import type * as OBCF from "@thatopen/components-front";
 
 import { ChevronUpIcon } from "@radix-ui/react-icons";
 
@@ -31,10 +31,10 @@ export const BottomToolbar = () => {
   const lengthContainerRef = useRef<HTMLDivElement>(null);
   const highlighterContainerRef = useRef<HTMLDivElement>(null);
 
-  const measurer = useBimComponent<OBF.AreaMeasurement>(Constants.AreaMeasurementKey);
-  const lengthMeasurer = useBimComponent<OBF.LengthMeasurement>(Constants.LengthMeasurementKey);
+  const measurer = useBimComponent<OBCF.AreaMeasurement>(Constants.AreaMeasurementKey);
+  const lengthMeasurer = useBimComponent<OBCF.LengthMeasurement>(Constants.LengthMeasurementKey);
   const orbitToggle = useBimComponent<OrbitLockToggle>(Constants.OrbitLockKey);
-  const highlighter = useBimComponent<OBF.Highlighter>(Constants.HighlighterKey);
+  const highlighter = useBimComponent<OBCF.Highlighter>(Constants.HighlighterKey);
 
   useEffect(() => {
     if (measurer) {

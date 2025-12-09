@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useRef } from "react";
 
 import type * as OBC from "@thatopen/components";
@@ -21,9 +19,7 @@ export const ModelInspector = ({ isLoading }: ModelInspectorProps) => {
   const fragmentsManager = useBimComponent<OBC.FragmentsManager>(Constants.FragmentsManagerKey);
 
   useEffect(() => {
-    if (!components || !fragmentsManager) {
-      return;
-    }
+    if (!components || !fragmentsManager) return;
     
     let panelElement: HTMLElement | null = null;
     
@@ -69,6 +65,28 @@ export const ModelInspector = ({ isLoading }: ModelInspectorProps) => {
       if (panelContainerRef.current) {
         panelContainerRef.current.innerHTML = "";
         panelContainerRef.current.appendChild(panelElement);
+
+        setTimeout(() => {
+          const bimPanelSection = panelContainerRef
+            .current
+            ?.querySelector('bim-panel-section[label="Model Tree"]') as HTMLElement;
+            
+          if (bimPanelSection?.shadowRoot) {
+            const header = bimPanelSection.shadowRoot.querySelector("div.header") as HTMLElement;
+            if (header) {
+              const label = header.querySelector("bim-label") as HTMLElement;
+              if (label?.shadowRoot) {
+                const labelStyle = document.createElement("style");
+                labelStyle.textContent = `
+                  div.parent {
+                    font-size: 0.75rem;
+                  }
+                `;
+                label.shadowRoot.appendChild(labelStyle);
+              }
+            }
+          }
+        }, 0);
       }
     })();
 
@@ -88,6 +106,6 @@ export const ModelInspector = ({ isLoading }: ModelInspectorProps) => {
   }
 
   return (
-    <div className="overflow-auto max-h-[80vh]" ref={panelContainerRef} />
+    <div className="overflow-auto max-h-1/2" ref={panelContainerRef} />
   );
 };

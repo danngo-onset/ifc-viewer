@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 
 import * as OBC from "@thatopen/components";
-import * as OBF from "@thatopen/components-front";
+import * as OBCF from "@thatopen/components-front";
 import type { FragmentsModel, ItemData } from "@thatopen/fragments";
 
 import * as THREE from "three";
@@ -35,7 +35,7 @@ export default class BimUtilities {
     this.world.scene.three.background = null; // light scene
 
     //world.renderer = new OBC.SimpleRenderer(components, containerRef.current);
-    this.world.renderer = new OBF.PostproductionRenderer(this.components, this.container as HTMLElement);
+    this.world.renderer = new OBCF.PostproductionRenderer(this.components, this.container as HTMLElement);
 
     this.world.camera = new OBC.OrthoPerspectiveCamera(this.components);
     //world.camera.controls.maxDistance = 300;
@@ -99,7 +99,7 @@ export default class BimUtilities {
   }
 
   async initAreaMeasurer() {
-    const measurer = this.components.get(OBF.AreaMeasurement);
+    const measurer = this.components.get(OBCF.AreaMeasurement);
     measurer.world = this.world;
     measurer.color = new THREE.Color(Constants.Color.Measurer);
     measurer.enabled = true;
@@ -131,7 +131,7 @@ export default class BimUtilities {
     const dblclickHandler = async () => await measurer.create();
     if (this.container) this.container.addEventListener("dblclick", dblclickHandler);
 
-    const zoomHandler = async (area: OBF.Area) => {
+    const zoomHandler = async (area: OBCF.Area) => {
       if (!area.boundingBox || !this.world.camera.controls) return;
 
       const sphere = new THREE.Sphere();
@@ -151,7 +151,7 @@ export default class BimUtilities {
   }
 
   async initLengthMeasurer() {
-    const measurer = this.components.get(OBF.LengthMeasurement);
+    const measurer = this.components.get(OBCF.LengthMeasurement);
     measurer.world = this.world;
     measurer.color = new THREE.Color(Constants.Color.Measurer);
     measurer.enabled = false;
@@ -168,7 +168,7 @@ export default class BimUtilities {
     };
     window.addEventListener("keydown", keydownHandler);
 
-    const zoomHandler = (line: OBF.Line) => {
+    const zoomHandler = (line: OBCF.Line) => {
       if (!this.world.camera.controls) return;
 
       const center = new THREE.Vector3();
@@ -197,7 +197,7 @@ export default class BimUtilities {
     this.components.get(OBC.Raycasters)
                    .get(world);
     
-    const highlighter = this.components.get(OBF.Highlighter);
+    const highlighter = this.components.get(OBCF.Highlighter);
     highlighter.setup({
       world,
       selectMaterialDefinition: {

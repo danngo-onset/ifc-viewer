@@ -1,11 +1,11 @@
-import type * as OBF from "@thatopen/components-front";
+import type * as OBCF from "@thatopen/components-front";
 
 import useBimComponent from "@/hooks/useBimComponent";
 
 import Constants from "@/domain/Constants";
 
 export const Highlighter = () => {
-  const highlighter = useBimComponent<OBF.Highlighter>(Constants.HighlighterKey);
+  const highlighter = useBimComponent<OBCF.Highlighter>(Constants.HighlighterKey);
   
   return (
     <section
