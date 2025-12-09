@@ -71,6 +71,19 @@ export default class BimUtilities {
     this.world.camera.controls.addEventListener("rest", cameraRestHandler);
 
     const modelSetHandler = async ({ value: model }: { value: FragmentsModel }) => {
+      // resolve flickering issue with double-sided rendering (not working)
+      model.tiles.onItemSet.add(({ value: mesh }) => {
+        const materials = Array.isArray(mesh.material) ? mesh.material 
+                                                       : [mesh.material];
+        
+        materials.forEach((mat) => {
+          // Enable double-sided rendering for materials
+          if ("side" in mat) {
+            mat.side = THREE.DoubleSide;
+          }
+        });
+      });
+
       model.useCamera(this.world.camera.three);
       this.world.scene.three.add(model.object);
       
