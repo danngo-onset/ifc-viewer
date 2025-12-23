@@ -1,11 +1,11 @@
 import { ReactNode, useState } from "react";
 
-type WithTooltipProps = {
+type Props = {
   readonly message: string;
   readonly children: ReactNode;
 }
 
-export const WithTooltip = ({ message, children }: WithTooltipProps) => {
+export const WithTooltip = ({ message, children }: Props) => {
   const [showTooltip, setShowTooltip] = useState(false);
 
   return (
