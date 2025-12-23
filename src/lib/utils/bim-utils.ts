@@ -1,5 +1,3 @@
-import { Dispatch, SetStateAction } from "react";
-
 import * as OBC from "@thatopen/components";
 import * as OBCF from "@thatopen/components-front";
 import type { FragmentsModel, ItemData } from "@thatopen/fragments";
@@ -9,18 +7,20 @@ import * as THREE from "three";
 import di from "@/lib/di";
 
 import Constants from "@/domain/Constants";
-import type { WorldType } from "@/domain/types/WorldType";
+
+import type { SetState } from "@/domain/types/SetState";
 import type { OrbitLockToggle } from "@/domain/types/OrbitLockToggle";
+import type { World } from "@/domain/types/BIM/World";
 
 /** Utility class for functions that need injected dependencies */
 export default class BimUtilities {
   private readonly components : OBC.Components;
-  private readonly world      : WorldType;
+  private readonly world      : World;
 
   constructor(private readonly container: HTMLElement) {
     this.components = new OBC.Components();
     this.world = this.components.get(OBC.Worlds)
-                                .create() as WorldType;
+                                .create() as World;
     
     di.register(Constants.ComponentsKey, this.components);
   }
@@ -51,8 +51,8 @@ export default class BimUtilities {
   }
 
   async initFragmentsManager(
-    setLoadingMessage: Dispatch<SetStateAction<string>>,
-    setIsLoading: Dispatch<SetStateAction<boolean>>
+    setLoadingMessage: SetState<string>,
+    setIsLoading: SetState<boolean>
   ) {
     const fragmentsManager = this.components.get(OBC.FragmentsManager);
 

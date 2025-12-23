@@ -1,5 +1,3 @@
-import { SetStateAction, Dispatch } from "react";
-
 import type * as OBC from "@thatopen/components";
 
 import api from "@/lib/api";
@@ -8,13 +6,15 @@ import useBimComponent from "@/hooks/useBimComponent";
 
 import Constants from "@/domain/Constants";
 
+import type { SetState } from "@/domain/types/SetState";
+
 import { SideDrawer } from "./";
 
 type TopBarProps = {
   readonly isLoading: boolean;
-  readonly setIsLoading: Dispatch<SetStateAction<boolean>>;
-  readonly setLoadingMessage: Dispatch<SetStateAction<string>>;
-}
+  readonly setIsLoading: SetState<boolean>;
+  readonly setLoadingMessage: SetState<string>;
+};
 
 export const TopBar = ({
   isLoading,

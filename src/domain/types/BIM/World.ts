@@ -1,9 +1,9 @@
 import type * as OBC from "@thatopen/components";
-import type * as OBF from "@thatopen/components-front";
+import type * as OBCF from "@thatopen/components-front";
 
-export type WorldType = OBC.SimpleWorld<
+export type World = OBC.SimpleWorld<
   OBC.SimpleScene, 
   OBC.OrthoPerspectiveCamera, 
   //OBC.SimpleRenderer
-  OBF.PostproductionRenderer
+  OBCF.PostproductionRenderer
 >;
