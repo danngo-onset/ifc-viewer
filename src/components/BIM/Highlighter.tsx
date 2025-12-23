@@ -13,7 +13,7 @@ export const Highlighter = () => {
     >
       <ul className="bim-component-guide">
         <li>Click to highlight</li>
-        <li>CTRL + Click to highlight multiple (or delete a highlighted item)</li>
+        <li>CTRL + Click to highlight multiple (or unhighlight an item)</li>
       </ul>
 
       <button 
