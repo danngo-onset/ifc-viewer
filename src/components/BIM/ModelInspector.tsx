@@ -47,7 +47,7 @@ export const ModelInspector = ({ isLoading }: ModelInspectorProps) => {
         };
 
         return BUI.html`
-          <bim-panel label="Spatial Tree">
+          <bim-panel label="Model Inspector">
             <bim-panel-section label="Model Tree">
               <bim-text-input 
                 placeholder="Search..." 

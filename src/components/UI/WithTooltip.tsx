@@ -18,7 +18,7 @@ export const WithTooltip = ({ message, children }: WithTooltipProps) => {
 
       {
         showTooltip && 
-        <p className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 text-white text-sm rounded whitespace-nowrap pointer-events-none">
+        <p className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 text-white text-xs rounded whitespace-nowrap pointer-events-none">
           {message}
         </p>
       }
