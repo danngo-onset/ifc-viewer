@@ -78,10 +78,12 @@ export const BottomToolbar = () => {
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    const abortController = new AbortController();
+
+    document.addEventListener("mousedown", handleClickOutside, { signal: abortController.signal });
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      abortController.abort();
     };
   }, [showAreaMeasurer, showLengthMeasurer, showHighlighter]);
 
@@ -116,25 +118,24 @@ export const BottomToolbar = () => {
 
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2">
-      <div className="bg-white border border-gray-300 rounded-lg shadow-xl p-2 flex items-end gap-2">
+      <div className="bg-white border border-gray-300 rounded-md shadow-xl p-1 flex items-end gap-2">
         <div ref={areaContainerRef} className="relative flex flex-col items-center">
           {showAreaMeasurer && <AreaMeasurer />}
 
           <ChevronUpIcon 
             onClick={() => setShowAreaMeasurer(!showAreaMeasurer)}
-            className={`mb-1 p-1 hover:bg-gray-100 rounded transition-all w-8 h-8 cursor-pointer ${showAreaMeasurer ? 'rotate-180' : ''}`}
+            className={`bottom-toolbar-chevron-up ${showAreaMeasurer ? 'rotate-180' : ''}`}
           />
 
           <WithTooltip message="Area Measurer">
             <button
               onClick={handleAreaMeasurerEnabled}
-              className={`p-3 rounded-lg transition-all ${
-                areaMeasurerEnabled 
-                  ? 'bg-blue-500 text-white shadow-md' 
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
+              className={`button-toolbar-button 
+                ${areaMeasurerEnabled ? "button-toolbar-button-active" 
+                                      : "button-toolbar-button-inactive"}
+              `}
             >
-              <IconRulerCombined classes={`w-6 h-6 ${areaMeasurerEnabled ? "text-gray-100" : ""}`} />
+              <IconRulerCombined classes={`w-4 h-4 ${areaMeasurerEnabled ? "text-gray-100" : ""}`} />
             </button>
           </WithTooltip>
         </div>
@@ -144,19 +145,18 @@ export const BottomToolbar = () => {
 
           <ChevronUpIcon 
             onClick={() => setShowLengthMeasurer(!showLengthMeasurer)}
-            className={`mb-1 p-1 hover:bg-gray-100 rounded transition-all w-8 h-8 cursor-pointer ${showLengthMeasurer ? 'rotate-180' : ''}`}
+            className={`bottom-toolbar-chevron-up ${showLengthMeasurer ? 'rotate-180' : ''}`}
           />
 
           <WithTooltip message="Length Measurer">
             <button
               onClick={handleLengthMeasurerEnabled}
-              className={`p-3 rounded-lg transition-all ${
-                lengthMeasurerEnabled 
-                  ? 'bg-blue-500 text-white shadow-md' 
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
+              className={`button-toolbar-button 
+                ${lengthMeasurerEnabled ? "button-toolbar-button-active" 
+                                        : "button-toolbar-button-inactive"}
+              `}
             >
-              <IconRuler classes={`w-6 h-6 ${lengthMeasurerEnabled ? "text-gray-100" : ""}`} />
+              <IconRuler classes={`w-4 h-4 ${lengthMeasurerEnabled ? "text-gray-100" : ""}`} />
             </button>
           </WithTooltip>
         </div>
@@ -164,13 +164,12 @@ export const BottomToolbar = () => {
         <WithTooltip message="Lock Camera Distance">
           <button
             onClick={handleOrbitLockEnabled}
-            className={`p-3 rounded-lg transition-all ${
-              orbitLockEnabled 
-                ? 'bg-blue-500 text-white shadow-md' 
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
+            className={`button-toolbar-button 
+              ${orbitLockEnabled ? "button-toolbar-button-active" 
+                                 : "button-toolbar-button-inactive"}
+            `}
           >
-            <IconCamera classes={`w-6 h-6 ${orbitLockEnabled ? "text-gray-100" : ""}`} />
+            <IconCamera classes={`w-4 h-4 ${orbitLockEnabled ? "text-gray-100" : ""}`} />
           </button>
         </WithTooltip>
 
@@ -179,19 +178,18 @@ export const BottomToolbar = () => {
 
           <ChevronUpIcon 
             onClick={() => setShowHighlighter(!showHighlighter)}
-            className={`mb-1 p-1 hover:bg-gray-100 rounded transition-all w-8 h-8 cursor-pointer ${showHighlighter ? 'rotate-180' : ''}`}
+            className={`bottom-toolbar-chevron-up ${showHighlighter ? 'rotate-180' : ''}`}
           />
 
           <WithTooltip message="Highlighter">
             <button 
               onClick={handleHighlighterEnabled} 
-              className={`p-3 rounded-lg transition-all ${
-                highlighterEnabled 
-                  ? 'bg-blue-500 text-white shadow-md' 
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
+              className={`button-toolbar-button 
+                ${highlighterEnabled ? "button-toolbar-button-active" 
+                                     : "button-toolbar-button-inactive"}
+              `}
             >
-              <IconPaintRoller classes={`w-6 h-6 ${highlighterEnabled ? "text-gray-100" : ""}`} />
+              <IconPaintRoller classes={`w-4 h-4 ${highlighterEnabled ? "text-gray-100" : ""}`} />
             </button>
           </WithTooltip>
         </div>

@@ -9,11 +9,11 @@ export const Highlighter = () => {
   
   return (
     <section
-      className="w-48 bim-component-container"
+      className="w-64 bim-component-container"
     >
       <ul className="bim-component-guide">
         <li>Click to highlight</li>
-        <li>CTRL + Click to highlight multiple</li>
+        <li>CTRL + Click to highlight multiple (or delete a highlighted item)</li>
       </ul>
 
       <button 

@@ -36,12 +36,13 @@ export const SideDrawer = ({
     document.body.style.userSelect = "none";
     document.body.style.cursor = "col-resize";
 
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
+    const abortController = new AbortController();
+
+    document.addEventListener("mousemove", handleMouseMove, { signal: abortController.signal });
+    document.addEventListener("mouseup", handleMouseUp, { signal: abortController.signal });
 
     return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
+      abortController.abort();
       document.body.style.userSelect = "";
       document.body.style.cursor = "";
     };

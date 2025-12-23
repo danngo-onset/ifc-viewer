@@ -32,3 +32,19 @@ body {
 .bim-component-guide {
   @apply flex-col items-start! list-disc list-inside;
 }
+
+.bottom-toolbar-chevron-up {
+  @apply mb-1 hover:bg-gray-100 transition-all w-4 h-4 cursor-pointer;
+}
+
+.button-toolbar-button {
+  @apply p-1 rounded transition-all;
+}
+
+.button-toolbar-button-active {
+  @apply bg-blue-500 text-white shadow-md;
+}
+
+.button-toolbar-button-inactive {
+  @apply bg-gray-100 text-gray-700 hover:bg-gray-200;
+}

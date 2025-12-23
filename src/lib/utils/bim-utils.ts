@@ -25,7 +25,6 @@ export default class BimUtilities {
     di.register(Constants.ComponentsKey, this.components);
   }
 
-  private orbitLockOnMouseDown?: (event: MouseEvent) => void;
   private orbitLockActive = false;
   private orbitLockMarker?: THREE.Mesh;
 
@@ -118,18 +117,27 @@ export default class BimUtilities {
     measurer.enabled = true;
     measurer.mode = "square";
 
-    const enterKeyHandler = (e: KeyboardEvent) => {
-      if (!(e.code === "Enter" || e.code === "NumpadEnter")) return;
-      try {
-        measurer.endCreation();
-      } catch (error) {
-        console.error("Error ending measurement creation:", error);
-      }
-    };
-    window.addEventListener("keydown", enterKeyHandler);
+    const abortController = new AbortController();
 
-    const deleteKeyHandler = (e: KeyboardEvent) => {
-      if (e.code === "Delete" || e.code === "Backspace") {
+    window.addEventListener(
+      "keydown", 
+      (e: KeyboardEvent) => {
+        if (e.code !== "Enter" && e.code !== "NumpadEnter") return;
+  
+        try {
+          measurer.endCreation();
+        } catch (error) {
+          console.error("Error ending measurement creation:", error);
+        }
+      }, 
+      { signal: abortController.signal }
+    );
+
+    window.addEventListener(
+      "keydown", 
+      (e: KeyboardEvent) => {
+        if (e.code !== "Delete" && e.code !== "Backspace") return;
+  
         try {
           if (measurer.list.size > 0) {
             measurer.delete();
@@ -137,12 +145,15 @@ export default class BimUtilities {
         } catch (error) {
           console.error("Error deleting measurement:", error);
         }
-      }
-    };
-    window.addEventListener("keydown", deleteKeyHandler);
-    
-    const dblclickHandler = async () => await measurer.create();
-    if (this.container) this.container.addEventListener("dblclick", dblclickHandler);
+      }, 
+      { signal: abortController.signal }
+    );
+
+    this.container.addEventListener(
+      "dblclick", 
+      async () => await measurer.create(), 
+      { signal: abortController.signal }
+    );
 
     const zoomHandler = async (area: OBCF.Area) => {
       if (!area.boundingBox || !this.world.camera.controls) return;
@@ -156,9 +167,7 @@ export default class BimUtilities {
     di.register(Constants.AreaMeasurementKey, measurer);
 
     return () => {
-      window.removeEventListener("keydown", enterKeyHandler);
-      window.removeEventListener("keydown", deleteKeyHandler);
-      if (this.container) this.container.removeEventListener("dblclick", dblclickHandler);
+      abortController.abort();
       measurer.list.onItemAdded.remove(zoomHandler);
     };
   }
@@ -170,16 +179,29 @@ export default class BimUtilities {
     measurer.enabled = false;
     measurer.mode = "free";
 
-    const dblclickHandler = () => measurer.create();
-    if (this.container) this.container.addEventListener("dblclick", dblclickHandler);
+    const abortController = new AbortController();
 
-    const keydownHandler = (event: KeyboardEvent) => {
-      if ((event.code === "Delete" || event.code === "Backspace") 
-       && measurer.list.size > 0) {
-        measurer.delete();
-      }
-    };
-    window.addEventListener("keydown", keydownHandler);
+    window.addEventListener(
+      "keydown", 
+      (event: KeyboardEvent) => {
+        if (event.code !== "Delete" && event.code !== "Backspace") return;
+  
+        try {
+          if (measurer.list.size > 0) {
+            measurer.delete();
+          }
+        } catch (error) {
+          console.error("Error deleting measurement:", error);
+        }
+      }, 
+      { signal: abortController.signal }
+    );
+
+    this.container.addEventListener(
+      "dblclick", 
+      () => measurer.create(), 
+      { signal: abortController.signal }
+    );
 
     const zoomHandler = (line: OBCF.Line) => {
       if (!this.world.camera.controls) return;
@@ -196,8 +218,7 @@ export default class BimUtilities {
     di.register(Constants.LengthMeasurementKey, measurer);
 
     return () => {
-      window.removeEventListener("keydown", keydownHandler);
-      if (this.container) this.container.removeEventListener("dblclick", dblclickHandler);
+      abortController.abort();
       measurer.list.onItemAdded.remove(zoomHandler);
     };
   }
@@ -233,7 +254,7 @@ export default class BimUtilities {
 
       const data = (await Promise.all(promises)).flat();
       //console.log(data);
-    }
+    };
     highlighter.events.select.onHighlight.add(highlightHandler);
 
     const clearHandler = () => {/* console.log("Selection was cleared") */};
@@ -253,6 +274,8 @@ export default class BimUtilities {
    * The camera will rotate around the picked point since orbit uses the current target.
    */
   initCameraOrbitLock() {
+    const abortController = new AbortController();
+
     const onMouseDown = async (event: MouseEvent) => {
       if (event.button !== 0 || !this.orbitLockActive) return; // only left mouse button
 
@@ -277,20 +300,19 @@ export default class BimUtilities {
       await this.world.camera.controls.setLookAt(pos.x, pos.y, pos.z, point.x, point.y, point.z, false); */
     };
 
-    this.orbitLockOnMouseDown = onMouseDown;
-    this.container.addEventListener("mousedown", onMouseDown, { passive: true });
+    this.container.addEventListener("mousedown", onMouseDown, { passive: true, signal: abortController.signal });
 
     const orbitToggle: OrbitLockToggle = {
       enabled: this.orbitLockActive,
       setEnabled: (value: boolean) => {
         if (value) {
-          if (this.orbitLockOnMouseDown && !this.orbitLockActive) {
-            this.container.addEventListener("mousedown", this.orbitLockOnMouseDown, { passive: true });
+          if (!this.orbitLockActive) {
+            this.container.addEventListener("mousedown", onMouseDown, { passive: true, signal: abortController.signal });
             this.orbitLockActive = true;
           }
         } else {
-          if (this.orbitLockOnMouseDown && this.orbitLockActive) {
-            this.container.removeEventListener("mousedown", this.orbitLockOnMouseDown);
+          if (this.orbitLockActive) {
+            abortController.abort();
             this.orbitLockActive = false;
             this.removeOrbitLockMarker();
           }
@@ -300,10 +322,7 @@ export default class BimUtilities {
     di.register(Constants.OrbitLockKey, orbitToggle);
 
     return () => {
-      if (this.orbitLockOnMouseDown) {
-        this.container.removeEventListener("mousedown", this.orbitLockOnMouseDown);
-      }
-      this.orbitLockOnMouseDown = undefined;
+      abortController.abort();
       this.orbitLockActive = false;
       this.removeOrbitLockMarker();
     };
