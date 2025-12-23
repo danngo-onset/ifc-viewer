@@ -8,7 +8,7 @@ import Constants from "@/domain/Constants";
 
 import type { SetState } from "@/domain/types/SetState";
 
-import { SideDrawer } from "./";
+import { NavigationRailDrawer } from "./";
 
 type TopBarProps = {
   readonly isLoading: boolean;
@@ -101,7 +101,7 @@ export const TopBar = ({
 
   return (
     <section className="flex justify-center items-center space-x-4 py-4 bg-gray-300 relative">
-      <SideDrawer 
+      <NavigationRailDrawer 
         isLoading={isLoading} 
       />
 

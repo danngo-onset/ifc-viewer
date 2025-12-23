@@ -1,4 +1,4 @@
-type LoadingSpinnerProps = {
+type Props = {
   readonly isVisible: boolean;
   readonly message?: string;
 }
@@ -6,7 +6,7 @@ type LoadingSpinnerProps = {
 export const LoadingSpinner = ({ 
   isVisible = false, 
   message = "Loading model..." 
-}: LoadingSpinnerProps) => {
+}: Props) => {
   if (!isVisible) return null;
 
   return (

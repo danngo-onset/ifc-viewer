@@ -8,11 +8,11 @@ import useBimComponent from "@/hooks/useBimComponent";
 
 import Constants from "@/domain/Constants";
 
-type ModelInspectorProps = {
+type Props = {
   readonly isLoading: boolean;
 };
 
-export const ModelInspector = ({ isLoading }: ModelInspectorProps) => {
+export const ModelInspector = ({ isLoading }: Props) => {
   const panelContainerRef = useRef<HTMLDivElement>(null);
   
   const components = useBimComponent<OBC.Components>(Constants.ComponentsKey);
