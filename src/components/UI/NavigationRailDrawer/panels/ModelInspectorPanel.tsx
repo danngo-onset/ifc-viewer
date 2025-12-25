@@ -2,7 +2,7 @@ import { Cross1Icon, LayersIcon } from "@radix-ui/react-icons";
 
 import BimExtensions from "@/lib/extensions/bim-extensions";
 
-import { ItemInspector, ModelInspector } from "@/components/BIM";
+import { ItemInspector, ModelInspector, Classifier } from "@/components/BIM";
 
 import type { Props } from "./index";
 
@@ -10,13 +10,15 @@ export const ModelInspectorPanelToggle = ({ activePanel, callback }: Props) => {
   return (
     <button
       onClick={callback}
-      className={`p-3 rounded-lg transition-colors 
+      className={`p-2 rounded-lg transition-colors flex items-center gap-2 
         ${BimExtensions.isPanelActive(activePanel) 
           ? "bg-blue-600 text-white"
           : "text-gray-400 hover:bg-gray-800 hover:text-white"}
       `}
     >
-      <LayersIcon className="w-5 h-5" />
+      <LayersIcon className="w-4 h-4" />
+
+      <p className="text-xs">Model Inspector</p>
     </button>
   );
 };
@@ -52,6 +54,8 @@ export const ModelInspectorPanel = ({
           <ModelInspector isLoading={isLoading} />
 
           <ItemInspector isLoading={isLoading} />
+
+          <Classifier />
         </div>
       </section>
     </>

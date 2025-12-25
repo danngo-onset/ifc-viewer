@@ -1,4 +1,5 @@
 export default class Constants {
+  // TODO: Convert to string enum for better type safety
   public static readonly ComponentsKey        = "components";
   public static readonly FragmentsManagerKey  = "fragmentsManager";
   public static readonly AreaMeasurementKey   = "areaMeasurer";
@@ -10,5 +11,5 @@ export default class Constants {
     Measurer    : "#494CB6",
     Highlighter : "#BCF124",
     OrbitLock   : "#FF0000",
-  }
-}
+  };
+};
