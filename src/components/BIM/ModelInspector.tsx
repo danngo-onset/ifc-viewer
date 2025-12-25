@@ -21,6 +21,7 @@ export const ModelInspector = ({ isLoading }: Props) => {
   useEffect(() => {
     if (!components || !fragmentsManager) return;
     
+    const containerElement = panelContainerRef.current;
     let panelElement: HTMLElement | null = null;
     
     (async () => {
@@ -62,13 +63,12 @@ export const ModelInspector = ({ isLoading }: Props) => {
 
       panelElement = panel;
 
-      if (panelContainerRef.current) {
-        panelContainerRef.current.innerHTML = "";
-        panelContainerRef.current.appendChild(panelElement);
+      if (containerElement) {
+        containerElement.innerHTML = "";
+        containerElement.appendChild(panelElement);
 
         setTimeout(() => {
-          const bimPanelSection = panelContainerRef
-            .current
+          const bimPanelSection = containerElement
             ?.querySelector('bim-panel-section[label="Model Tree"]') as HTMLElement;
             
           if (bimPanelSection?.shadowRoot) {
@@ -91,8 +91,8 @@ export const ModelInspector = ({ isLoading }: Props) => {
     })();
 
     return () => {
-      if (panelElement && panelContainerRef.current?.contains(panelElement)) {
-        panelContainerRef.current.removeChild(panelElement);
+      if (panelElement && containerElement?.contains(panelElement)) {
+        containerElement.removeChild(panelElement);
       }
     };
   }, [components, fragmentsManager]);

@@ -36,7 +36,7 @@ export const ModelInspectorPanel = ({
     <>
       <section className="flex items-center justify-between p-4 border-b bg-gray-50">
         <h2 className="text-sm font-semibold text-gray-700">
-          "Model Inspector"
+          Model Inspector
         </h2>
 
         <button

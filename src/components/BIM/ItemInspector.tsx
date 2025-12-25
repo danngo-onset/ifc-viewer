@@ -20,13 +20,13 @@ export const ItemInspector = ({ isLoading }: Props) => {
   const fragmentsManager = useBimComponent<OBC.FragmentsManager>(Constants.FragmentsManagerKey);
   const highlighter = useBimComponent<OBCF.Highlighter>(Constants.HighlighterKey);
 
-  let highlightHandler: (modelIdMap: OBC.ModelIdMap) => void;
-  let highlightClearHandler: () => void;
-
   useEffect(() => {
     if (!components || !fragmentsManager || !highlighter) return;
 
+    const containerElement = panelContainerRef.current;
     let panelElement: HTMLElement | null = null;
+    let highlightHandler: (modelIdMap: OBC.ModelIdMap) => void;
+    let highlightClearHandler: () => void;
     
     (async () => {
       const [BUI, BUIC] = await Promise.all([
@@ -100,13 +100,12 @@ export const ItemInspector = ({ isLoading }: Props) => {
 
       panelElement = panel;
 
-      if (panelContainerRef.current) {
-        panelContainerRef.current.innerHTML = "";
-        panelContainerRef.current.appendChild(panelElement);
+      if (containerElement) {
+        containerElement.innerHTML = "";
+        containerElement.appendChild(panelElement);
 
         setTimeout(() => {
-          const bimPanelSection = panelContainerRef
-            .current
+          const bimPanelSection = containerElement
             ?.querySelector('bim-panel-section[label="Item Properties"]') as HTMLElement;
             
           if (bimPanelSection?.shadowRoot) {
@@ -129,8 +128,8 @@ export const ItemInspector = ({ isLoading }: Props) => {
     })();
 
     return () => {
-      if (panelElement && panelContainerRef.current?.contains(panelElement)) {
-        panelContainerRef.current.removeChild(panelElement);
+      if (panelElement && containerElement?.contains(panelElement)) {
+        containerElement.removeChild(panelElement);
       }
 
       highlighter.events.select.onHighlight.remove(highlightHandler);
