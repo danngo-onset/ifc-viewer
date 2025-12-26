@@ -9,7 +9,7 @@ import Constants from "@/domain/Constants";
 
 export const Classifier = () => {
   const panelContainerRef = useRef<HTMLDivElement>(null);
-  const [modelCount, setModelCount] = useState(0);
+  const [modelLoaded, setModelLoaded] = useState(false);
 
   const components = useBimComponent<OBC.Components>(Constants.ComponentsKey);
   const fragmentsManager = useBimComponent<OBC.FragmentsManager>(Constants.FragmentsManagerKey);
@@ -18,11 +18,12 @@ export const Classifier = () => {
     if (!fragmentsManager) return;
 
     const modelCountHandler = () => {
-      setModelCount(fragmentsManager.list.size);
+      setModelLoaded(true);
     };
     fragmentsManager.list.onItemSet.add(modelCountHandler);
 
     return () => {
+      setModelLoaded(false);
       fragmentsManager.list.onItemSet.remove(modelCountHandler);
     };
   }, [fragmentsManager]);
@@ -154,7 +155,7 @@ export const Classifier = () => {
 
         return BUI.html`
           <bim-panel active label="Classifier" class="options-menu">
-            <bim-panel-section style="width: 14rem" label="General">
+            <bim-panel-section label="General">
               <bim-button label="Reset Visibility" @click=${onResetVisibility}></bim-button>
             </bim-panel-section>
             
@@ -184,9 +185,9 @@ export const Classifier = () => {
         containerElement.removeChild(panelElement);
       }
     };
-  }, [components, fragmentsManager, modelCount]);
+  }, [components, fragmentsManager, modelLoaded]);
 
   return (
-    <div className="overflow-auto max-h-1/2" ref={panelContainerRef} />
+    <div className="overflow-auto" ref={panelContainerRef} />
   );
 };

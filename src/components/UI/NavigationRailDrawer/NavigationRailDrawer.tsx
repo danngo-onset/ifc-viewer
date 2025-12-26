@@ -2,7 +2,10 @@ import { useState, useEffect, useRef } from "react";
 
 import { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
 
-import { ModelInspectorPanelToggle, ModelInspectorPanel } from "./panels";
+import { 
+  ModelInspectorPanelToggle, ModelInspectorPanel,
+  SearchPanelToggle, SearchPanel
+} from "./panels";
 
 type Props = {
   readonly isLoading: boolean;
@@ -64,11 +67,16 @@ export const NavigationRailDrawer = ({
       {/* Navigation Rail - always visible */}
       <nav 
         style={{ width: RAIL_WIDTH }}
-        className="flex flex-col items-center h-full bg-gray-900 border-r border-gray-700 py-4 gap-2"
+        className="flex flex-col items-start h-full bg-gray-900 border-r border-gray-700 py-4 gap-2 px-2"
       >
         <ModelInspectorPanelToggle 
           activePanel={activePanel} 
           callback={() => togglePanel(SideDrawerPanel.ModelInspector)} 
+        />
+
+        <SearchPanelToggle 
+          activePanel={activePanel} 
+          callback={() => togglePanel(SideDrawerPanel.Search)} 
         />
       </nav>
 
@@ -83,6 +91,11 @@ export const NavigationRailDrawer = ({
           activePanel={activePanel} 
           callback={() => setActivePanel(SideDrawerPanel.None)} 
           isLoading={isLoading} 
+        />
+
+        <SearchPanel 
+          activePanel={activePanel} 
+          callback={() => setActivePanel(SideDrawerPanel.None)} 
         />
 
         {/* Resize handler */}

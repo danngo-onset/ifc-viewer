@@ -6,3 +6,4 @@ export type Props = {
 };
 
 export * from "./ModelInspectorPanel";
+export * from "./SearchPanel"
