@@ -6,7 +6,7 @@ import { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
 
 import { ItemInspector, ModelInspector } from "@/components/BIM";
 
-import type { Props } from "./";
+import type { Props } from ".";
 
 export const ModelInspectorPanelToggle = ({ activePanel, callback }: Props) => {
   return (

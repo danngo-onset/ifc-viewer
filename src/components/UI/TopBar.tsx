@@ -8,7 +8,7 @@ import Constants from "@/domain/Constants";
 
 import type { SetState } from "@/domain/types/SetState";
 
-import { NavigationRailDrawer } from "./";
+import { NavigationRailDrawer } from ".";
 
 type TopBarProps = {
   readonly isLoading: boolean;

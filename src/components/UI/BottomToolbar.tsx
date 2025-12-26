@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 
 import type * as OBCF from "@thatopen/components-front";
 
-import { ChevronUpIcon } from "@radix-ui/react-icons";
+import { ChevronUpIcon, RulerHorizontalIcon, RulerSquareIcon } from "@radix-ui/react-icons";
 
 import Constants from "@/domain/Constants";
 import type { OrbitLockToggle } from "@/domain/types/OrbitLockToggle";
@@ -11,7 +11,7 @@ import useBimComponent from "@/hooks/useBimComponent";
 
 import { WithTooltip } from "./WithTooltip";
 
-import { IconRulerCombined, IconRuler, IconCamera, IconPaintRoller } from "./icons";
+import { IconCamera, IconPaintRoller } from "./icons";
 
 import { AreaMeasurer, LengthMeasurer, Highlighter } from "../BIM";
 
@@ -135,7 +135,7 @@ export const BottomToolbar = () => {
                                       : "button-toolbar-button-inactive"}
               `}
             >
-              <IconRulerCombined classes={`w-4 h-4 ${areaMeasurerEnabled ? "text-gray-100" : ""}`} />
+              <RulerSquareIcon className={`w-4 h-4 ${areaMeasurerEnabled ? "text-gray-100" : ""}`} />
             </button>
           </WithTooltip>
         </div>
@@ -156,7 +156,7 @@ export const BottomToolbar = () => {
                                         : "button-toolbar-button-inactive"}
               `}
             >
-              <IconRuler classes={`w-4 h-4 ${lengthMeasurerEnabled ? "text-gray-100" : ""}`} />
+              <RulerHorizontalIcon className={`w-4 h-4 ${lengthMeasurerEnabled ? "text-gray-100" : ""}`} />
             </button>
           </WithTooltip>
         </div>

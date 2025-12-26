@@ -34,7 +34,7 @@ export const ModelInspector = ({ isLoading }: Props) => {
 
       const spatialTree: Table<SpatialTreeData> = BUIC.tables.spatialTree({
         components,
-        models: [],
+        models: fragmentsManager.list.values(),
       })[0];
       spatialTree.preserveStructureOnFilter = true;
       spatialTree.style.cursor = "pointer";

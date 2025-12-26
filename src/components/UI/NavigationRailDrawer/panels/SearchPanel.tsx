@@ -1,4 +1,4 @@
-import { MagnifyingGlassIcon, Cross1Icon } from "@radix-ui/react-icons";
+import { Cross1Icon } from "@radix-ui/react-icons";
 
 import BimExtensions from "@/lib/extensions/bim-extensions";
 
@@ -6,7 +6,9 @@ import { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
 
 import { Classifier } from "@/components/BIM";
 
-import type { Props } from "./";
+import { IconSitemap } from "@/components/UI/icons";
+
+import type { Props } from ".";
 
 const TITLE = "Classify";
 
@@ -20,7 +22,7 @@ export const SearchPanelToggle = ({ activePanel, callback }: Props) => {
           : "text-gray-400 hover:bg-gray-800 hover:text-white"}
       `}
     >
-      <MagnifyingGlassIcon className="w-4 h-4" />
+      <IconSitemap classes="w-4 h-4" />
 
       <p className="text-xs">{TITLE}</p>
     </button>
