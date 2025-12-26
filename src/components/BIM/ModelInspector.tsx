@@ -6,7 +6,7 @@ import type { SpatialTreeData } from "@thatopen/ui-obc";
 
 import useBimComponent from "@/hooks/useBimComponent";
 
-import Constants from "@/domain/Constants";
+import { BimComponent } from "@/domain/enums/BIM/BimComponent";
 
 type Props = {
   readonly isLoading: boolean;
@@ -15,8 +15,8 @@ type Props = {
 export const ModelInspector = ({ isLoading }: Props) => {
   const panelContainerRef = useRef<HTMLDivElement>(null);
   
-  const components = useBimComponent<OBC.Components>(Constants.ComponentsKey);
-  const fragmentsManager = useBimComponent<OBC.FragmentsManager>(Constants.FragmentsManagerKey);
+  const components = useBimComponent<OBC.Components>(BimComponent.Components);
+  const fragmentsManager = useBimComponent<OBC.FragmentsManager>(BimComponent.FragmentsManager);
 
   useEffect(() => {
     if (!components || !fragmentsManager) return;

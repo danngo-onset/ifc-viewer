@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 
 import type * as OBCF from "@thatopen/components-front";
 
-import Constants from "@/domain/Constants";
+import { BimComponent } from "@/domain/enums/BIM/BimComponent";
 
 import useBimComponent from "@/hooks/useBimComponent";
 
 export const LengthMeasurer = () => {
   const [visible, setVisible] = useState(false);
 
-  const measurer = useBimComponent<OBCF.LengthMeasurement>(Constants.LengthMeasurementKey);
+  const measurer = useBimComponent<OBCF.LengthMeasurement>(BimComponent.LengthMeasurer);
 
   useEffect(() => {
     if (measurer) {

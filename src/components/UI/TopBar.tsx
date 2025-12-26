@@ -4,7 +4,7 @@ import api from "@/lib/api";
 
 import useBimComponent from "@/hooks/useBimComponent";
 
-import Constants from "@/domain/Constants";
+import { BimComponent } from "@/domain/enums/BIM/BimComponent";
 
 import type { SetState } from "@/domain/types/SetState";
 
@@ -21,7 +21,7 @@ export const TopBar = ({
   setIsLoading,
   setLoadingMessage,
 }: TopBarProps) => {
-  const fragmentsManager = useBimComponent<OBC.FragmentsManager>(Constants.FragmentsManagerKey);
+  const fragmentsManager = useBimComponent<OBC.FragmentsManager>(BimComponent.FragmentsManager);
 
   async function loadIfc(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];

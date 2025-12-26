@@ -4,10 +4,11 @@ import type * as OBCF from "@thatopen/components-front";
 
 import { ChevronUpIcon, RulerHorizontalIcon, RulerSquareIcon } from "@radix-ui/react-icons";
 
-import Constants from "@/domain/Constants";
 import type { OrbitLockToggle } from "@/domain/types/OrbitLockToggle";
 
 import useBimComponent from "@/hooks/useBimComponent";
+
+import { BimComponent } from "@/domain/enums/BIM/BimComponent";
 
 import { WithTooltip } from "./WithTooltip";
 
@@ -31,10 +32,10 @@ export const BottomToolbar = () => {
   const lengthContainerRef = useRef<HTMLDivElement>(null);
   const highlighterContainerRef = useRef<HTMLDivElement>(null);
 
-  const measurer = useBimComponent<OBCF.AreaMeasurement>(Constants.AreaMeasurementKey);
-  const lengthMeasurer = useBimComponent<OBCF.LengthMeasurement>(Constants.LengthMeasurementKey);
-  const orbitToggle = useBimComponent<OrbitLockToggle>(Constants.OrbitLockKey);
-  const highlighter = useBimComponent<OBCF.Highlighter>(Constants.HighlighterKey);
+  const measurer = useBimComponent<OBCF.AreaMeasurement>(BimComponent.AreaMeasurer);
+  const lengthMeasurer = useBimComponent<OBCF.LengthMeasurement>(BimComponent.LengthMeasurer);
+  const orbitToggle = useBimComponent<OrbitLockToggle>(BimComponent.OrbitLock);
+  const highlighter = useBimComponent<OBCF.Highlighter>(BimComponent.Highlighter);
 
   useEffect(() => {
     if (measurer) {

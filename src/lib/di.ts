@@ -1,6 +1,8 @@
+import type { BimComponent } from "@/domain/enums/BIM/BimComponent";
+
 class DIContainer {
   private static instance: DIContainer;
-  private containers: Map<string, any> = new Map();
+  private containers: Map<BimComponent, any> = new Map();
 
   static getInstance() {
     if (!this.instance) {
@@ -10,16 +12,16 @@ class DIContainer {
     return this.instance;
   }
 
-  register<T>(key: string, instance: T) {
+  register<T>(key: BimComponent, instance: T) {
     this.containers.set(key, instance);
   }
 
   /** Shouldn't be called directly in components, use useBimComponent hook instead */
-  get<T>(key: string): T | null {
+  get<T>(key: BimComponent): T | null {
     return this.containers.get(key) || null;
   }
 
-  dispose(key: string) {
+  dispose(key: BimComponent) {
     const instance = this.containers.get(key);
     if (instance && typeof instance.dispose === "function") {
       instance.dispose();
@@ -29,7 +31,7 @@ class DIContainer {
   }
 
   disposeAll() {
-    for (const [key] of this.containers) {
+    for (const key of this.containers.keys()) {
       this.dispose(key);
     }
     this.containers.clear();

@@ -8,6 +8,8 @@ import di from "@/lib/di";
 
 import Constants from "@/domain/Constants";
 
+import { BimComponent } from "@/domain/enums/BIM/BimComponent";
+
 import type { SetState } from "@/domain/types/SetState";
 import type { OrbitLockToggle } from "@/domain/types/OrbitLockToggle";
 import type { World } from "@/domain/types/BIM/World";
@@ -22,7 +24,7 @@ export default class BimUtilities {
     this.world = this.components.get(OBC.Worlds)
                                 .create() as World;
     
-    di.register(Constants.ComponentsKey, this.components);
+    di.register(BimComponent.Components, this.components);
   }
 
   private orbitLockActive = false;
@@ -100,7 +102,7 @@ export default class BimUtilities {
     };
     this.world.onCameraChanged.add(cameraChangeHandler);
 
-    di.register(Constants.FragmentsManagerKey, fragmentsManager);
+    di.register(BimComponent.FragmentsManager, fragmentsManager);
 
     return () => {
       URL.revokeObjectURL(workerUrl);
@@ -164,7 +166,7 @@ export default class BimUtilities {
     };
     measurer.list.onItemAdded.add(zoomHandler);
 
-    di.register(Constants.AreaMeasurementKey, measurer);
+    di.register(BimComponent.AreaMeasurer, measurer);
 
     return () => {
       abortController.abort();
@@ -215,7 +217,7 @@ export default class BimUtilities {
     };
     measurer.list.onItemAdded.add(zoomHandler);
 
-    di.register(Constants.LengthMeasurementKey, measurer);
+    di.register(BimComponent.LengthMeasurer, measurer);
 
     return () => {
       abortController.abort();
@@ -224,7 +226,7 @@ export default class BimUtilities {
   }
 
   async initHighlighter() {
-    const fragmentsManager = di.get<OBC.FragmentsManager>(Constants.FragmentsManagerKey);
+    const fragmentsManager = di.get<OBC.FragmentsManager>(BimComponent.FragmentsManager);
     if (!fragmentsManager) return;
 
     const world = this.world;
@@ -261,7 +263,7 @@ export default class BimUtilities {
     highlighter.events.select.onClear.add(clearHandler);
 
     //highlighter.enabled = false;
-    di.register(Constants.HighlighterKey, highlighter);
+    di.register(BimComponent.Highlighter, highlighter);
 
     return () => {
       highlighter.events.select.onHighlight.remove(highlightHandler);
@@ -319,7 +321,7 @@ export default class BimUtilities {
         }
       }
     };
-    di.register(Constants.OrbitLockKey, orbitToggle);
+    di.register(BimComponent.OrbitLock, orbitToggle);
 
     return () => {
       abortController.abort();

@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 
 import di from "@/lib/di";
 
-export default function useBimComponent<T>(key: string) {
+import type { BimComponent } from "@/domain/enums/BIM/BimComponent";
+
+export default function useBimComponent<T>(key: BimComponent) {
   const [component, setComponent] = useState<T | null>(null);
 
   useEffect(() => {
@@ -19,4 +21,4 @@ export default function useBimComponent<T>(key: string) {
   }, [key]);
 
   return component;
-}
+};

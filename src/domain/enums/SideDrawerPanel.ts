@@ -1,5 +1,5 @@
-export enum SideDrawerPanel {
+export const enum SideDrawerPanel {
   None,
   ModelInspector,
   Search
-}
+};
