@@ -1,0 +1,8 @@
+export const enum BimComponent {
+  Components = "components",
+  FragmentsManager = "fragmentsManager",
+  AreaMeasurer = "areaMeasurer",
+  LengthMeasurer = "lengthMeasurer",
+  Highlighter = "highlighter",
+  OrbitLock = "orbitLock"
+};

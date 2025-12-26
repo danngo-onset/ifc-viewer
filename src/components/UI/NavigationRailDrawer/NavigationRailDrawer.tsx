@@ -2,13 +2,16 @@ import { useState, useEffect, useRef } from "react";
 
 import { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
 
-import { ModelInspectorPanelToggle, ModelInspectorPanel } from "./panels";
+import { 
+  ModelInspectorPanelToggle, ModelInspectorPanel,
+  SearchPanelToggle, SearchPanel
+} from "./panels";
 
 type Props = {
   readonly isLoading: boolean;
-}
+};
 
-const RAIL_WIDTH = 48;
+const RAIL_WIDTH = 160;
 
 export const NavigationRailDrawer = ({ 
   isLoading 
@@ -62,16 +65,21 @@ export const NavigationRailDrawer = ({
   return (
     <article className="fixed inset-y-0 left-0 z-1000 flex">
       {/* Navigation Rail - always visible */}
-      <nav className="flex flex-col items-center w-12 h-full bg-gray-900 border-r border-gray-700 py-4 gap-2">
+      <nav 
+        style={{ width: RAIL_WIDTH }}
+        className="flex flex-col items-start h-full bg-gray-900 border-r border-gray-700 py-4 gap-2 px-2"
+      >
         <ModelInspectorPanelToggle 
           activePanel={activePanel} 
           callback={() => togglePanel(SideDrawerPanel.ModelInspector)} 
         />
 
-        {/* Add more navigation items here */}
+        <SearchPanelToggle 
+          activePanel={activePanel} 
+          callback={() => togglePanel(SideDrawerPanel.Search)} 
+        />
       </nav>
 
-      {/* Expandable Panel */}
       <aside
         ref={panelRef}
         className={`flex flex-col h-full bg-white shadow-xl border-r transform transition-all duration-300 overflow-hidden ${
@@ -83,6 +91,11 @@ export const NavigationRailDrawer = ({
           activePanel={activePanel} 
           callback={() => setActivePanel(SideDrawerPanel.None)} 
           isLoading={isLoading} 
+        />
+
+        <SearchPanel 
+          activePanel={activePanel} 
+          callback={() => setActivePanel(SideDrawerPanel.None)} 
         />
 
         {/* Resize handler */}

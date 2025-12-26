@@ -4,12 +4,12 @@ import type * as OBCF from "@thatopen/components-front";
 
 import useBimComponent from "@/hooks/useBimComponent";
 
-import Constants from "@/domain/Constants";
+import { BimComponent } from "@/domain/enums/BIM/BimComponent";
 
 export const AreaMeasurer = () => {
   const [visible, setVisible] = useState(false);
 
-  const measurer = useBimComponent<OBCF.AreaMeasurement>(Constants.AreaMeasurementKey);
+  const measurer = useBimComponent<OBCF.AreaMeasurement>(BimComponent.AreaMeasurer);
 
   useEffect(() => {
     if (measurer) {

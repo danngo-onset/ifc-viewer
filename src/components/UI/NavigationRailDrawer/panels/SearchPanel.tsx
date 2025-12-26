@@ -1,46 +1,42 @@
-import { LayersIcon, Cross1Icon } from "@radix-ui/react-icons";
+import { Cross1Icon } from "@radix-ui/react-icons";
 
 import BimExtensions from "@/lib/extensions/bim-extensions";
 
 import { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
 
-import { ItemInspector, ModelInspector } from "@/components/BIM";
+import { Classifier } from "@/components/BIM";
+
+import { IconSitemap } from "@/components/UI/icons";
 
 import type { Props } from ".";
 
-export const ModelInspectorPanelToggle = ({ activePanel, callback }: Props) => {
+const TITLE = "Classify";
+
+export const SearchPanelToggle = ({ activePanel, callback }: Props) => {
   return (
     <button
       onClick={callback}
       className={`w-full p-2 rounded-lg transition-colors flex items-center gap-2 
-        ${BimExtensions.isPanelActive(activePanel, SideDrawerPanel.ModelInspector) 
+        ${BimExtensions.isPanelActive(activePanel, SideDrawerPanel.Search) 
           ? "bg-blue-600 text-white"
           : "text-gray-400 hover:bg-gray-800 hover:text-white"}
       `}
     >
-      <LayersIcon className="w-4 h-4" />
+      <IconSitemap classes="w-4 h-4" />
 
-      <p className="text-xs">Model Inspector</p>
+      <p className="text-xs">{TITLE}</p>
     </button>
   );
 };
 
-interface PanelProps extends Props {
-  readonly isLoading: boolean;
-};
-
-export const ModelInspectorPanel = ({ 
-  activePanel, 
-  callback, 
-  isLoading
-}: PanelProps) => {
-  if (!BimExtensions.isPanelActive(activePanel, SideDrawerPanel.ModelInspector)) return null;
+export const SearchPanel = ({ activePanel, callback }: Props) => {
+  if (!BimExtensions.isPanelActive(activePanel, SideDrawerPanel.Search)) return null;
 
   return (
     <>
       <section className="flex items-center justify-between p-4 border-b bg-gray-50">
         <h2 className="text-sm font-semibold text-gray-700">
-          Model Inspector
+          {TITLE}
         </h2>
 
         <button
@@ -53,9 +49,7 @@ export const ModelInspectorPanel = ({
 
       <section className="flex-1 overflow-y-auto">
         <div className="p-4 text-sm text-gray-600 flex flex-col gap-4 h-full">
-          <ModelInspector isLoading={isLoading} />
-
-          <ItemInspector isLoading={isLoading} />
+          <Classifier />
         </div>
       </section>
     </>

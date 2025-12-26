@@ -7,7 +7,7 @@ import type { ItemsDataTableData, ItemsDataState } from "@thatopen/ui-obc";
 
 import useBimComponent from "@/hooks/useBimComponent";
 
-import Constants from "@/domain/Constants";
+import { BimComponent } from "@/domain/enums/BIM/BimComponent";
 
 type Props = {
   readonly isLoading: boolean;
@@ -16,9 +16,9 @@ type Props = {
 export const ItemInspector = ({ isLoading }: Props) => {
   const panelContainerRef = useRef<HTMLDivElement>(null);
   
-  const components = useBimComponent<OBC.Components>(Constants.ComponentsKey);
-  const fragmentsManager = useBimComponent<OBC.FragmentsManager>(Constants.FragmentsManagerKey);
-  const highlighter = useBimComponent<OBCF.Highlighter>(Constants.HighlighterKey);
+  const components = useBimComponent<OBC.Components>(BimComponent.Components);
+  const fragmentsManager = useBimComponent<OBC.FragmentsManager>(BimComponent.FragmentsManager);
+  const highlighter = useBimComponent<OBCF.Highlighter>(BimComponent.Highlighter);
 
   useEffect(() => {
     if (!components || !fragmentsManager || !highlighter) return;

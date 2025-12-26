@@ -1,8 +1,7 @@
-export type IconProps = {
+export type Props = {
   readonly classes?: string;
 }
 
-export * from "./IconRulerCombined";
-export * from "./IconRuler";
 export * from "./IconCamera";
+export * from "./IconSitemap";
 export * from "./IconPaintRoller";
