@@ -4,7 +4,7 @@ import type * as OBCF from "@thatopen/components-front";
 
 import { BimComponent } from "@/domain/enums/BIM/BimComponent";
 
-import useBimComponent from "@/hooks/useBimComponent";
+import { useBimComponent } from "@/hooks/BIM";
 
 export const LengthMeasurer = () => {
   const [visible, setVisible] = useState(false);

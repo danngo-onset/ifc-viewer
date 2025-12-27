@@ -1,6 +1,6 @@
 import React from "react";
 
-import BimExtensions from "@/lib/extensions/bim-extensions";
+import { BimExtensions } from "@/lib/extensions/BIM";
 
 import type { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
 

@@ -1,6 +1,6 @@
 import type * as OBCF from "@thatopen/components-front";
 
-import useBimComponent from "@/hooks/useBimComponent";
+import { useBimComponent } from "@/hooks/BIM";
 
 import { BimComponent } from "@/domain/enums/BIM/BimComponent";
 

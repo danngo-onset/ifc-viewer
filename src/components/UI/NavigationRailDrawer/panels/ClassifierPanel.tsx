@@ -1,6 +1,6 @@
 import { Cross1Icon } from "@radix-ui/react-icons";
 
-import BimExtensions from "@/lib/extensions/bim-extensions";
+import { BimExtensions } from "@/lib/extensions/BIM";
 
 import { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
 

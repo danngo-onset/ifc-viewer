@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 
-import di from "@/lib/di";
+import { di } from "@/lib";
 
 import type { BimComponent } from "@/domain/enums/BIM/BimComponent";
 
-export default function useBimComponent<T>(key: BimComponent) {
+export function useBimComponent<T>(key: BimComponent) {
   const [component, setComponent] = useState<T | null>(null);
 
   useEffect(() => {

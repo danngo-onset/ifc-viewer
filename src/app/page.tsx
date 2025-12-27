@@ -2,8 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import di from "@/lib/di";
-import BimUtilities from "@/lib/utils/bim-utils";
+import { di } from "@/lib";
+
+import { BimManager } from "@/lib/utils/BIM";
 
 import { LoadingSpinner, TopBar, BottomToolbar } from "@/components/UI";
 
@@ -16,7 +17,7 @@ export default function Home() {
     const container = containerRef.current;
     if (!container) return;
 
-    const bimUtilities = new BimUtilities(container);
+    const bimUtilities = new BimManager(container);
 
     const cleanupFunctions: Array<() => void> = [];
 

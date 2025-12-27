@@ -38,5 +38,4 @@ class DIContainer {
   }
 }
 
-const di = DIContainer.getInstance();
-export default di;
+export const di = DIContainer.getInstance();

@@ -4,7 +4,7 @@ import type * as OBC from "@thatopen/components";
 import type { Table } from "@thatopen/ui";
 import type { SpatialTreeData } from "@thatopen/ui-obc";
 
-import useBimComponent from "@/hooks/useBimComponent";
+import { useBimComponent } from "@/hooks/BIM";
 
 import { BimComponent } from "@/domain/enums/BIM/BimComponent";
 
