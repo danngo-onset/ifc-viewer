@@ -6,37 +6,16 @@ import { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
 
 import { Classifier } from "@/components/BIM";
 
-import { IconSitemap } from "@/components/UI/icons";
-
 import type { Props } from ".";
 
-const TITLE = "Classify";
-
-export const SearchPanelToggle = ({ activePanel, callback }: Props) => {
-  return (
-    <button
-      onClick={callback}
-      className={`w-full p-2 rounded-lg transition-colors flex items-center gap-2 
-        ${BimExtensions.isPanelActive(activePanel, SideDrawerPanel.Search) 
-          ? "bg-blue-600 text-white"
-          : "text-gray-400 hover:bg-gray-800 hover:text-white"}
-      `}
-    >
-      <IconSitemap classes="w-4 h-4" />
-
-      <p className="text-xs">{TITLE}</p>
-    </button>
-  );
-};
-
-export const SearchPanel = ({ activePanel, callback }: Props) => {
-  if (!BimExtensions.isPanelActive(activePanel, SideDrawerPanel.Search)) return null;
+export const ClassifierPanel = ({ activePanel, callback }: Props) => {
+  if (!BimExtensions.isPanelActive(activePanel, SideDrawerPanel.Classifier)) return null;
 
   return (
     <>
       <section className="flex items-center justify-between p-4 border-b bg-gray-50">
         <h2 className="text-sm font-semibold text-gray-700">
-          {TITLE}
+          Classify
         </h2>
 
         <button

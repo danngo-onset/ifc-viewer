@@ -1,10 +1,15 @@
 import { useState, useEffect, useRef } from "react";
 
+import { LayersIcon } from "@radix-ui/react-icons";
+
 import { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
 
+import { IconSitemap } from "@/components/UI/icons";
+
 import { 
-  ModelInspectorPanelToggle, ModelInspectorPanel,
-  SearchPanelToggle, SearchPanel
+  PanelToggle,
+  ModelInspectorPanel,
+  ClassifierPanel
 } from "./panels";
 
 type Props = {
@@ -69,22 +74,28 @@ export const NavigationRailDrawer = ({
         style={{ width: RAIL_WIDTH }}
         className="flex flex-col items-start h-full bg-gray-900 border-r border-gray-700 py-4 gap-2 px-2"
       >
-        <ModelInspectorPanelToggle 
-          activePanel={activePanel} 
-          callback={() => togglePanel(SideDrawerPanel.ModelInspector)} 
+        <PanelToggle
+          activePanel={activePanel}
+          targetPanel={SideDrawerPanel.ModelInspector}
+          callback={() => togglePanel(SideDrawerPanel.ModelInspector)}
+          title="Model Inspector"
+          icon={<LayersIcon />}
         />
 
-        <SearchPanelToggle 
-          activePanel={activePanel} 
-          callback={() => togglePanel(SideDrawerPanel.Search)} 
+        <PanelToggle
+          activePanel={activePanel}
+          targetPanel={SideDrawerPanel.Classifier}
+          callback={() => togglePanel(SideDrawerPanel.Classifier)}
+          title="Classify"
+          icon={<IconSitemap />}
         />
       </nav>
 
       <aside
         ref={panelRef}
-        className={`flex flex-col h-full bg-white shadow-xl border-r transform transition-all duration-300 overflow-hidden ${
-          isPanelOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
+        className={`flex flex-col h-full bg-white shadow-xl border-r transform transition-all duration-300 overflow-hidden 
+          ${isPanelOpen ? "opacity-100" : "opacity-0 pointer-events-none"}
+        `}
         style={{ width: isPanelOpen ? `${panelWidth}px` : 0 }}
       >
         <ModelInspectorPanel 
@@ -93,7 +104,7 @@ export const NavigationRailDrawer = ({
           isLoading={isLoading} 
         />
 
-        <SearchPanel 
+        <ClassifierPanel 
           activePanel={activePanel} 
           callback={() => setActivePanel(SideDrawerPanel.None)} 
         />

@@ -1,4 +1,4 @@
-import { LayersIcon, Cross1Icon } from "@radix-ui/react-icons";
+import { Cross1Icon } from "@radix-ui/react-icons";
 
 import BimExtensions from "@/lib/extensions/bim-extensions";
 
@@ -7,23 +7,6 @@ import { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
 import { ItemInspector, ModelInspector } from "@/components/BIM";
 
 import type { Props } from ".";
-
-export const ModelInspectorPanelToggle = ({ activePanel, callback }: Props) => {
-  return (
-    <button
-      onClick={callback}
-      className={`w-full p-2 rounded-lg transition-colors flex items-center gap-2 
-        ${BimExtensions.isPanelActive(activePanel, SideDrawerPanel.ModelInspector) 
-          ? "bg-blue-600 text-white"
-          : "text-gray-400 hover:bg-gray-800 hover:text-white"}
-      `}
-    >
-      <LayersIcon className="w-4 h-4" />
-
-      <p className="text-xs">Model Inspector</p>
-    </button>
-  );
-};
 
 interface PanelProps extends Props {
   readonly isLoading: boolean;

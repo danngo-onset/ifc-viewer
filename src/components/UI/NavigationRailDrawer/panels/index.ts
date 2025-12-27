@@ -5,5 +5,6 @@ export type Props = {
   readonly callback    : () => void;
 };
 
+export * from "./PanelToggle";
 export * from "./ModelInspectorPanel";
-export * from "./SearchPanel"
+export * from "./ClassifierPanel"
