@@ -14,8 +14,7 @@ import type { SetState } from "@/domain/types/SetState";
 import type { OrbitLockToggle } from "@/domain/types/OrbitLockToggle";
 import type { World } from "@/domain/types/BIM/World";
 
-/** Utility class for functions that need injected dependencies */
-export class BimUtilities {
+export class BimManager {
   private readonly components : OBC.Components;
   private readonly world      : World;
 

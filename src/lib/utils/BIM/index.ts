@@ -1,1 +1,1 @@
-export * from "./bim-utils";
+export * from "./BimManager";
