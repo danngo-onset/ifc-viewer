@@ -2,8 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import di from "@/lib/di";
-import BimUtilities from "@/lib/utils/bim-utils";
+import { di } from "@/lib";
+
+import { BimUtilities } from "@/lib/utils/BIM";
 
 import { LoadingSpinner, TopBar, BottomToolbar } from "@/components/UI";
 

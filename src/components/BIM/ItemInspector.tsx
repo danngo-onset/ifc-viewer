@@ -5,7 +5,7 @@ import type * as OBCF from "@thatopen/components-front";
 import type { Table, UpdateFunction } from "@thatopen/ui";
 import type { ItemsDataTableData, ItemsDataState } from "@thatopen/ui-obc";
 
-import useBimComponent from "@/hooks/useBimComponent";
+import { useBimComponent } from "@/hooks/BIM";
 
 import { BimComponent } from "@/domain/enums/BIM/BimComponent";
 

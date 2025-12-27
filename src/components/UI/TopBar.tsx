@@ -1,8 +1,8 @@
 import type * as OBC from "@thatopen/components";
 
-import api from "@/lib/api";
+import { api } from "@/lib";
 
-import useBimComponent from "@/hooks/useBimComponent";
+import { useBimComponent } from "@/hooks/BIM";
 
 import { BimComponent } from "@/domain/enums/BIM/BimComponent";
 

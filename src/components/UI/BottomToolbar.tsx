@@ -6,7 +6,7 @@ import { ChevronUpIcon, RulerHorizontalIcon, RulerSquareIcon } from "@radix-ui/r
 
 import type { OrbitLockToggle } from "@/domain/types/OrbitLockToggle";
 
-import useBimComponent from "@/hooks/useBimComponent";
+import { useBimComponent } from "@/hooks/BIM";
 
 import { BimComponent } from "@/domain/enums/BIM/BimComponent";
 

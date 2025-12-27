@@ -4,7 +4,7 @@ import type { FragmentsModel, ItemData } from "@thatopen/fragments";
 
 import * as THREE from "three";
 
-import di from "@/lib/di";
+import { di } from "@/lib";
 
 import Constants from "@/domain/Constants";
 
@@ -15,7 +15,7 @@ import type { OrbitLockToggle } from "@/domain/types/OrbitLockToggle";
 import type { World } from "@/domain/types/BIM/World";
 
 /** Utility class for functions that need injected dependencies */
-export default class BimUtilities {
+export class BimUtilities {
   private readonly components : OBC.Components;
   private readonly world      : World;
 

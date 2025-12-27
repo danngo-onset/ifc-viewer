@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import * as OBC from "@thatopen/components";
 import * as BUI from "@thatopen/ui";
 
-import useBimComponent from "@/hooks/useBimComponent";
+import { useBimComponent } from "@/hooks/BIM";
 
 import { BimComponent } from "@/domain/enums/BIM/BimComponent";
 
