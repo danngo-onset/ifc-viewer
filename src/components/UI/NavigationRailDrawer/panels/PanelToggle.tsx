@@ -7,9 +7,9 @@ import type { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
 import type { Props } from ".";
 
 interface ToggleProps extends Props {
-  readonly targetPanel : SideDrawerPanel;
-  readonly title       : string;
-  readonly icon        : React.ReactElement;
+  targetPanel : SideDrawerPanel;
+  title       : string;
+  icon        : React.ReactElement;
 }
 
 export const PanelToggle = ({

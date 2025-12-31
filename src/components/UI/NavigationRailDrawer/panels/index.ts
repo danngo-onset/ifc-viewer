@@ -1,8 +1,8 @@
 import type { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
 
 export type Props = {
-  readonly activePanel : SideDrawerPanel;
-  readonly callback    : () => void;
+  activePanel : SideDrawerPanel;
+  callback    : () => void;
 };
 
 export * from "./PanelToggle";

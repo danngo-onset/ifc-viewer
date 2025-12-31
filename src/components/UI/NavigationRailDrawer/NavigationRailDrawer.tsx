@@ -13,7 +13,7 @@ import {
 } from "./panels";
 
 type Props = {
-  readonly isLoading: boolean;
+  isLoading: boolean;
 };
 
 const RAIL_WIDTH = 160;

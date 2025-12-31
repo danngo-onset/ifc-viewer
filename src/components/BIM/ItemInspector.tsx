@@ -10,7 +10,7 @@ import { useBimComponent } from "@/hooks/BIM";
 import { BimComponent } from "@/domain/enums/BIM/BimComponent";
 
 type Props = {
-  readonly isLoading: boolean;
+  isLoading: boolean;
 };
 
 export const ItemInspector = ({ isLoading }: Props) => {

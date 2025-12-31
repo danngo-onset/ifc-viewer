@@ -1,8 +1,8 @@
 import { ReactNode, useState } from "react";
 
 type Props = {
-  readonly message  : string;
-  readonly children : ReactNode;
+  message  : string;
+  children : ReactNode;
 }
 
 export const WithTooltip = ({ message, children }: Props) => {

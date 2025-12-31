@@ -1,6 +1,6 @@
 type Props = {
-  readonly isVisible: boolean;
-  readonly message?: string;
+  isVisible: boolean;
+  message?: string;
 }
 
 export const LoadingSpinner = ({ 

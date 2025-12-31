@@ -1,5 +1,5 @@
 export type Props = {
-  readonly classes?: string;
+  classes?: string;
 }
 
 export * from "./IconCamera";

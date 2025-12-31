@@ -9,7 +9,7 @@ import { ItemInspector, ModelInspector } from "@/components/BIM";
 import type { Props } from ".";
 
 interface PanelProps extends Props {
-  readonly isLoading: boolean;
+  isLoading: boolean;
 };
 
 export const ModelInspectorPanel = ({ 

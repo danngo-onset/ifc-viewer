@@ -11,9 +11,9 @@ import type { SetState } from "@/domain/types/SetState";
 import { NavigationRailDrawer } from ".";
 
 type TopBarProps = {
-  readonly isLoading: boolean;
-  readonly setIsLoading: SetState<boolean>;
-  readonly setLoadingMessage: SetState<string>;
+  isLoading: boolean;
+  setIsLoading: SetState<boolean>;
+  setLoadingMessage: SetState<string>;
 };
 
 export const TopBar = ({
