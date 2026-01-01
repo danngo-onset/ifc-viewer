@@ -6,7 +6,7 @@ import * as THREE from "three";
 
 import { di } from "@/lib";
 
-import Constants from "@/domain/Constants";
+import { Constants } from "@/domain/Constants";
 
 import { BimComponent } from "@/domain/enums/BIM/BimComponent";
 
