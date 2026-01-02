@@ -22,11 +22,11 @@ export const LengthMeasurer = () => {
       className="w-64 bim-component-container"
     >
       <ul className="bim-component-guide">
-        <li>Double Click to measure</li>
+        <li>Double click to measure</li>
       </ul>
 
       <div>
-        <label htmlFor="length-measurement-visible">Measurement Visible</label>
+        <label htmlFor="length-measurement-visible">Measurement visible</label>
 
         <input 
           type="checkbox" 

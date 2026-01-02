@@ -19,7 +19,17 @@ export class BimManager {
   private readonly components : OBC.Components;
   private readonly world      : World;
 
-  constructor(private readonly container: HTMLElement) {
+  private static instance: BimManager;
+
+  static getInstance(container: HTMLElement) {
+    if (!this.instance) {
+      this.instance = new this(container);
+    }
+
+    return this.instance;
+  }
+
+  private constructor(private readonly container: HTMLElement) {
     this.components = new OBC.Components();
     this.world = this.components.get(OBC.Worlds)
                                 .create() as World;

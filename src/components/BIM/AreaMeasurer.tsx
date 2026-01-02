@@ -22,11 +22,11 @@ export const AreaMeasurer = () => {
       className="w-48 bim-component-container"
     >
       <ul className="bim-component-guide">
-        <li>Double Click to measure</li>
+        <li>Double click to measure</li>
       </ul>
 
       <div>
-        <label htmlFor="area-measurement-visible">Measurement Visible</label>
+        <label htmlFor="area-measurement-visible">Measurement visible</label>
 
         <input 
           type="checkbox" 

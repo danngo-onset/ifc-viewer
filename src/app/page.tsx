@@ -15,7 +15,7 @@ export default function Home() {
     const container = containerRef.current;
     if (!container) return;
 
-    const bimManager = new BimManager(container);
+    const bimManager = BimManager.getInstance(container);
 
     const cleanupFunctions: Array<() => void> = [];
 
