@@ -32,7 +32,7 @@ export const LengthMeasurer = () => {
           type="checkbox" 
           id="length-measurement-visible" 
           checked={visible} 
-          onChange={(e) => {
+          onChange={e => {
             const checked = e.target.checked;
             setVisible(checked);
 

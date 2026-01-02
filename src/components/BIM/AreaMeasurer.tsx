@@ -32,7 +32,7 @@ export const AreaMeasurer = () => {
           type="checkbox" 
           id="area-measurement-visible" 
           checked={visible} 
-          onChange={(e) => {
+          onChange={e => {
             const checked = e.target.checked;
             setVisible(checked);
 

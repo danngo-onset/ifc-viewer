@@ -112,7 +112,7 @@ export const NavigationRailDrawer = ({
         {/* Resize handler */}
         {isPanelOpen && (
           <span
-            onMouseDown={(e) => {
+            onMouseDown={e => {
               e.preventDefault();
               e.stopPropagation();
               setIsResizing(true);
