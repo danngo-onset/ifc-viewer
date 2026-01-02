@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import * as OBC from "@thatopen/components";
-import * as BUI from "@thatopen/ui";
+import type * as TBUI from "@thatopen/ui";
 
 import { useBimComponent } from "@/hooks/BIM";
 
@@ -36,9 +36,6 @@ export const Classifier = () => {
 
     (async () => {
       const BUI = await import("@thatopen/ui");
-
-      // TODO: init this once globally
-      BUI.Manager.init();
       
       const hider = components.get(OBC.Hider);
 
@@ -89,7 +86,7 @@ export const Classifier = () => {
         const onCreated = async (e?: Element) => {
           if (!e) return;
           
-          const dropdown = e as BUI.Dropdown;
+          const dropdown = e as TBUI.Dropdown;
 
           const modelCategories = new Set<string>();
           for (const [, model] of fragmentsManager.list) {
@@ -115,11 +112,11 @@ export const Classifier = () => {
         `;
       };
 
-      const panel = BUI.Component.create<BUI.PanelSection>(() => {
-        const categoriesDropdownA = BUI.Component.create<BUI.Dropdown>(categoriesDropdownTemplate);
-        const categoriesDropdownB = BUI.Component.create<BUI.Dropdown>(categoriesDropdownTemplate);
+      const panel = BUI.Component.create<TBUI.PanelSection>(() => {
+        const categoriesDropdownA = BUI.Component.create<TBUI.Dropdown>(categoriesDropdownTemplate);
+        const categoriesDropdownB = BUI.Component.create<TBUI.Dropdown>(categoriesDropdownTemplate);
 
-        const onIsolateCategory = async({ target }: { target: BUI.Button }) => {
+        const onIsolateCategory = async({ target }: { target: TBUI.Button }) => {
           if (!categoriesDropdownA) return;
 
           const categories = categoriesDropdownA.value;
@@ -132,7 +129,7 @@ export const Classifier = () => {
           target.loading = false;
         };
 
-        const onHideCategory = async({ target }: { target: BUI.Button }) => {
+        const onHideCategory = async({ target }: { target: TBUI.Button }) => {
           if (!categoriesDropdownB) return;
 
           const categories = categoriesDropdownB.value;
@@ -145,7 +142,7 @@ export const Classifier = () => {
           target.loading = false;
         };
         
-        const onResetVisibility = async({ target }: { target: BUI.Button }) => {
+        const onResetVisibility = async({ target }: { target: TBUI.Button }) => {
           target.loading = true;
 
           await resetVisibility();

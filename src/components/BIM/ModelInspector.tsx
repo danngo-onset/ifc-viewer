@@ -30,8 +30,6 @@ export const ModelInspector = ({ isLoading }: Props) => {
         import("@thatopen/ui-obc")
       ]);
 
-      BUI.Manager.init();
-
       const spatialTree: Table<SpatialTreeData> = BUIC.tables.spatialTree({
         components,
         models: fragmentsManager.list.values(),
