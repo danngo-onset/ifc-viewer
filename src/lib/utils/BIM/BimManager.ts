@@ -44,7 +44,11 @@ export class BimManager {
     this.world.scene.three.background = null; // light scene
 
     //world.renderer = new OBC.SimpleRenderer(components, containerRef.current);
-    this.world.renderer = new OBCF.PostproductionRenderer(this.components, this.container);
+    this.world.renderer = new OBCF.PostproductionRenderer(
+      this.components, 
+      this.container, 
+      { /* logarithmicDepthBuffer: true */ }
+    );
 
     this.world.camera = new OBC.OrthoPerspectiveCamera(this.components);
     //world.camera.controls.maxDistance = 300;
