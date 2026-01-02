@@ -20,7 +20,7 @@ export default function Home() {
     const cleanupFunctions: Array<() => void> = [];
 
     (async () => {
-      await bimManager.initComponentsAndWorld();
+      await bimManager.init();
       
       const [
         fragmentsManagerCleanup, 

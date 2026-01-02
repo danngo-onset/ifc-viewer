@@ -35,10 +35,24 @@ export class BimManager {
                                 .create() as World;
   }
 
-  private orbitLockActive = false;
-  private orbitLockMarker?: THREE.Mesh;
+  /**
+   * Initialise the following core components:
+   * - BUI, BUIC
+   * - World
+   * - Components
+   */
+  async init() {
+    const [
+      { Manager: BUIManager },
+      { Manager: BUICManager }
+    ] = await Promise.all([
+      import("@thatopen/ui"),
+      import("@thatopen/ui-obc")
+    ]);
+    
+    BUIManager.init();
+    BUICManager.init();
 
-  async initComponentsAndWorld() {
     this.world.scene = new OBC.SimpleScene(this.components);
     this.world.scene.setup();
     this.world.scene.three.background = null; // light scene

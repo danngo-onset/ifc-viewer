@@ -34,8 +34,6 @@ export const ItemInspector = ({ isLoading }: Props) => {
         import("@thatopen/ui-obc")
       ]);
 
-      BUI.Manager.init();
-
       const itemsData = BUIC.tables.itemsData({
         components,
         modelIdMap: {}
