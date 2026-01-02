@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 
+import type * as OBC from "@thatopen/components";
 import type * as OBCF from "@thatopen/components-front";
 
-import { ChevronUpIcon, RulerHorizontalIcon, RulerSquareIcon } from "@radix-ui/react-icons";
+import { ChevronUpIcon, RulerHorizontalIcon, RulerSquareIcon, ScissorsIcon } from "@radix-ui/react-icons";
 
 import { useBimComponent } from "@/hooks/BIM";
 
@@ -14,7 +15,7 @@ import { WithTooltip } from "./WithTooltip";
 
 import { IconCamera, IconPaintRoller } from "./icons";
 
-import { AreaMeasurer, LengthMeasurer, Highlighter } from "../BIM";
+import { AreaMeasurer, LengthMeasurer, Highlighter, Clipper } from "../BIM";
 
 export const BottomToolbar = () => {
   const [areaMeasurerEnabled, setAreaMeasurerEnabled] = useState(false);
@@ -27,15 +28,20 @@ export const BottomToolbar = () => {
 
   const [highlighterEnabled, setHighlighterEnabled] = useState(false);
   const [showHighlighter, setShowHighlighter] = useState(false);
+
+  const [clipperEnabled, setClipperEnabled] = useState(false);
+  const [showClipper, setShowClipper] = useState(false);
   
   const areaContainerRef = useRef<HTMLDivElement>(null);
   const lengthContainerRef = useRef<HTMLDivElement>(null);
   const highlighterContainerRef = useRef<HTMLDivElement>(null);
+  const clipperContainerRef = useRef<HTMLDivElement>(null);
 
   const measurer = useBimComponent<OBCF.AreaMeasurement>(BimComponent.AreaMeasurer);
   const lengthMeasurer = useBimComponent<OBCF.LengthMeasurement>(BimComponent.LengthMeasurer);
   const cameraDistanceLocker = useBimComponent<CameraDistanceLocker>(BimComponent.CameraDistanceLocker);
   const highlighter = useBimComponent<OBCF.Highlighter>(BimComponent.Highlighter);
+  const clipper = useBimComponent<OBC.Clipper>(BimComponent.Clipper);
 
   useEffect(() => {
     if (measurer) {
@@ -61,6 +67,12 @@ export const BottomToolbar = () => {
     }
   }, [highlighter]);
 
+  useEffect(() => {
+    if (clipper) {
+      setClipperEnabled(clipper.enabled);
+    }
+  }, [clipper]);
+
   // Handle click outside to close options
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -77,6 +89,10 @@ export const BottomToolbar = () => {
       if (showHighlighter && highlighterContainerRef.current && !highlighterContainerRef.current.contains(target)) {
         setShowHighlighter(false);
       }
+
+      if (showClipper && clipperContainerRef.current && !clipperContainerRef.current.contains(target)) {
+        setShowClipper(false);
+      }
     };
 
     const abortController = new AbortController();
@@ -86,7 +102,7 @@ export const BottomToolbar = () => {
     return () => {
       abortController.abort();
     };
-  }, [showAreaMeasurer, showLengthMeasurer, showHighlighter]);
+  }, [showAreaMeasurer, showLengthMeasurer, showHighlighter, showClipper]);
 
   const handleAreaMeasurerEnabled = () => {
     if (!measurer) return;
@@ -115,6 +131,13 @@ export const BottomToolbar = () => {
 
     highlighter.enabled = !highlighterEnabled;
     setHighlighterEnabled(highlighter.enabled);
+  };
+
+  const handleClipperEnabled = () => {
+    if (!clipper) return;
+
+    clipper.enabled = !clipperEnabled;
+    setClipperEnabled(clipper.enabled);
   };
 
   return (
@@ -191,6 +214,27 @@ export const BottomToolbar = () => {
               `}
             >
               <IconPaintRoller classes={`w-4 h-4 ${highlighterEnabled ? "text-gray-100" : ""}`} />
+            </button>
+          </WithTooltip>
+        </div>
+
+        <div ref={clipperContainerRef} className="relative flex flex-col items-center">
+          {showClipper && <Clipper />}
+
+          <ChevronUpIcon 
+            onClick={() => setShowClipper(!showClipper)}
+            className={`bottom-toolbar-chevron-up ${showClipper ? 'rotate-180' : ''}`}
+          />
+
+          <WithTooltip message="Clipper">
+            <button
+              onClick={handleClipperEnabled}
+              className={`button-toolbar-button 
+                ${clipperEnabled ? "button-toolbar-button-active" 
+                                 : "button-toolbar-button-inactive"}
+            `}
+            >
+              <ScissorsIcon className={`w-4 h-4 ${clipperEnabled ? "text-gray-100" : ""}`} />
             </button>
           </WithTooltip>
         </div>

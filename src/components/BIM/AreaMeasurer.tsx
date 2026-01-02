@@ -47,7 +47,7 @@ export const AreaMeasurer = () => {
           measurer?.list.clear();
         }}
       >
-        Delete all
+        Delete All
       </button>
     </section>
   );

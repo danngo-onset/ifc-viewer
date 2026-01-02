@@ -104,7 +104,7 @@ export const LengthMeasurer = () => {
           measurer?.list.clear();
         }}
       >
-        Delete all
+        Delete All
       </button>
     </section>
   );

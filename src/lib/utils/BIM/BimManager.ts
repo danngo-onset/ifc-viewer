@@ -293,6 +293,57 @@ export class BimManager {
     };
   }
 
+  initClipper() {
+    // Init the Raycaster for the world to track mouse position for clipping planes
+    /* const raycaster = this.components.get(OBC.Raycasters)
+                                     .get(this.world); */
+
+    const clipper = this.components.get(OBC.Clipper);
+    clipper.enabled = false;
+
+    const abortController = new AbortController();
+
+    this.container.addEventListener(
+      "dblclick", 
+      () => {
+        if (clipper.enabled) {
+          clipper.create(this.world);
+        }
+      }, 
+      { signal: abortController.signal }
+    );
+
+    this.container.addEventListener(
+      "mousedown",
+      async e => {
+        if (
+          e.button !== 0
+       || !e.ctrlKey
+       || !clipper.enabled
+       || clipper.list.size === 0
+        ) {
+          return;
+        }
+  
+        e.preventDefault();
+        e.stopPropagation();
+  
+        try {
+          await clipper.delete(this.world);
+        } catch (error) {
+          console.log("No clipping plane found under cursor");
+        }
+      },
+      { signal: abortController.signal, passive: false }
+    );
+
+    di.register(BimComponent.Clipper, clipper);
+
+    return () => {
+      abortController.abort();
+    };
+  }
+
   dispose() {
     di.disposeAll();
     this.components.dispose();

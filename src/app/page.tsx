@@ -26,12 +26,14 @@ export default function Home() {
         fragmentsManagerCleanup, 
         areaMeasurementCleanup, 
         lengthMeasurementCleanup,
-        cameraDistanceLockCleanup
+        cameraDistanceLockCleanup,
+        clipperCleanup
       ] = await Promise.all([
         bimManager.initFragmentsManager(setLoadingMessage, setIsLoading),
         bimManager.initAreaMeasurer(),
         bimManager.initLengthMeasurer(),
-        bimManager.initCameraOrbitLock()
+        bimManager.initCameraOrbitLock(),
+        bimManager.initClipper()
       ]);
 
       const highlighterCleanup = await bimManager.initHighlighter();
@@ -41,6 +43,7 @@ export default function Home() {
       if (lengthMeasurementCleanup)           cleanupFunctions.push(lengthMeasurementCleanup);
       if (cameraDistanceLockCleanup)          cleanupFunctions.push(cameraDistanceLockCleanup); 
       if (highlighterCleanup)                 cleanupFunctions.push(highlighterCleanup);
+      if (clipperCleanup)                     cleanupFunctions.push(clipperCleanup);
     })();
 
     return () => {

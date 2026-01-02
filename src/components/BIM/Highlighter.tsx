@@ -20,7 +20,7 @@ export const Highlighter = () => {
         className="btn-gray"
         onClick={() => highlighter?.clear()}
       >
-        Delete all
+        Delete All
       </button>
     </section>
   );
