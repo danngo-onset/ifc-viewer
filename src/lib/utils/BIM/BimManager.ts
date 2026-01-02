@@ -11,8 +11,9 @@ import { Constants } from "@/domain/Constants";
 import { BimComponent } from "@/domain/enums/BIM/BimComponent";
 
 import type { SetState } from "@/domain/types/SetState";
-import type { OrbitLockToggle } from "@/domain/types/OrbitLockToggle";
 import type { World } from "@/domain/types/BIM/World";
+
+import { CameraDistanceLocker } from ".";
 
 export class BimManager {
   private readonly components : OBC.Components;
@@ -22,20 +23,18 @@ export class BimManager {
     this.components = new OBC.Components();
     this.world = this.components.get(OBC.Worlds)
                                 .create() as World;
-    
-    di.register(BimComponent.Components, this.components);
   }
 
   private orbitLockActive = false;
   private orbitLockMarker?: THREE.Mesh;
 
-  async initWorld() {
+  async initComponentsAndWorld() {
     this.world.scene = new OBC.SimpleScene(this.components);
     this.world.scene.setup();
     this.world.scene.three.background = null; // light scene
 
     //world.renderer = new OBC.SimpleRenderer(components, containerRef.current);
-    this.world.renderer = new OBCF.PostproductionRenderer(this.components, this.container as HTMLElement);
+    this.world.renderer = new OBCF.PostproductionRenderer(this.components, this.container);
 
     this.world.camera = new OBC.OrthoPerspectiveCamera(this.components);
     //world.camera.controls.maxDistance = 300;
@@ -46,6 +45,7 @@ export class BimManager {
     //world.camera.controls.dampingFactor = 0;
 
     this.components.init();
+    di.register(BimComponent.Components, this.components);
 
     /* const grids = this.components.get(OBC.Grids);
     grids.create(this.world); */
@@ -271,101 +271,20 @@ export class BimManager {
   }
 
   /**
-   * Initialise behaviour to set the orbit point to the clicked location when holding left mouse.
+   * Initialise behaviour to set the orbit point to the clicked location when holding left mouse. \
    * The camera will rotate around the picked point since orbit uses the current target.
    */
   initCameraOrbitLock() {
-    const abortController = new AbortController();
-
-    const onMouseDown = async (event: MouseEvent) => {
-      if (event.button !== 0 || !this.orbitLockActive) return; // only left mouse button
-
-      // Each raycaster is associated with a specific world.
-      const raycaster = this.components.get(OBC.Raycasters)
-                                       .get(this.world);
-
-      const intersection = await raycaster.castRay();
-      if (!intersection) return;
-
-      const point = intersection.point;
-      
-      this.removeOrbitLockMarker();
-      this.orbitLockMarker = this.createOrbitLockMarker(point);
-      
-      // Set the orbit target to the picked point, keep current camera position
-      // camera-controls API exposed by OrthoPerspectiveCamera
-      await this.world.camera.controls.setTarget(point.x, point.y, point.z, false);
-      
-      // Fallback: preserve position and update lookAt target
-      /* const pos = this.world.camera.controls.getPosition(new THREE.Vector3());
-      await this.world.camera.controls.setLookAt(pos.x, pos.y, pos.z, point.x, point.y, point.z, false); */
-    };
-
-    this.container.addEventListener("mousedown", onMouseDown, { passive: true, signal: abortController.signal });
-
-    const orbitToggle: OrbitLockToggle = {
-      enabled: this.orbitLockActive,
-      setEnabled: (value: boolean) => {
-        if (value) {
-          if (!this.orbitLockActive) {
-            this.container.addEventListener("mousedown", onMouseDown, { passive: true, signal: abortController.signal });
-            this.orbitLockActive = true;
-          }
-        } else {
-          if (this.orbitLockActive) {
-            abortController.abort();
-            this.orbitLockActive = false;
-            this.removeOrbitLockMarker();
-          }
-        }
-      }
-    };
-    di.register(BimComponent.OrbitLock, orbitToggle);
+    const cameraDistanceLocker = CameraDistanceLocker.getInstance(this.container, this.world);
+    di.register(BimComponent.CameraDistanceLocker, cameraDistanceLocker);
 
     return () => {
-      abortController.abort();
-      this.orbitLockActive = false;
-      this.removeOrbitLockMarker();
+      cameraDistanceLocker.dispose();
     };
-  }
-
-  private createOrbitLockMarker(point: THREE.Vector3): THREE.Mesh { 
-    const geometry = new THREE.CircleGeometry(0.5, 16);
-    const material = new THREE.MeshBasicMaterial({ 
-      color: Constants.Color.OrbitLock, 
-      transparent: true, 
-      opacity: 0.8,
-      side: THREE.DoubleSide
-    });
-    
-    const orbitLockMarker = new THREE.Mesh(geometry, material);
-    orbitLockMarker.position.copy(point);
-    
-    // Orient the circle to face the camera
-    const pos = this.world.camera.three.position;
-    orbitLockMarker.lookAt(pos.x, pos.y, pos.z);
-    
-    this.world.scene.three.add(orbitLockMarker);
-
-    return orbitLockMarker;
-  }
-
-  private removeOrbitLockMarker() {
-    if (!this.orbitLockMarker) return;
-
-    this.world.scene.three.remove(this.orbitLockMarker);
-    this.orbitLockMarker.geometry.dispose();
-
-    if (Array.isArray(this.orbitLockMarker.material)) {
-      this.orbitLockMarker.material.forEach(m => m.dispose());
-    } else {
-      this.orbitLockMarker.material.dispose();
-    }
-
-    this.orbitLockMarker = undefined;
   }
 
   dispose() {
+    di.disposeAll();
     this.components.dispose();
     this.world.dispose();
   }
