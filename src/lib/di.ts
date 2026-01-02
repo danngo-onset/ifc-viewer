@@ -6,7 +6,7 @@ class DIContainer {
 
   static getInstance() {
     if (!this.instance) {
-      this.instance = new DIContainer();
+      this.instance = new this;
     }
 
     return this.instance;

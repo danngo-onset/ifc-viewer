@@ -4,5 +4,5 @@ export const enum BimComponent {
   AreaMeasurer = "areaMeasurer",
   LengthMeasurer = "lengthMeasurer",
   Highlighter = "highlighter",
-  OrbitLock = "orbitLock"
+  CameraDistanceLocker = "cameraDistanceLocker"
 };

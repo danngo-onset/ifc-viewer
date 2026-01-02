@@ -4,9 +4,9 @@ import type * as OBCF from "@thatopen/components-front";
 
 import { ChevronUpIcon, RulerHorizontalIcon, RulerSquareIcon } from "@radix-ui/react-icons";
 
-import type { OrbitLockToggle } from "@/domain/types/OrbitLockToggle";
-
 import { useBimComponent } from "@/hooks/BIM";
+
+import type { CameraDistanceLocker } from "@/lib/utils/BIM";
 
 import { BimComponent } from "@/domain/enums/BIM/BimComponent";
 
@@ -23,7 +23,7 @@ export const BottomToolbar = () => {
   const [lengthMeasurerEnabled, setLengthMeasurerEnabled] = useState(false);
   const [showLengthMeasurer, setShowLengthMeasurer] = useState(false);
 
-  const [orbitLockEnabled, setOrbitLockEnabled] = useState(false);
+  const [cameraDistanceLockEnabled, setCameraDistanceEnabled] = useState(false);
 
   const [highlighterEnabled, setHighlighterEnabled] = useState(false);
   const [showHighlighter, setShowHighlighter] = useState(false);
@@ -34,7 +34,7 @@ export const BottomToolbar = () => {
 
   const measurer = useBimComponent<OBCF.AreaMeasurement>(BimComponent.AreaMeasurer);
   const lengthMeasurer = useBimComponent<OBCF.LengthMeasurement>(BimComponent.LengthMeasurer);
-  const orbitToggle = useBimComponent<OrbitLockToggle>(BimComponent.OrbitLock);
+  const cameraDistanceLocker = useBimComponent<CameraDistanceLocker>(BimComponent.CameraDistanceLocker);
   const highlighter = useBimComponent<OBCF.Highlighter>(BimComponent.Highlighter);
 
   useEffect(() => {
@@ -50,10 +50,10 @@ export const BottomToolbar = () => {
   }, [lengthMeasurer]);
 
   useEffect(() => {
-    if (orbitToggle) {
-      setOrbitLockEnabled(orbitToggle.enabled);
+    if (cameraDistanceLocker) {
+      setCameraDistanceEnabled(cameraDistanceLocker.enabled);
     }
-  }, [orbitToggle]);
+  }, [cameraDistanceLocker]);
 
   useEffect(() => {
     if (highlighter) {
@@ -102,12 +102,12 @@ export const BottomToolbar = () => {
     setLengthMeasurerEnabled(lengthMeasurer.enabled);
   };
 
-  const handleOrbitLockEnabled = () => {
-    if (!orbitToggle) return;
+  const handleCameraDistanceLockEnabled = () => {
+    if (!cameraDistanceLocker) return;
     
-    const newEnabled = !orbitLockEnabled;
-    setOrbitLockEnabled(newEnabled);
-    orbitToggle.setEnabled(newEnabled);
+    const newEnabled = !cameraDistanceLockEnabled;
+    setCameraDistanceEnabled(newEnabled);
+    cameraDistanceLocker.setEnabled(newEnabled);
   };
 
   const handleHighlighterEnabled = () => {
@@ -164,13 +164,13 @@ export const BottomToolbar = () => {
 
         <WithTooltip message="Lock Camera Distance">
           <button
-            onClick={handleOrbitLockEnabled}
+            onClick={handleCameraDistanceLockEnabled}
             className={`button-toolbar-button 
-              ${orbitLockEnabled ? "button-toolbar-button-active" 
-                                 : "button-toolbar-button-inactive"}
+              ${cameraDistanceLockEnabled ? "button-toolbar-button-active" 
+                                          : "button-toolbar-button-inactive"}
             `}
           >
-            <IconCamera classes={`w-4 h-4 ${orbitLockEnabled ? "text-gray-100" : ""}`} />
+            <IconCamera classes={`w-4 h-4 ${cameraDistanceLockEnabled ? "text-gray-100" : ""}`} />
           </button>
         </WithTooltip>
 
