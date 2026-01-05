@@ -5,3 +5,4 @@ export * from "./Highlighter";
 export * from "./ItemInspector";
 export * from "./LengthMeasurer";
 export * from "./ModelInspector";
+export * from "./Views";
