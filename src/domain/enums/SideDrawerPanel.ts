@@ -1,5 +1,6 @@
 export const enum SideDrawerPanel {
   None,
   ModelInspector,
-  Classifier
+  Classifier,
+  Views
 };

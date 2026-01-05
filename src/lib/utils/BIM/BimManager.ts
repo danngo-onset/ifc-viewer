@@ -122,7 +122,7 @@ export class BimManager {
     fragmentsManager.list.onItemSet.add(modelSetHandler);
 
     const cameraChangeHandler = async (camera: OBC.OrthoPerspectiveCamera) => {
-      for (const [, model] of fragmentsManager.list) {
+      for (const model of fragmentsManager.list.values()) {
         model.useCamera(camera.three);
       }
       await fragmentsManager.core.update(true);
@@ -356,6 +356,70 @@ export class BimManager {
     );
 
     di.register(BimComponent.Clipper, clipper);
+
+    return () => {
+      abortController.abort();
+    };
+  }
+
+  async initViews() {
+    // The range defines how far the view will "see"
+    // We can specify a default value, but it can be changed independently for each view instance after creation
+    OBC.Views.defaultRange = 100;
+
+    const views = this.components.get(OBC.Views);
+
+    views.world = this.world;
+
+    // we can specify which models the storeys will be taken from
+    // in order to create the views
+    // in this case, just the architectural model will be used
+    const config: OBC.CreateViewFromIfcStoreysConfig = {
+      modelIds: [/arq/]
+    };
+    await views.createFromIfcStoreys(config); // Assuming the fragments model comes from an IFC model. 
+                                              // If the model uses a different schema than IFC, 
+                                              // then the views have to be manually created based on its attributes.
+
+    // Create views from cardinal directions (and more) by default, not working
+    //views.createElevations({ combine: true });
+
+    const rayCaster = this.components.get(OBC.Raycasters)
+                                     .get(this.world);
+
+    const abortController = new AbortController();
+    window.addEventListener(
+      "dblclick",
+      async () => {
+        const result = await rayCaster.castRay();
+        if (!result) return;
+
+        const { normal, point } = result;
+        if (!(normal && point)) return;
+
+        // The normal direction should be inverted so the view looks inside
+        const invertedNormal = normal.clone().negate();
+        const world = this.world;
+
+        const view = views.create(
+          invertedNormal,
+          point.addScaledVector(normal, 1),
+          {
+            id: `View - ${views.list.size + 1}`,
+            world
+          }
+        );
+
+        // we can specify a different range from the default once the view is created
+        view.range = 10;
+        
+        // displaying the helper is optional and is recommended only for debugging
+        view.helpersVisible = true;
+      },
+      { signal: abortController.signal }
+    );
+
+    di.register(BimComponent.Views, views);
 
     return () => {
       abortController.abort();

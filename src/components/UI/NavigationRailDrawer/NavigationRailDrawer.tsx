@@ -1,15 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 
-import { LayersIcon } from "@radix-ui/react-icons";
+import { LayersIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 
 import { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
 
 import { IconSitemap } from "@/components/UI/icons";
 
 import { 
-  PanelToggle,
-  ModelInspectorPanel,
-  ClassifierPanel
+  PanelToggle, ModelInspectorPanel, ClassifierPanel, ViewsPanel
 } from "./panels";
 
 type Props = {
@@ -89,6 +87,14 @@ export const NavigationRailDrawer = ({
           title="Classify"
           icon={<IconSitemap />}
         />
+
+        <PanelToggle
+          activePanel={activePanel}
+          targetPanel={SideDrawerPanel.Views}
+          callback={() => togglePanel(SideDrawerPanel.Views)}
+          title="Views"
+          icon={<EyeOpenIcon />}
+        />
       </nav>
 
       <aside
@@ -107,6 +113,11 @@ export const NavigationRailDrawer = ({
         <ClassifierPanel 
           activePanel={activePanel} 
           callback={() => setActivePanel(SideDrawerPanel.None)} 
+        />
+
+        <ViewsPanel
+          activePanel={activePanel}
+          callback={() => setActivePanel(SideDrawerPanel.None)}
         />
 
         {/* Resize handler */}
