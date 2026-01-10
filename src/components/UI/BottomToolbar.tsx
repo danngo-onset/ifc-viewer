@@ -148,7 +148,8 @@ export const BottomToolbar = () => {
 
           <ChevronUpIcon 
             onClick={() => setShowAreaMeasurer(!showAreaMeasurer)}
-            className={`bottom-toolbar-chevron-up ${showAreaMeasurer ? 'rotate-180' : ''}`}
+            className="bottom-toolbar-chevron-up"
+            data-active={showAreaMeasurer}
           />
 
           <WithTooltip message="Area Measurer">
@@ -157,7 +158,7 @@ export const BottomToolbar = () => {
               className="button-toolbar-button"
               data-active={areaMeasurerEnabled}
             >
-              <RulerSquareIcon className={`w-4 h-4 ${areaMeasurerEnabled ? "text-gray-100" : ""}`} />
+              <RulerSquareIcon className="bottom-toolbar-icon" />
             </button>
           </WithTooltip>
         </div>
@@ -167,7 +168,8 @@ export const BottomToolbar = () => {
 
           <ChevronUpIcon 
             onClick={() => setShowLengthMeasurer(!showLengthMeasurer)}
-            className={`bottom-toolbar-chevron-up ${showLengthMeasurer ? 'rotate-180' : ''}`}
+            className="bottom-toolbar-chevron-up"
+            data-active={showLengthMeasurer}
           />
 
           <WithTooltip message="Length Measurer">
@@ -176,7 +178,7 @@ export const BottomToolbar = () => {
               className="button-toolbar-button"
               data-active={lengthMeasurerEnabled}
             >
-              <RulerHorizontalIcon className={`w-4 h-4 ${lengthMeasurerEnabled ? "text-gray-100" : ""}`} />
+              <RulerHorizontalIcon className="bottom-toolbar-icon" />
             </button>
           </WithTooltip>
         </div>
@@ -187,7 +189,7 @@ export const BottomToolbar = () => {
             className="button-toolbar-button"
             data-active={cameraDistanceLockEnabled}
           >
-            <IconCamera classes={`w-4 h-4 ${cameraDistanceLockEnabled ? "text-gray-100" : ""}`} />
+            <IconCamera classes="bottom-toolbar-icon" />
           </button>
         </WithTooltip>
 
@@ -196,7 +198,8 @@ export const BottomToolbar = () => {
 
           <ChevronUpIcon 
             onClick={() => setShowHighlighter(!showHighlighter)}
-            className={`bottom-toolbar-chevron-up ${showHighlighter ? 'rotate-180' : ''}`}
+            className="bottom-toolbar-chevron-up"
+            data-active={showHighlighter}
           />
 
           <WithTooltip message="Highlighter">
@@ -205,7 +208,7 @@ export const BottomToolbar = () => {
               className="button-toolbar-button"
               data-active={highlighterEnabled}
             >
-              <IconPaintRoller classes={`w-4 h-4 ${highlighterEnabled ? "text-gray-100" : ""}`} />
+              <IconPaintRoller classes="bottom-toolbar-icon" />
             </button>
           </WithTooltip>
         </div>
@@ -215,7 +218,8 @@ export const BottomToolbar = () => {
 
           <ChevronUpIcon 
             onClick={() => setShowClipper(!showClipper)}
-            className={`bottom-toolbar-chevron-up ${showClipper ? 'rotate-180' : ''}`}
+            className="bottom-toolbar-chevron-up"
+            data-active={showClipper}
           />
 
           <WithTooltip message="Clipper">
@@ -224,7 +228,7 @@ export const BottomToolbar = () => {
               className="button-toolbar-button"
               data-active={clipperEnabled}
             >
-              <ScissorsIcon className={`w-4 h-4 ${clipperEnabled ? "text-gray-100" : ""}`} />
+              <ScissorsIcon className="bottom-toolbar-icon" />
             </button>
           </WithTooltip>
         </div>

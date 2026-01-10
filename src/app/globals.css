@@ -37,6 +37,10 @@ body {
   @apply mb-1 hover:bg-gray-100 transition-all w-4 h-4 cursor-pointer;
 }
 
+.bottom-toolbar-chevron-up[data-active="true"] {
+  @apply rotate-180;
+}
+
 .button-toolbar-button {
   @apply p-1 rounded transition-all cursor-pointer;
 }
@@ -47,4 +51,8 @@ body {
 
 .button-toolbar-button[data-active="false"] {
   @apply bg-gray-100 text-gray-700 hover:bg-gray-200;
+}
+
+.bottom-toolbar-icon {
+  @apply w-4 h-4;
 }
