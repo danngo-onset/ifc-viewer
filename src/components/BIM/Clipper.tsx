@@ -35,6 +35,7 @@ export const Clipper = () => {
 
             if (clipper) clipper.visible = checked;
           }} 
+          className="rounded"
         />
 
         <label htmlFor="clipper-visible">Clipper visible</label>

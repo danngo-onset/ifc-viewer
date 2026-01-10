@@ -36,6 +36,7 @@ export const AreaMeasurer = () => {
 
             if (measurer) measurer.visible = checked;
           }} 
+          className="rounded"
         />
 
         <label htmlFor="area-measurement-visible">Measurement visible</label>

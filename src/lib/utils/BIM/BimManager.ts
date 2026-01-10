@@ -261,7 +261,8 @@ export class BimManager {
                    .get(world);
     
     const highlighter = this.components.get(OBCF.Highlighter);
-    highlighter.setup({
+
+    const config: Partial<OBCF.HighlighterConfig> = {
       world,
       selectMaterialDefinition: {
         color: new THREE.Color(Constants.Color.Highlighter),
@@ -269,8 +270,10 @@ export class BimManager {
         transparent: false,
         renderedFaces: 0
       }
-    });
+    };
+    highlighter.setup(config);
     highlighter.zoomToSelection = true;
+    highlighter.enabled = false;
 
     const highlightHandler = async (modelIdMap: OBC.ModelIdMap) => {
       const promises: Array<Promise<ItemData[]>> = [];
@@ -289,7 +292,6 @@ export class BimManager {
     const clearHandler = () => {/* console.log("Selection was cleared") */};
     highlighter.events.select.onClear.add(clearHandler);
 
-    //highlighter.enabled = false;
     di.register(BimComponent.Highlighter, highlighter);
 
     return () => {
@@ -370,6 +372,7 @@ export class BimManager {
     const views = this.components.get(OBC.Views);
 
     views.world = this.world;
+    views.enabled = false;
 
     // we can specify which models the storeys will be taken from
     // in order to create the views

@@ -36,6 +36,7 @@ export const LengthMeasurer = () => {
 
             if (measurer) measurer.visible = checked;
           }} 
+          className="rounded"
         />
 
         <label htmlFor="length-measurement-visible">Measurement visible</label>

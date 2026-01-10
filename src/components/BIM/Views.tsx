@@ -171,6 +171,7 @@ export const Views = () => {
             
             if (views) views.enabled = checked;
           }} 
+          className="rounded"
         />
 
         <label htmlFor="views-enabled">2D Views enabled</label>
