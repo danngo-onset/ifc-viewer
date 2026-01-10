@@ -173,7 +173,7 @@ export const Views = () => {
           }} 
         />
 
-        <label htmlFor="views-enabled">Views enabled</label>
+        <label htmlFor="views-enabled">2D Views enabled</label>
       </div>
 
       <div className="overflow-auto" ref={panelContainerRef} />
