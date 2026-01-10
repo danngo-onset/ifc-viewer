@@ -19,6 +19,7 @@ interface ViewsListState {
 export const Views = () => {
   const panelContainerRef = useRef<HTMLDivElement>(null);
   const [modelLoaded, setModelLoaded] = useState(false);
+  const [viewsEnabled, setViewsEnabled] = useState(false);
 
   const fragmentsManager = useBimComponent<OBC.FragmentsManager>(BimComponent.FragmentsManager);
   useEffect(() => {
@@ -151,7 +152,31 @@ export const Views = () => {
     };
   }, [views, modelLoaded]);
 
+  useEffect(() => {
+    if (views) {
+      setViewsEnabled(views.enabled);
+    }
+  }, [views]);
+
   return (
-    <div className="overflow-auto" ref={panelContainerRef} />
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center gap-2 *:cursor-pointer">
+        <input 
+          type="checkbox" 
+          id="views-enabled" 
+          checked={viewsEnabled} 
+          onChange={e => {
+            const checked = e.target.checked;
+            setViewsEnabled(checked);
+            
+            if (views) views.enabled = checked;
+          }} 
+        />
+
+        <label htmlFor="views-enabled">Views enabled</label>
+      </div>
+
+      <div className="overflow-auto" ref={panelContainerRef} />
+    </div>
   );
 };

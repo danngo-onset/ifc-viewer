@@ -38,13 +38,13 @@ body {
 }
 
 .button-toolbar-button {
-  @apply p-1 rounded transition-all;
+  @apply p-1 rounded transition-all cursor-pointer;
 }
 
-.button-toolbar-button-active {
+.button-toolbar-button[data-active="true"] {
   @apply bg-blue-500 text-white shadow-md;
 }
 
-.button-toolbar-button-inactive {
+.button-toolbar-button[data-active="false"] {
   @apply bg-gray-100 text-gray-700 hover:bg-gray-200;
 }

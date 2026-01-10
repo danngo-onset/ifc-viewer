@@ -154,10 +154,8 @@ export const BottomToolbar = () => {
           <WithTooltip message="Area Measurer">
             <button
               onClick={handleAreaMeasurerEnabled}
-              className={`button-toolbar-button 
-                ${areaMeasurerEnabled ? "button-toolbar-button-active" 
-                                      : "button-toolbar-button-inactive"}
-              `}
+              className="button-toolbar-button"
+              data-active={areaMeasurerEnabled}
             >
               <RulerSquareIcon className={`w-4 h-4 ${areaMeasurerEnabled ? "text-gray-100" : ""}`} />
             </button>
@@ -175,10 +173,8 @@ export const BottomToolbar = () => {
           <WithTooltip message="Length Measurer">
             <button
               onClick={handleLengthMeasurerEnabled}
-              className={`button-toolbar-button 
-                ${lengthMeasurerEnabled ? "button-toolbar-button-active" 
-                                        : "button-toolbar-button-inactive"}
-              `}
+              className="button-toolbar-button"
+              data-active={lengthMeasurerEnabled}
             >
               <RulerHorizontalIcon className={`w-4 h-4 ${lengthMeasurerEnabled ? "text-gray-100" : ""}`} />
             </button>
@@ -188,10 +184,8 @@ export const BottomToolbar = () => {
         <WithTooltip message="Lock Camera Distance">
           <button
             onClick={handleCameraDistanceLockEnabled}
-            className={`button-toolbar-button 
-              ${cameraDistanceLockEnabled ? "button-toolbar-button-active" 
-                                          : "button-toolbar-button-inactive"}
-            `}
+            className="button-toolbar-button"
+            data-active={cameraDistanceLockEnabled}
           >
             <IconCamera classes={`w-4 h-4 ${cameraDistanceLockEnabled ? "text-gray-100" : ""}`} />
           </button>
@@ -208,10 +202,8 @@ export const BottomToolbar = () => {
           <WithTooltip message="Highlighter">
             <button 
               onClick={handleHighlighterEnabled} 
-              className={`button-toolbar-button 
-                ${highlighterEnabled ? "button-toolbar-button-active" 
-                                     : "button-toolbar-button-inactive"}
-              `}
+              className="button-toolbar-button"
+              data-active={highlighterEnabled}
             >
               <IconPaintRoller classes={`w-4 h-4 ${highlighterEnabled ? "text-gray-100" : ""}`} />
             </button>
@@ -229,10 +221,8 @@ export const BottomToolbar = () => {
           <WithTooltip message="Clipper">
             <button
               onClick={handleClipperEnabled}
-              className={`button-toolbar-button 
-                ${clipperEnabled ? "button-toolbar-button-active" 
-                                 : "button-toolbar-button-inactive"}
-            `}
+              className="button-toolbar-button"
+              data-active={clipperEnabled}
             >
               <ScissorsIcon className={`w-4 h-4 ${clipperEnabled ? "text-gray-100" : ""}`} />
             </button>

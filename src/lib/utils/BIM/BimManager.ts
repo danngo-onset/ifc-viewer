@@ -384,13 +384,15 @@ export class BimManager {
     // Create views from cardinal directions (and more) by default, not working
     //views.createElevations({ combine: true });
 
-    const rayCaster = this.components.get(OBC.Raycasters)
-                                     .get(this.world);
-
     const abortController = new AbortController();
     window.addEventListener(
       "dblclick",
       async () => {
+        if (!views.enabled) return;
+
+        const rayCaster = this.components.get(OBC.Raycasters)
+                                         .get(this.world);
+
         const result = await rayCaster.castRay();
         if (!result) return;
 

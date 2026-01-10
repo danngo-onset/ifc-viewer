@@ -25,9 +25,7 @@ export const LengthMeasurer = () => {
         <li>Double click to measure</li>
       </ul>
 
-      <div>
-        <label htmlFor="length-measurement-visible">Measurement visible</label>
-
+      <div className="justify-start! gap-2! *:cursor-pointer">
         <input 
           type="checkbox" 
           id="length-measurement-visible" 
@@ -39,6 +37,8 @@ export const LengthMeasurer = () => {
             if (measurer) measurer.visible = checked;
           }} 
         />
+
+        <label htmlFor="length-measurement-visible">Measurement visible</label>
       </div>
 
       {/* Rectangular dimensions represent measurements aligned to the X and Y axes when viewed in 2D.

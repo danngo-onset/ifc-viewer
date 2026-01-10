@@ -25,9 +25,7 @@ export const AreaMeasurer = () => {
         <li>Double click to measure</li>
       </ul>
 
-      <div>
-        <label htmlFor="area-measurement-visible">Measurement visible</label>
-
+      <div className="justify-start! gap-2! *:cursor-pointer">
         <input 
           type="checkbox" 
           id="area-measurement-visible" 
@@ -39,6 +37,8 @@ export const AreaMeasurer = () => {
             if (measurer) measurer.visible = checked;
           }} 
         />
+
+        <label htmlFor="area-measurement-visible">Measurement visible</label>
       </div>
 
       <button 

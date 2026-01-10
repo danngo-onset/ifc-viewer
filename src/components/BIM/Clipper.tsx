@@ -24,9 +24,7 @@ export const Clipper = () => {
         <li>CTRL + Click to delete clipping plane</li>
       </ul>
 
-      <div>
-        <label htmlFor="clipper-visible">Clipper visible</label>
-
+      <div className="justify-start! gap-2! *:cursor-pointer">
         <input 
           type="checkbox" 
           id="clipper-visible" 
@@ -38,6 +36,8 @@ export const Clipper = () => {
             if (clipper) clipper.visible = checked;
           }} 
         />
+
+        <label htmlFor="clipper-visible">Clipper visible</label>
       </div>
 
       <button 

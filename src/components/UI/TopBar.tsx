@@ -84,6 +84,21 @@ export const TopBar = ({
       ).buffer;
 
       await fragmentsManager.core.load(buffer, { modelId: id });
+
+      // Testing for Views (#28)
+      /* const fragPaths = [
+        "https://thatopen.github.io/engine_components/resources/frags/school_arq.frag",
+        "https://thatopen.github.io/engine_components/resources/frags/school_str.frag",
+      ];
+      await Promise.all(
+        fragPaths.map(async (path) => {
+          const modelId = path.split("/").pop()?.split(".").shift();
+          if (!modelId) return null;
+          const file = await fetch(path);
+          const buffer = await file.arrayBuffer();
+          return fragmentsManager.core.load(buffer, { modelId });
+        }),
+      ); */
     } catch (error) {
       console.error('Error loading fragments by ID:', error);
       setIsLoading(false);
