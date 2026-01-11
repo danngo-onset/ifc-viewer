@@ -54,7 +54,7 @@ export const Views = () => {
         const onCreated = (e?: Element) => {
           if (!e) return;
 
-          const table = e as TBUI.Table;
+          const table = e as TBUI.Table<ViewsListTableData>;
           table.data = [...stateViews.list.keys()].map(key => {
             return {
               data: {
