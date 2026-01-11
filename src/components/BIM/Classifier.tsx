@@ -11,8 +11,8 @@ export const Classifier = () => {
   const panelContainerRef = useRef<HTMLDivElement>(null);
   const [modelLoaded, setModelLoaded] = useState(false);
 
-  const components = useBimComponent<OBC.Components>(BimComponent.Components);
-  const fragmentsManager = useBimComponent<OBC.FragmentsManager>(BimComponent.FragmentsManager);
+  const components = useBimComponent(BimComponent.Components);
+  const fragmentsManager = useBimComponent(BimComponent.FragmentsManager);
 
   useEffect(() => {
     if (!fragmentsManager) return;

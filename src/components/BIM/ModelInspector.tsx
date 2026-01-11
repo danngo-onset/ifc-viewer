@@ -1,6 +1,5 @@
 import { useEffect, useRef } from "react";
 
-import type * as OBC from "@thatopen/components";
 import type { Table } from "@thatopen/ui";
 import type { SpatialTreeData } from "@thatopen/ui-obc";
 
@@ -15,8 +14,8 @@ type Props = {
 export const ModelInspector = ({ isLoading }: Props) => {
   const panelContainerRef = useRef<HTMLDivElement>(null);
   
-  const components = useBimComponent<OBC.Components>(BimComponent.Components);
-  const fragmentsManager = useBimComponent<OBC.FragmentsManager>(BimComponent.FragmentsManager);
+  const components = useBimComponent(BimComponent.Components);
+  const fragmentsManager = useBimComponent(BimComponent.FragmentsManager);
 
   useEffect(() => {
     if (!components || !fragmentsManager) return;

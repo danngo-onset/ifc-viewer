@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
 
-import type * as OBCF from "@thatopen/components-front";
-
 import { useBimComponent } from "@/hooks/BIM";
 
 import { BimComponent } from "@/domain/enums/BIM/BimComponent";
+import { IBimComponentNode } from "@/domain/interfaces/BIM";
 
-export const AreaMeasurer = () => {
+export const AreaMeasurer: IBimComponentNode = () => {
   const [visible, setVisible] = useState(false);
 
-  const measurer = useBimComponent<OBCF.AreaMeasurement>(BimComponent.AreaMeasurer);
+  const measurer = useBimComponent(BimComponent.AreaMeasurer);
 
   useEffect(() => {
     if (measurer) {
@@ -18,9 +17,7 @@ export const AreaMeasurer = () => {
   }, [measurer]);
 
   return (
-    <section 
-      className="w-48 bim-component-container"
-    >
+    <section className="w-48 bim-component-container">
       <ul className="bim-component-guide">
         <li>Double click to measure</li>
       </ul>

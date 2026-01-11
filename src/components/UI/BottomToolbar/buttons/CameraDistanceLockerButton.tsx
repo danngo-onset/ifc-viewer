@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 
-import type { CameraDistanceLocker } from "@/lib/utils/BIM";
-
 import { useBimComponent } from "@/hooks/BIM";
 
 import { BimComponent } from "@/domain/enums/BIM/BimComponent";
@@ -12,7 +10,7 @@ import { IconCamera } from "@/components/UI/icons";
 export const CameraDistanceLockerButton = () => {
   const [cameraDistanceLockEnabled, setCameraDistanceEnabled] = useState(false);
 
-  const cameraDistanceLocker = useBimComponent<CameraDistanceLocker>(BimComponent.CameraDistanceLocker);
+  const cameraDistanceLocker = useBimComponent(BimComponent.CameraDistanceLocker);
 
   useEffect(() => {
     if (cameraDistanceLocker) {

@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
 
 import type * as OBC from "@thatopen/components";
-import type * as OBCF from "@thatopen/components-front";
 import type { Table, UpdateFunction } from "@thatopen/ui";
 import type { ItemsDataTableData, ItemsDataState } from "@thatopen/ui-obc";
 
@@ -16,9 +15,9 @@ type Props = {
 export const ItemInspector = ({ isLoading }: Props) => {
   const panelContainerRef = useRef<HTMLDivElement>(null);
   
-  const components = useBimComponent<OBC.Components>(BimComponent.Components);
-  const fragmentsManager = useBimComponent<OBC.FragmentsManager>(BimComponent.FragmentsManager);
-  const highlighter = useBimComponent<OBCF.Highlighter>(BimComponent.Highlighter);
+  const components = useBimComponent(BimComponent.Components);
+  const fragmentsManager = useBimComponent(BimComponent.FragmentsManager);
+  const highlighter = useBimComponent(BimComponent.Highlighter);
 
   useEffect(() => {
     if (!components || !fragmentsManager || !highlighter) return;

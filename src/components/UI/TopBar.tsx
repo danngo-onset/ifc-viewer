@@ -1,5 +1,3 @@
-import type * as OBC from "@thatopen/components";
-
 import { api } from "@/lib";
 
 import { useBimComponent } from "@/hooks/BIM";
@@ -21,7 +19,7 @@ export const TopBar = ({
   setIsLoading,
   setLoadingMessage,
 }: TopBarProps) => {
-  const fragmentsManager = useBimComponent<OBC.FragmentsManager>(BimComponent.FragmentsManager);
+  const fragmentsManager = useBimComponent(BimComponent.FragmentsManager);
 
   async function loadIfc(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];

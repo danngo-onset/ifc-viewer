@@ -253,7 +253,7 @@ export class BimManager {
   }
 
   async initHighlighter() {
-    const fragmentsManager = di.get<OBC.FragmentsManager>(BimComponent.FragmentsManager);
+    const fragmentsManager = di.get(BimComponent.FragmentsManager);
     if (!fragmentsManager) return;
 
     const world = this.world;

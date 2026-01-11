@@ -1,6 +1,6 @@
 type Props = {
-  isVisible: boolean;
-  message?: string;
+  isVisible : boolean;
+  message?  : string;
 }
 
 export const LoadingSpinner = ({ 

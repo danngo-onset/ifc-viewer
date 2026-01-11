@@ -1,4 +1,4 @@
-import React from "react";
+import { cloneElement } from "react";
 
 import { BimExtensions } from "@/lib/extensions/BIM";
 
@@ -20,7 +20,7 @@ export const PanelToggle = ({
   icon
 }: ToggleProps) => {
   const className = "w-4 h-4";
-  const iconEl = React.cloneElement(
+  const iconEl = cloneElement(
     icon, 
     { className: className, classes: className } as React.HTMLAttributes<HTMLElement>
   );

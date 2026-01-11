@@ -6,11 +6,11 @@ import { di } from "@/lib";
 
 import { Constants } from "@/domain/Constants";
 
-import { BimComponent } from "@/domain/enums/BIM/BimComponent";
+import { BimComponent } from "@/domain/enums/BIM";
+import type { World } from "@/domain/types/BIM";
+import type { IBimComponent } from "@/domain/interfaces/BIM";
 
-import type { World } from "@/domain/types/BIM/World";
-
-export class CameraDistanceLocker {
+export class CameraDistanceLocker implements IBimComponent {
   enabled = false;
 
   private readonly components         : OBC.Components;
@@ -35,7 +35,7 @@ export class CameraDistanceLocker {
     private readonly container : HTMLElement,
     private readonly world     : World
   ) {
-    const components = di.get<OBC.Components>(BimComponent.Components);
+    const components = di.get(BimComponent.Components);
     if (!components) {
       throw new Error("Components not initialised");
     }

@@ -1,8 +1,11 @@
 import type { BimComponent } from "@/domain/enums/BIM/BimComponent";
+import type { IBimComponent } from "@/domain/interfaces/BIM";
+import type { BimComponentTypeMap } from "@/domain/types/BIM";
 
 class DIContainer {
+  private container: Map<BimComponent, IBimComponent> = new Map();
+
   private static instance: DIContainer;
-  private containers: Map<BimComponent, any> = new Map();
 
   static getInstance() {
     if (!this.instance) {
@@ -12,29 +15,30 @@ class DIContainer {
     return this.instance;
   }
 
-  register<T>(key: BimComponent, instance: T) {
-    this.containers.set(key, instance);
+  register(key: BimComponent, instance: BimComponentTypeMap[BimComponent]) {
+    this.container.set(key, instance);
   }
 
   /** Shouldn't be called directly in components, use useBimComponent hook instead */
-  get<T>(key: BimComponent): T | null {
-    return this.containers.get(key) || null;
+  get<K extends BimComponent>(key: K): BimComponentTypeMap[K] | null {
+    const instance = this.container.get(key);
+    return (instance as BimComponentTypeMap[K] | undefined) || null;
   }
 
   dispose(key: BimComponent) {
-    const instance = this.containers.get(key);
+    const instance = this.get(key);
     if (instance && typeof instance.dispose === "function") {
       instance.dispose();
     }
     
-    this.containers.delete(key);
+    this.container.delete(key);
   }
 
   disposeAll() {
-    for (const key of this.containers.keys()) {
+    for (const key of this.container.keys()) {
       this.dispose(key);
     }
-    this.containers.clear();
+    this.container.clear();
   }
 }
 

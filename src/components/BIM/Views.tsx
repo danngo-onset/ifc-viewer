@@ -21,7 +21,7 @@ export const Views = () => {
   const [modelLoaded, setModelLoaded] = useState(false);
   const [viewsEnabled, setViewsEnabled] = useState(false);
 
-  const fragmentsManager = useBimComponent<OBC.FragmentsManager>(BimComponent.FragmentsManager);
+  const fragmentsManager = useBimComponent(BimComponent.FragmentsManager);
   useEffect(() => {
     if (!fragmentsManager) return;
 
@@ -36,7 +36,7 @@ export const Views = () => {
     };
   }, [fragmentsManager]);
 
-  const views = useBimComponent<OBC.Views>(BimComponent.Views);
+  const views = useBimComponent(BimComponent.Views);
   useEffect(() => {
     if (!views) return;
 

@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 
-import type * as OBC from "@thatopen/components";
-
 import { BimComponent } from "@/domain/enums/BIM/BimComponent";
 
 import { useBimComponent } from "@/hooks/BIM";
@@ -9,7 +7,7 @@ import { useBimComponent } from "@/hooks/BIM";
 export const Clipper = () => {
   const [visible, setVisible] = useState(false);
 
-  const clipper = useBimComponent<OBC.Clipper>(BimComponent.Clipper);
+  const clipper = useBimComponent(BimComponent.Clipper);
 
   useEffect(() => {
     if (clipper) {
