@@ -1,6 +1,6 @@
 import * as OBC from "@thatopen/components";
 import * as OBCF from "@thatopen/components-front";
-import type { FragmentsModel, ItemData } from "@thatopen/fragments";
+import type { FragmentsModel, ItemData, BIMMaterial } from "@thatopen/fragments";
 
 import * as THREE from "three";
 
@@ -58,11 +58,7 @@ export class BimManager {
     this.world.scene.three.background = null; // light scene
 
     //world.renderer = new OBC.SimpleRenderer(components, containerRef.current);
-    this.world.renderer = new OBCF.PostproductionRenderer(
-      this.components, 
-      this.container, 
-      { /* logarithmicDepthBuffer: true */ }
-    );
+    this.world.renderer = new OBCF.PostproductionRenderer(this.components, this.container);
 
     this.world.camera = new OBC.OrthoPerspectiveCamera(this.components);
     //world.camera.controls.maxDistance = 300;
@@ -99,19 +95,6 @@ export class BimManager {
     this.world.camera.controls.addEventListener("rest", cameraRestHandler);
 
     const modelSetHandler = async ({ value: model }: { value: FragmentsModel }) => {
-      // resolve flickering issue with double-sided rendering (not working)
-      model.tiles.onItemSet.add(({ value: mesh }) => {
-        const materials = Array.isArray(mesh.material) ? mesh.material 
-                                                       : [mesh.material];
-        
-        materials.forEach((mat) => {
-          // Enable double-sided rendering for materials
-          if ("side" in mat) {
-            mat.side = THREE.DoubleSide;
-          }
-        });
-      });
-
       model.useCamera(this.world.camera.three);
       this.world.scene.three.add(model.object);
       
@@ -120,6 +103,20 @@ export class BimManager {
       setIsLoading(false);
     };
     fragmentsManager.list.onItemSet.add(modelSetHandler);
+
+    const zFightingHandler = ({ value: material }: { value: BIMMaterial }) => {
+      if (!("isLodMaterial" in material && material.isLodMaterial)) {
+        material.polygonOffset = true;
+        material.polygonOffsetUnits = 1;
+        material.polygonOffsetFactor = Math.random();
+      }
+    };
+    fragmentsManager.core
+                    .models
+                    .materials
+                    .list
+                    .onItemSet
+                    .add(zFightingHandler);
 
     const cameraChangeHandler = async (camera: OBC.OrthoPerspectiveCamera) => {
       for (const model of fragmentsManager.list.values()) {
