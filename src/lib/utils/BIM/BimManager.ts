@@ -58,7 +58,7 @@ export class BimManager {
     this.world.scene.three.background = null; // light scene
 
     //world.renderer = new OBC.SimpleRenderer(components, containerRef.current);
-    this.world.renderer = new OBCF.PostproductionRenderer(
+    this.world.renderer = new OBC.SimpleRenderer(
       this.components, 
       this.container, 
       { /* logarithmicDepthBuffer: true */ }
@@ -100,7 +100,7 @@ export class BimManager {
 
     const modelSetHandler = async ({ value: model }: { value: FragmentsModel }) => {
       // resolve flickering issue with double-sided rendering (not working)
-      model.tiles.onItemSet.add(({ value: mesh }) => {
+      /* model.tiles.onItemSet.add(({ value: mesh }) => {
         const materials = Array.isArray(mesh.material) ? mesh.material 
                                                        : [mesh.material];
         
@@ -110,7 +110,7 @@ export class BimManager {
             mat.side = THREE.DoubleSide;
           }
         });
-      });
+      }); */
 
       model.useCamera(this.world.camera.three);
       this.world.scene.three.add(model.object);
@@ -385,7 +385,7 @@ export class BimManager {
                                               // then the views have to be manually created based on its attributes.
 
     // Create views from cardinal directions by default, not working
-    //views.createElevations({ combine: true });
+    views.createElevations({ combine: true });
 
     const abortController = new AbortController();
     window.addEventListener(

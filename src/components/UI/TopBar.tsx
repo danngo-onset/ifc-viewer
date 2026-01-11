@@ -63,7 +63,7 @@ export const TopBar = ({
     const formData = new FormData(e.currentTarget);
     const id = formData.get("id") as string;
     
-    if (!id.trim()) return;
+    //if (!id.trim()) return;
 
     try {
       if (!fragmentsManager) {
@@ -74,17 +74,17 @@ export const TopBar = ({
       setIsLoading(true);
       setLoadingMessage(`Loading model: ${id}...`);
 
-      const response = await api.get(`/fragments/${id}`);
+      /* const response = await api.get(`/fragments/${id}`);
       
       const buffer = Uint8Array.from(
         atob(response.data.fragments), 
         c => c.charCodeAt(0)
       ).buffer;
 
-      await fragmentsManager.core.load(buffer, { modelId: id });
+      await fragmentsManager.core.load(buffer, { modelId: id }); */
 
       // Testing for Views (#28)
-      /* const fragPaths = [
+      const fragPaths = [
         "https://thatopen.github.io/engine_components/resources/frags/school_arq.frag",
         "https://thatopen.github.io/engine_components/resources/frags/school_str.frag",
       ];
@@ -96,7 +96,7 @@ export const TopBar = ({
           const buffer = await file.arrayBuffer();
           return fragmentsManager.core.load(buffer, { modelId });
         }),
-      ); */
+      );
     } catch (error) {
       console.error('Error loading fragments by ID:', error);
       setIsLoading(false);

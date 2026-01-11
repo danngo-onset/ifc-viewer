@@ -4,6 +4,6 @@ import type * as OBCF from "@thatopen/components-front";
 export type World = OBC.SimpleWorld<
   OBC.SimpleScene, 
   OBC.OrthoPerspectiveCamera, 
-  //OBC.SimpleRenderer
-  OBCF.PostproductionRenderer
+  OBC.SimpleRenderer
+  //OBCF.PostproductionRenderer
 >;
