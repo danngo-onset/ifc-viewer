@@ -133,6 +133,7 @@ export class BimManager {
       this.world.camera.controls.removeEventListener("rest", cameraRestHandler);
       this.world.onCameraChanged.remove(cameraChangeHandler);
       fragmentsManager.list.onItemSet.remove(modelSetHandler);
+      fragmentsManager.core.models.materials.list.onItemSet.remove(zFightingHandler);
     };
   }
 
