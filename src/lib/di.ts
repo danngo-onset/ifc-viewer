@@ -2,6 +2,7 @@ import type { BimComponent } from "@/domain/enums/BIM/BimComponent";
 import type { IBimComponent } from "@/domain/interfaces/BIM";
 import type { BimComponentTypeMap } from "@/domain/types/BIM";
 
+// Service locator?
 class DIContainer {
   private container: Map<BimComponent, IBimComponent> = new Map();
 
