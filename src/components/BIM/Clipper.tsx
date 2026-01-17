@@ -28,10 +28,12 @@ export const Clipper = () => {
           id="clipper-visible" 
           checked={visible} 
           onChange={e => {
+            if (!clipper) return;
+
             const checked = e.target.checked;
             setVisible(checked);
 
-            if (clipper) clipper.visible = checked;
+            clipper.visible = checked;
           }} 
           className="rounded"
         />

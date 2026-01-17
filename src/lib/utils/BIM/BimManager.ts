@@ -19,6 +19,8 @@ export class BimManager {
   private readonly components : OBC.Components;
   private readonly world      : World;
 
+  private readonly abortController : AbortController;
+
   private static instance: BimManager;
 
   static getInstance(container: HTMLElement) {
@@ -33,6 +35,8 @@ export class BimManager {
     this.components = new OBC.Components();
     this.world = this.components.get(OBC.Worlds)
                                 .create() as World;
+
+    this.abortController = new AbortController();
   }
 
   /**
@@ -137,6 +141,61 @@ export class BimManager {
     };
   }
 
+  async initLengthMeasurer() {
+    const measurer = this.components.get(OBCF.LengthMeasurement);
+    measurer.world = this.world;
+    measurer.color = new THREE.Color(Constants.Color.Measurer);
+    measurer.enabled = false;
+    measurer.mode = "free";
+
+    // TODO: do we need this?
+    window.addEventListener(
+      "keydown",
+      e => {
+        if (e.code !== "Enter" && e.code !== "NumpadEnter") return;
+
+        measurer.endCreation();
+      },
+      { signal: this.abortController.signal }
+    );
+
+    // TODO: use right click or CTRL click
+    window.addEventListener(
+      "keydown", 
+      e => {
+        if (e.code !== "Delete" && e.code !== "Backspace") return;
+  
+        if (measurer.list.size > 0) {
+          measurer.delete();
+        }
+      }, 
+      { signal: this.abortController.signal }
+    );
+
+    this.container.addEventListener(
+      "dblclick", 
+      async () => await measurer.create(), 
+      { signal: this.abortController.signal }
+    );
+
+    const zoomHandler = async (line: OBCF.Line) => {
+      const center = new THREE.Vector3();
+      line.getCenter(center);
+
+      const radius = line.distance() / 3;
+      const sphere = new THREE.Sphere(center, radius);
+
+      await this.world.camera.controls.fitToSphere(sphere, true);
+    };
+    measurer.list.onItemAdded.add(zoomHandler);
+
+    di.register(BimComponent.LengthMeasurer, measurer);
+
+    return () => {
+      measurer.list.onItemAdded.remove(zoomHandler);
+    };
+  }
+
   async initAreaMeasurer() {
     const measurer = this.components.get(OBCF.AreaMeasurement);
     measurer.world = this.world;
@@ -144,42 +203,33 @@ export class BimManager {
     measurer.enabled = true;
     measurer.mode = "square";
 
-    const abortController = new AbortController();
-
+    // TODO: do we need this?
     window.addEventListener(
       "keydown", 
-      (e: KeyboardEvent) => {
+      e => {
         if (e.code !== "Enter" && e.code !== "NumpadEnter") return;
-  
-        try {
-          measurer.endCreation();
-        } catch (error) {
-          console.error("Error ending measurement creation:", error);
-        }
+        measurer.endCreation();
       }, 
-      { signal: abortController.signal }
+      { signal: this.abortController.signal }
     );
 
+    // TODO: use right click or CTRL click
     window.addEventListener(
       "keydown", 
-      (e: KeyboardEvent) => {
+      e => {
         if (e.code !== "Delete" && e.code !== "Backspace") return;
   
-        try {
-          if (measurer.list.size > 0) {
-            measurer.delete();
-          }
-        } catch (error) {
-          console.error("Error deleting measurement:", error);
+        if (measurer.list.size > 0) {
+          measurer.delete();
         }
       }, 
-      { signal: abortController.signal }
+      { signal: this.abortController.signal }
     );
 
     this.container.addEventListener(
       "dblclick", 
       async () => await measurer.create(), 
-      { signal: abortController.signal }
+      { signal: this.abortController.signal }
     );
 
     const zoomHandler = async (area: OBCF.Area) => {
@@ -194,59 +244,73 @@ export class BimManager {
     di.register(BimComponent.AreaMeasurer, measurer);
 
     return () => {
-      abortController.abort();
       measurer.list.onItemAdded.remove(zoomHandler);
     };
   }
 
-  async initLengthMeasurer() {
-    const measurer = this.components.get(OBCF.LengthMeasurement);
+  async initVolumeMeasurer() {
+    const measurer = this.components.get(OBCF.VolumeMeasurement);
     measurer.world = this.world;
     measurer.color = new THREE.Color(Constants.Color.Measurer);
     measurer.enabled = false;
-    measurer.mode = "free";
 
-    const abortController = new AbortController();
-
+    // TODO: do we need this?
     window.addEventListener(
-      "keydown", 
-      (event: KeyboardEvent) => {
-        if (event.code !== "Delete" && event.code !== "Backspace") return;
-  
-        try {
-          if (measurer.list.size > 0) {
-            measurer.delete();
-          }
-        } catch (error) {
-          console.error("Error deleting measurement:", error);
+      "keydown",
+      e => {
+        if (e.code !== "Enter" && e.code !== "NumpadEnter") return;
+
+        measurer.endCreation();
+      },
+      { signal: this.abortController.signal }
+    );
+
+    // TODO: use right click or CTRL click
+    window.addEventListener(
+      "keydown",
+      async e => {
+        if (e.code !== "Delete" && e.code !== "Backspace") return;
+
+        if (measurer.list.size > 0) {
+          await measurer.delete();
         }
-      }, 
-      { signal: abortController.signal }
+      },
+      { signal: this.abortController.signal }
     );
 
     this.container.addEventListener(
-      "dblclick", 
-      () => measurer.create(), 
-      { signal: abortController.signal }
+      "dblclick",
+      async () => await measurer.create(),
+      { signal: this.abortController.signal }
     );
 
-    const zoomHandler = (line: OBCF.Line) => {
-      if (!this.world.camera.controls) return;
+    const zoomHandler = async (volume: OBCF.Volume) => {
+      const box = await volume.getBox();
+      const sphere = new THREE.Sphere();
 
-      const center = new THREE.Vector3();
-      line.getCenter(center);
+      box.getBoundingSphere(sphere);
 
-      const radius = line.distance() / 3;
-      const sphere = new THREE.Sphere(center, radius);
-      this.world.camera.controls.fitToSphere(sphere, true);
+      await this.world.camera.controls.fitToSphere(sphere, true);
     };
     measurer.list.onItemAdded.add(zoomHandler);
 
-    di.register(BimComponent.LengthMeasurer, measurer);
+    di.register(BimComponent.VolumeMeasurer, measurer);
 
     return () => {
-      abortController.abort();
       measurer.list.onItemAdded.remove(zoomHandler);
+    };
+  }
+
+  /**
+   * Initialise behaviour to set the orbit point to the clicked location when holding left mouse. \
+   * The camera will rotate around the picked point since orbit uses the current target.
+   */
+  initCameraOrbitLock() {
+    const cameraDistanceLocker = CameraDistanceLocker.getInstance(this.container, this.world);
+    di.register(BimComponent.CameraDistanceLocker, cameraDistanceLocker);
+
+    return () => {
+      cameraDistanceLocker.dispose();
     };
   }
 
@@ -298,19 +362,6 @@ export class BimManager {
     };
   }
 
-  /**
-   * Initialise behaviour to set the orbit point to the clicked location when holding left mouse. \
-   * The camera will rotate around the picked point since orbit uses the current target.
-   */
-  initCameraOrbitLock() {
-    const cameraDistanceLocker = CameraDistanceLocker.getInstance(this.container, this.world);
-    di.register(BimComponent.CameraDistanceLocker, cameraDistanceLocker);
-
-    return () => {
-      cameraDistanceLocker.dispose();
-    };
-  }
-
   initClipper() {
     // Init the Raycaster for the world to track mouse position for clipping planes
     /* const raycaster = this.components.get(OBC.Raycasters)
@@ -319,16 +370,14 @@ export class BimManager {
     const clipper = this.components.get(OBC.Clipper);
     clipper.enabled = false;
 
-    const abortController = new AbortController();
-
     this.container.addEventListener(
       "dblclick", 
-      () => {
+      async () => {
         if (clipper.enabled) {
-          clipper.create(this.world);
+          await clipper.create(this.world);
         }
       }, 
-      { signal: abortController.signal }
+      { signal: this.abortController.signal }
     );
 
     this.container.addEventListener(
@@ -352,14 +401,10 @@ export class BimManager {
           console.log("No clipping plane found under cursor");
         }
       },
-      { signal: abortController.signal, passive: false }
+      { signal: this.abortController.signal, passive: false }
     );
 
     di.register(BimComponent.Clipper, clipper);
-
-    return () => {
-      abortController.abort();
-    };
   }
 
   async initViews() {
@@ -385,7 +430,6 @@ export class BimManager {
     // Create views from cardinal directions by default, not working
     //views.createElevations({ combine: true });
 
-    const abortController = new AbortController();
     window.addEventListener(
       "dblclick",
       async () => {
@@ -419,17 +463,14 @@ export class BimManager {
         // displaying the helper is optional and is recommended only for debugging
         view.helpersVisible = true;
       },
-      { signal: abortController.signal }
+      { signal: this.abortController.signal }
     );
 
     di.register(BimComponent.Views, views);
-
-    return () => {
-      abortController.abort();
-    };
   }
 
   dispose() {
+    this.abortController.abort();
     di.disposeAll();
     this.components.dispose();
     this.world.dispose();

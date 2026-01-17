@@ -166,10 +166,12 @@ export const Views = () => {
           id="views-enabled" 
           checked={viewsEnabled} 
           onChange={e => {
+            if (!views) return;
+
             const checked = e.target.checked;
             setViewsEnabled(checked);
             
-            if (views) views.enabled = checked;
+            views.enabled = checked;
           }} 
           className="rounded"
         />

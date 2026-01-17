@@ -3,19 +3,18 @@ import { useEffect, useState } from "react";
 import { useBimComponent } from "@/hooks/BIM";
 
 import { BimComponent } from "@/domain/enums/BIM/BimComponent";
-import { IBimComponentNode } from "@/domain/interfaces/BIM";
 
-export const AreaMeasurer: IBimComponentNode = () => {
+export const VolumeMeasurer = () => {
   const [visible, setVisible] = useState(false);
 
-  const measurer = useBimComponent(BimComponent.AreaMeasurer);
+  const measurer = useBimComponent(BimComponent.VolumeMeasurer);
 
   useEffect(() => {
     if (measurer) {
       setVisible(measurer.visible);
     }
   }, [measurer]);
-
+  
   return (
     <section className="w-48 bim-component-container">
       <ul className="bim-component-guide">
@@ -25,7 +24,7 @@ export const AreaMeasurer: IBimComponentNode = () => {
       <div className="justify-start! gap-2! *:cursor-pointer">
         <input 
           type="checkbox" 
-          id="area-measurement-visible" 
+          id="volume-measurement-visible" 
           checked={visible} 
           onChange={e => {
             if (!measurer) return;
@@ -33,17 +32,19 @@ export const AreaMeasurer: IBimComponentNode = () => {
             const checked = e.target.checked;
             setVisible(checked);
 
+            console.log("visible", measurer.visible); // TODO: not working
             measurer.visible = checked;
           }} 
           className="rounded"
         />
 
-        <label htmlFor="area-measurement-visible">Measurement visible</label>
+        <label htmlFor="volume-measurement-visible">Measurement visible</label>
       </div>
 
       <button 
         className="btn-gray"
         onClick={() => {
+          console.log(measurer?.list.values());  // TODO: not working
           measurer?.list.clear();
         }}
       >
