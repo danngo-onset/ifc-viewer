@@ -15,4 +15,5 @@ export interface BimComponentTypeMap extends Record<BimComponent, IBimComponent>
   [BimComponent.CameraDistanceLocker]: CameraDistanceLocker;
   [BimComponent.Clipper]: OBC.Clipper & IBimComponent;
   [BimComponent.Views]: OBC.Views & IBimComponent;
+  [BimComponent.VolumeMeasurer]: OBCF.VolumeMeasurement & IBimComponent;
 };

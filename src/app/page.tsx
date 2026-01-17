@@ -21,36 +21,29 @@ export default function Home() {
 
     (async () => {
       await bimManager.init();
+
+      const fragmentsManagerCleanup = await bimManager.initFragmentsManager(setLoadingMessage, setIsLoading);
       
       const [
-        fragmentsManagerCleanup, 
-        areaMeasurementCleanup, 
         lengthMeasurementCleanup,
+        areaMeasurementCleanup, 
+        volumeMeasurementCleanup,
         cameraDistanceLockCleanup,
-        clipperCleanup
+        highlighterCleanup
       ] = await Promise.all([
-        bimManager.initFragmentsManager(setLoadingMessage, setIsLoading),
-        bimManager.initAreaMeasurer(),
         bimManager.initLengthMeasurer(),
+        bimManager.initAreaMeasurer(),
+        bimManager.initVolumeMeasurer(),
         bimManager.initCameraOrbitLock(),
-        bimManager.initClipper()
-      ]);
-
-      const [
-        highlighterCleanup, 
-        viewsCleanup
-      ] = await Promise.all([
-        bimManager.initHighlighter(),
-        bimManager.initViews()
+        bimManager.initHighlighter()
       ]);
         
       if (fragmentsManagerCleanup)            cleanupFunctions.push(fragmentsManagerCleanup);
-      if (areaMeasurementCleanup)             cleanupFunctions.push(areaMeasurementCleanup);
       if (lengthMeasurementCleanup)           cleanupFunctions.push(lengthMeasurementCleanup);
+      if (areaMeasurementCleanup)             cleanupFunctions.push(areaMeasurementCleanup);
+      if (volumeMeasurementCleanup)           cleanupFunctions.push(volumeMeasurementCleanup);
       if (cameraDistanceLockCleanup)          cleanupFunctions.push(cameraDistanceLockCleanup); 
-      if (clipperCleanup)                     cleanupFunctions.push(clipperCleanup);
       if (highlighterCleanup)                 cleanupFunctions.push(highlighterCleanup);
-      if (viewsCleanup)                       cleanupFunctions.push(viewsCleanup);
     })();
 
     return () => {

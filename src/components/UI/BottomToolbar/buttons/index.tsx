@@ -66,8 +66,9 @@ export const BottomToolbarButton = ({
   );
 };
 
-export * from "./AreaMeasurerButton";
 export * from "./LengthMeasurerButton";
+export * from "./AreaMeasurerButton";
+export * from "./VolumeMeasurerButton";
 export * from "./CameraDistanceLockerButton";
 export * from "./HighlighterButton";
 export * from "./ClipperButton";

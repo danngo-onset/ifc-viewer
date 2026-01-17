@@ -6,3 +6,4 @@ export * from "./ItemInspector";
 export * from "./LengthMeasurer";
 export * from "./ModelInspector";
 export * from "./Views";
+export * from "./VolumeMeasurer";

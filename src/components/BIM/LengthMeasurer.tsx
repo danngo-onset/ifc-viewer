@@ -29,10 +29,12 @@ export const LengthMeasurer = () => {
           id="length-measurement-visible" 
           checked={visible} 
           onChange={e => {
+            if (!measurer) return;
+
             const checked = e.target.checked;
             setVisible(checked);
 
-            if (measurer) measurer.visible = checked;
+            measurer.visible = checked;
           }} 
           className="rounded"
         />

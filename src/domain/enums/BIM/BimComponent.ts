@@ -6,5 +6,6 @@ export const enum BimComponent {
   Highlighter = "highlighter",
   CameraDistanceLocker = "cameraDistanceLocker",
   Clipper = "clipper",
-  Views = "views"
+  Views = "views",
+  VolumeMeasurer = "volumeMeasurer"
 };
