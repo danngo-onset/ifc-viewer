@@ -6,8 +6,9 @@ import { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
 
 import { IconSitemap } from "@/components/UI/icons";
 
+import { PanelToggle } from ".";
 import { 
-  PanelToggle, ModelInspectorPanel, ClassifierPanel, ViewsPanel
+  ModelInspectorPanel, ClassifierPanel, ViewsPanel
 } from "./panels";
 
 type Props = {
@@ -34,29 +35,34 @@ export const NavigationRailDrawer = ({
   useEffect(() => {
     if (!isResizing) return;
 
-    const handleMouseMove = (e: MouseEvent) => {
-      e.preventDefault();
-      // Account for rail width when calculating panel width
-      const newWidth = e.clientX - RAIL_WIDTH;
-      const minWidth = 200;
-      const maxWidth = window.innerWidth * 0.7;
-      setPanelWidth(Math.max(minWidth, Math.min(maxWidth, newWidth)));
-    };
-
-    const handleMouseUp = () => {
-      setIsResizing(false);
-      document.body.style.userSelect = "";
-      document.body.style.cursor = "";
-    };
-
     // Disable text selection and set cursor during resize
     document.body.style.userSelect = "none";
     document.body.style.cursor = "col-resize";
 
     const abortController = new AbortController();
 
-    document.addEventListener("mousemove", handleMouseMove, { signal: abortController.signal });
-    document.addEventListener("mouseup", handleMouseUp, { signal: abortController.signal });
+    document.addEventListener(
+      "mousemove", 
+      e => {
+        e.preventDefault();
+        // Account for rail width when calculating panel width
+        const newWidth = e.clientX - RAIL_WIDTH;
+        const minWidth = 200;
+        const maxWidth = window.innerWidth * 0.7;
+        setPanelWidth(Math.max(minWidth, Math.min(maxWidth, newWidth)));
+      }, 
+      { signal: abortController.signal }
+    );
+
+    document.addEventListener(
+      "mouseup", 
+      () => {
+        setIsResizing(false);
+        document.body.style.userSelect = "";
+        document.body.style.cursor = "";
+      }, 
+      { signal: abortController.signal }
+    );
 
     return () => {
       abortController.abort();
@@ -84,7 +90,7 @@ export const NavigationRailDrawer = ({
           activePanel={activePanel}
           targetPanel={SideDrawerPanel.Classifier}
           callback={() => togglePanel(SideDrawerPanel.Classifier)}
-          title="Classify"
+          title="Classifier"
           icon={<IconSitemap />}
         />
 
@@ -99,9 +105,9 @@ export const NavigationRailDrawer = ({
 
       <aside
         ref={panelRef}
-        className={`flex flex-col h-full bg-white shadow-xl border-r transform transition-all duration-300 overflow-hidden 
-          ${isPanelOpen ? "opacity-100" : "opacity-0 pointer-events-none"}
-        `}
+        id="navigation-rail-drawer-container"
+        className="flex flex-col h-full bg-white shadow-xl border-r transform transition-all duration-300 overflow-hidden"
+        data-open={isPanelOpen}
         style={{ width: isPanelOpen ? `${panelWidth}px` : 0 }}
       >
         <ModelInspectorPanel 
@@ -128,7 +134,7 @@ export const NavigationRailDrawer = ({
               e.stopPropagation();
               setIsResizing(true);
             }}
-            className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-blue-500 active:bg-blue-600 transition-colors z-10"
+            className="resize-handler"
             style={{ left: `${RAIL_WIDTH + panelWidth - 4}px` }}
           />
         )}
