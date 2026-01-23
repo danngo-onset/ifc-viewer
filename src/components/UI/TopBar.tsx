@@ -6,7 +6,8 @@ import { BimComponent } from "@/domain/enums/BIM/BimComponent";
 
 import type { SetState } from "@/domain/types/SetState";
 
-import { NavigationRailDrawer } from ".";
+import { NavigationRailDrawer } from "./NavigationRailDrawer";
+import { RightDrawer } from "./RightDrawer";
 
 type TopBarProps = {
   isLoading: boolean;
@@ -114,9 +115,7 @@ export const TopBar = ({
 
   return (
     <section className="flex justify-center items-center space-x-4 py-4 bg-gray-300 relative">
-      <NavigationRailDrawer 
-        isLoading={isLoading} 
-      />
+      <NavigationRailDrawer isLoading={isLoading} />
 
       <div>
         <input 
@@ -163,6 +162,8 @@ export const TopBar = ({
           {isLoading ? 'Loading...' : 'Load'}
         </button>
       </form>
+
+      <RightDrawer isLoading={isLoading} />
     </section>
   );
 };

@@ -431,7 +431,7 @@ export class BimManager {
                                               // If the model uses a different schema than IFC, 
                                               // then the views have to be manually created based on its attributes.
 
-    // Create views from cardinal directions by default, not working
+    // TODO: Create views from cardinal directions by default, not working
     //views.createElevations({ combine: true });
 
     window.addEventListener(

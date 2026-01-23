@@ -143,6 +143,6 @@ export const ItemInspector = ({ isLoading }: Props) => {
   }
 
   return (
-    <div className="overflow-auto max-h-1/2" ref={panelContainerRef} />
+    <div className="overflow-auto" ref={panelContainerRef} />
   );
 };

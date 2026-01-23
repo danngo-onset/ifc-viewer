@@ -43,9 +43,7 @@ export const AreaMeasurer: IBimComponentNode = () => {
 
       <button 
         className="btn-gray"
-        onClick={() => {
-          measurer?.list.clear();
-        }}
+        onClick={() => measurer?.list.clear()}
       >
         Delete All
       </button>

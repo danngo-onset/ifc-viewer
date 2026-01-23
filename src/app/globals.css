@@ -56,3 +56,23 @@ body {
 .bottom-toolbar-icon {
   @apply w-4 h-4;
 }
+
+#navigation-rail-drawer-container[data-open="true"] {
+  @apply opacity-100;
+}
+
+#navigation-rail-drawer-container[data-open="false"] {
+  @apply opacity-0 pointer-events-none;
+}
+
+#right-drawer-container[data-open="true"] {
+  @apply translate-x-0;
+}
+
+#right-drawer-container[data-open="false"] {
+  @apply translate-x-full;
+}
+
+.resize-handler {
+  @apply absolute top-0 left-0 w-1 h-full cursor-col-resize hover:bg-blue-500 active:bg-blue-600 transition-colors z-10;
+}

@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 
 import { BimManager } from "@/lib/utils/BIM";
 
-import { LoadingSpinner, TopBar, BottomToolbar } from "@/components/UI";
+import { LoadingSpinner, TopBar } from "@/components/UI";
+import { BottomToolbar } from "@/components/UI/BottomToolbar";
 
 export default function Home() {
   const containerRef = useRef<HTMLElement | null>(null);
@@ -35,7 +36,10 @@ export default function Home() {
         bimManager.initAreaMeasurer(),
         bimManager.initVolumeMeasurer(),
         bimManager.initCameraOrbitLock(),
-        bimManager.initHighlighter()
+        bimManager.initHighlighter(),
+        
+        bimManager.initClipper(),
+        bimManager.initViews()
       ]);
         
       if (fragmentsManagerCleanup)            cleanupFunctions.push(fragmentsManagerCleanup);

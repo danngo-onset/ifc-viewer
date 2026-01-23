@@ -4,7 +4,7 @@ import { BimExtensions } from "@/lib/extensions/BIM";
 
 import type { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
 
-import type { Props } from ".";
+import type { Props } from "./panels";
 
 interface ToggleProps extends Props {
   targetPanel : SideDrawerPanel;

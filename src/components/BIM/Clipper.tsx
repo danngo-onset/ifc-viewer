@@ -56,9 +56,7 @@ export const Clipper = () => {
 
       <button 
         className="btn-gray"
-        onClick={() => {
-          clipper?.deleteAll();
-        }}
+        onClick={() => clipper?.deleteAll()}
       >
         Delete All
       </button>
