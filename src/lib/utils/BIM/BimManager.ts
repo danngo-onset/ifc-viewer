@@ -280,7 +280,11 @@ export class BimManager {
 
     this.container.addEventListener(
       "dblclick",
-      async () => await measurer.create(),
+      async () => {
+        await measurer.create();
+
+        setTimeout(() => measurer.endCreation(), 100);
+      },
       { signal: this.abortController.signal }
     );
 

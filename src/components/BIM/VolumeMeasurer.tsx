@@ -32,7 +32,6 @@ export const VolumeMeasurer = () => {
             const checked = e.target.checked;
             setVisible(checked);
 
-            console.log("visible", measurer.visible); // TODO: not working
             measurer.visible = checked;
           }} 
           className="rounded"
@@ -43,10 +42,7 @@ export const VolumeMeasurer = () => {
 
       <button 
         className="btn-gray"
-        onClick={() => {
-          console.log(measurer?.list.values());  // TODO: not working
-          measurer?.list.clear();
-        }}
+        onClick={() => measurer?.list.clear()}
       >
         Delete All
       </button>
