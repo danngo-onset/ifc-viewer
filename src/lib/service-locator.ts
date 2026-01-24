@@ -2,11 +2,10 @@ import type { BimComponent } from "@/domain/enums/BIM/BimComponent";
 import type { IBimComponent } from "@/domain/interfaces/BIM";
 import type { BimComponentTypeMap } from "@/domain/types/BIM";
 
-// Service locator?
-class DIContainer {
+class ServiceLocator {
   private container: Map<BimComponent, IBimComponent> = new Map();
 
-  private static instance: DIContainer;
+  private static instance: ServiceLocator;
 
   static getInstance() {
     if (!this.instance) {
@@ -43,4 +42,4 @@ class DIContainer {
   }
 }
 
-export const di = DIContainer.getInstance();
+export const serviceLocator = ServiceLocator.getInstance();

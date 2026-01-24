@@ -2,7 +2,7 @@ import * as OBC from "@thatopen/components";
 
 import * as THREE from "three";
 
-import { di } from "@/lib";
+import { serviceLocator } from "@/lib";
 
 import { Constants } from "@/domain/Constants";
 
@@ -35,7 +35,7 @@ export class CameraDistanceLocker implements IBimComponent {
     private readonly container : HTMLElement,
     private readonly world     : World
   ) {
-    const components = di.get(BimComponent.Components);
+    const components = serviceLocator.get(BimComponent.Components);
     if (!components) {
       throw new Error("Components not initialised");
     }
@@ -140,6 +140,6 @@ export class CameraDistanceLocker implements IBimComponent {
     this.isActive = false;
     this.removeMarker();
 
-    di.dispose(BimComponent.CameraDistanceLocker);
+    serviceLocator.dispose(BimComponent.CameraDistanceLocker);
   }
 }

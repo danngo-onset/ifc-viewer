@@ -4,7 +4,7 @@ import type { FragmentsModel, ItemData, BIMMaterial } from "@thatopen/fragments"
 
 import * as THREE from "three";
 
-import { di } from "@/lib";
+import { serviceLocator } from "@/lib";
 
 import { Constants } from "@/domain/Constants";
 
@@ -73,7 +73,7 @@ export class BimManager {
     //world.camera.controls.dampingFactor = 0;
 
     this.components.init();
-    di.register(BimComponent.Components, this.components);
+    serviceLocator.register(BimComponent.Components, this.components);
 
     /* const grids = this.components.get(OBC.Grids);
     grids.create(this.world); */
@@ -130,7 +130,7 @@ export class BimManager {
     };
     this.world.onCameraChanged.add(cameraChangeHandler);
 
-    di.register(BimComponent.FragmentsManager, fragmentsManager);
+    serviceLocator.register(BimComponent.FragmentsManager, fragmentsManager);
 
     return () => {
       URL.revokeObjectURL(workerUrl);
@@ -189,7 +189,7 @@ export class BimManager {
     };
     measurer.list.onItemAdded.add(zoomHandler);
 
-    di.register(BimComponent.LengthMeasurer, measurer);
+    serviceLocator.register(BimComponent.LengthMeasurer, measurer);
 
     return () => {
       measurer.list.onItemAdded.remove(zoomHandler);
@@ -241,7 +241,7 @@ export class BimManager {
     };
     measurer.list.onItemAdded.add(zoomHandler);
 
-    di.register(BimComponent.AreaMeasurer, measurer);
+    serviceLocator.register(BimComponent.AreaMeasurer, measurer);
 
     return () => {
       measurer.list.onItemAdded.remove(zoomHandler);
@@ -298,7 +298,7 @@ export class BimManager {
     };
     measurer.list.onItemAdded.add(zoomHandler);
 
-    di.register(BimComponent.VolumeMeasurer, measurer);
+    serviceLocator.register(BimComponent.VolumeMeasurer, measurer);
 
     return () => {
       measurer.list.onItemAdded.remove(zoomHandler);
@@ -311,7 +311,7 @@ export class BimManager {
    */
   initCameraOrbitLock() {
     const cameraDistanceLocker = CameraDistanceLocker.getInstance(this.container, this.world);
-    di.register(BimComponent.CameraDistanceLocker, cameraDistanceLocker);
+    serviceLocator.register(BimComponent.CameraDistanceLocker, cameraDistanceLocker);
 
     return () => {
       cameraDistanceLocker.dispose();
@@ -319,7 +319,7 @@ export class BimManager {
   }
 
   async initHighlighter() {
-    const fragmentsManager = di.get(BimComponent.FragmentsManager);
+    const fragmentsManager = serviceLocator.get(BimComponent.FragmentsManager);
     if (!fragmentsManager) return;
 
     const world = this.world;
@@ -358,7 +358,7 @@ export class BimManager {
     const clearHandler = () => {/* console.log("Selection was cleared") */};
     highlighter.events.select.onClear.add(clearHandler);
 
-    di.register(BimComponent.Highlighter, highlighter);
+    serviceLocator.register(BimComponent.Highlighter, highlighter);
 
     return () => {
       highlighter.events.select.onHighlight.remove(highlightHandler);
@@ -408,7 +408,7 @@ export class BimManager {
       { signal: this.abortController.signal, passive: false }
     );
 
-    di.register(BimComponent.Clipper, clipper);
+    serviceLocator.register(BimComponent.Clipper, clipper);
   }
 
   async initViews() {
@@ -470,12 +470,12 @@ export class BimManager {
       { signal: this.abortController.signal }
     );
 
-    di.register(BimComponent.Views, views);
+    serviceLocator.register(BimComponent.Views, views);
   }
 
   dispose() {
     this.abortController.abort();
-    di.disposeAll();
+    serviceLocator.disposeAll();
     this.components.dispose();
     this.world.dispose();
   }
