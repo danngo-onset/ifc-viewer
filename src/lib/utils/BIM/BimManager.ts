@@ -200,7 +200,7 @@ export class BimManager {
     const measurer = this.components.get(OBCF.AreaMeasurement);
     measurer.world = this.world;
     measurer.color = new THREE.Color(Constants.Color.Measurer);
-    measurer.enabled = true;
+    measurer.enabled = false;
     measurer.mode = "square";
 
     // TODO: do we need this?
