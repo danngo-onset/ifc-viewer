@@ -18,7 +18,6 @@ export const ModelAttributes = () => {
 
     const abortController = new AbortController();
 
-    // TODO: apply this pattern to reduce the use of ServiceLocator
     const fragmentsManager = components.get(OBC.FragmentsManager);
   
     let modelSetHandler: (event: { value: FragmentsModel }) => Promise<void>;
