@@ -4,6 +4,7 @@ export * from "./Clipper";
 export * from "./Highlighter";
 export * from "./ItemInspector";
 export * from "./LengthMeasurer";
+export * from "./ModelAttributes";
 export * from "./ModelInspector";
 export * from "./Views";
 export * from "./VolumeMeasurer";

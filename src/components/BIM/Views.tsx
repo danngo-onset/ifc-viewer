@@ -18,6 +18,7 @@ interface ViewsListState {
 
 export const Views = () => {
   const panelContainerRef = useRef<HTMLDivElement>(null);
+
   const [modelLoaded, setModelLoaded] = useState(false);
   const [viewsEnabled, setViewsEnabled] = useState(false);
 
@@ -47,7 +48,7 @@ export const Views = () => {
       const BUI = await import("@thatopen/ui");
 
       const viewsTemplate: TBUI.StatefullComponent<ViewsListState> = (state) => {
-        // Might not be needed
+        // TODO: Might not be needed
         const stateComponents = state.components;
         const stateViews = stateComponents.get(OBC.Views);
 
