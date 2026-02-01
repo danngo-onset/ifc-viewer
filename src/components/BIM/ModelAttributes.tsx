@@ -142,13 +142,13 @@ export const ModelAttributes = () => {
                 return entry.value > 100;
               });
   
-              barChart.highlight((entry) => {
+              /* barChart.highlight((entry) => {
                 if (!("value" in entry)) return false;
   
                 return entry.value > 100;
               });
   
-              target.loading= false;
+              target.loading= false; */
             }}
           ></bim-button>
         `;
@@ -167,13 +167,13 @@ export const ModelAttributes = () => {
                 return entry.value > 100;
               });
   
-              barChart.filterByValue((entry) => {
+              /* barChart.filterByValue((entry) => {
                 if (!("value" in entry)) return false;
   
                 return entry.value > 100;
               });
             
-              target.loading = false;
+              target.loading = false; */
             }}
           ></bim-button>
         `;
@@ -187,7 +187,7 @@ export const ModelAttributes = () => {
               target.loading= true;
   
               pieChart.reset();
-              barChart.reset();
+              /* barChart.reset(); */
   
               target.loading = false;
             }}
@@ -202,7 +202,7 @@ export const ModelAttributes = () => {
               ${pieChart}
             </bim-panel-section>
 
-            
+            <!-- TODO: add the bar chart -->
 
             <bim-panel-section label="Labels" icon="raphael:tag" style="flex: 0.1;">
             ${labels}
