@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 import * as OBC from "@thatopen/components";
 import type { FragmentsModel } from "@thatopen/fragments";
 import type * as TBUI from "@thatopen/ui";
-import type * as BUIC from "@thatopen/ui-obc";
+import type * as TBUIC from "@thatopen/ui-obc";
 
 import { useBimComponent } from "@/hooks/BIM";
 import { BimComponent } from "@/domain/enums/BIM/BimComponent";
@@ -32,7 +32,7 @@ export const ModelAttributes = () => {
         import("@thatopen/ui-obc")
       ]);
 
-      const pieChartState: BUIC.ChartAttributesState = {
+      const pieChartState: TBUIC.ChartAttributesState = {
         type: "pie",
         addLabels: false,
         attribute: /empty/,
@@ -42,7 +42,7 @@ export const ModelAttributes = () => {
       };
       const [pieChart, updatePieChart] = BUIC.charts.attributesChart(pieChartState);
   
-      const barChartState: BUIC.ChartAttributesState = {
+      const barChartState: TBUIC.ChartAttributesState = {
         type: "bar",
         addLabels: false,
         attribute: /empty/,
@@ -72,7 +72,7 @@ export const ModelAttributes = () => {
             </bim-label>
           </bim-chart-legend>
         `;
-      }) as TBUI.ChartLegend;  // typo
+      }) as TBUI.ChartLegend;
   
       const hider = components.get(OBC.Hider);
       
@@ -109,7 +109,7 @@ export const ModelAttributes = () => {
         await fragmentsManager.core.update(true);
 
         // TODO: the attribute and category should be dynamic
-        const chartState: Partial<BUIC.ChartAttributesState> = {
+        const chartState: Partial<TBUIC.ChartAttributesState> = {
           attribute: /name/i,
           category: /door/i,
           modelId: model.modelId
@@ -122,6 +122,12 @@ export const ModelAttributes = () => {
         barChart.label = "Bar Chart Data";
       };
       fragmentsManager.list.onItemSet.add(modelSetHandler);
+
+      // Iterate through the models currently in fragmentsManager to set the charts data
+      // This is not ideal
+      for (const model of fragmentsManager.list.values()) {
+        await modelSetHandler({ value: model });
+      }
   
       const highlightButton = BUI.Component.create(() => {
         return BUI.html`
@@ -130,7 +136,6 @@ export const ModelAttributes = () => {
             @click=${({ target }: { target: TBUI.Button }) => {
               target.loading= true;
   
-              // typo
               pieChart.highlight((entry) => {
                 if (!("value" in entry)) return false;
   
@@ -156,7 +161,6 @@ export const ModelAttributes = () => {
             @click=${({ target }: { target: TBUI.Button }) => {
               target.loading= true;
               
-              // typo
               pieChart.filterByValue((entry) => {
                 if (!("value" in entry)) return false;
   
@@ -197,6 +201,8 @@ export const ModelAttributes = () => {
             <bim-panel-section label="Attributes Pie Chart" icon="raphael:piechart" style="flex: 1;">
               ${pieChart}
             </bim-panel-section>
+
+            
 
             <bim-panel-section label="Labels" icon="raphael:tag" style="flex: 0.1;">
             ${labels}

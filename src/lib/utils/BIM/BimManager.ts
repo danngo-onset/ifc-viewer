@@ -72,6 +72,15 @@ export class BimManager {
     // Disable damping to stop continuous movement after scroll stops
     //world.camera.controls.dampingFactor = 0;
 
+    this.container.addEventListener(
+      "resize", 
+      () => {
+        this.world.renderer?.resize();
+        this.world.camera.updateAspect();
+      },
+      { signal: this.abortController.signal }
+    );
+
     this.components.init();
     serviceLocator.register(BimComponent.Components, this.components);
 
@@ -101,6 +110,8 @@ export class BimManager {
     const modelSetHandler = async ({ value: model }: { value: FragmentsModel }) => {
       model.useCamera(this.world.camera.three);
       this.world.scene.three.add(model.object);
+
+      // TODO: need a global state to be signalled when a model is loaded
       
       setLoadingMessage("Rendering model...");
       await fragmentsManager.core.update(true);
