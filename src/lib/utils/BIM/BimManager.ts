@@ -94,15 +94,17 @@ export class BimManager {
   ) {
     const fragmentsManager = this.components.get(OBC.FragmentsManager);
 
-    const githubUrl = "https://thatopen.github.io/engine_fragment/resources/worker.mjs";
+    /* const githubUrl = "https://thatopen.github.io/engine_fragment/resources/worker.mjs";
     const fetchedUrl = await fetch(githubUrl);
     const workerBlob = await fetchedUrl.blob();
     const workerFile = new File([workerBlob], "worker.mjs", {
       type: "text/javascript",
     });
-    const workerUrl = URL.createObjectURL(workerFile);
+    const workerUrl = URL.createObjectURL(workerFile); */
 
-    fragmentsManager.init(workerUrl);
+    const worker = await fetch("/thatopen/worker.mjs");
+
+    fragmentsManager.init(worker.url);
 
     const cameraRestHandler = async () => await fragmentsManager.core.update(true);
     this.world.camera.controls.addEventListener("rest", cameraRestHandler);
@@ -144,7 +146,7 @@ export class BimManager {
     serviceLocator.register(BimComponent.FragmentsManager, fragmentsManager);
 
     return () => {
-      URL.revokeObjectURL(workerUrl);
+      //URL.revokeObjectURL(worker.url);
       this.world.camera.controls.removeEventListener("rest", cameraRestHandler);
       this.world.onCameraChanged.remove(cameraChangeHandler);
       fragmentsManager.list.onItemSet.remove(modelSetHandler);
