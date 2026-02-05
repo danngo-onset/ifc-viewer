@@ -15,7 +15,7 @@ export const ViewsPanel = ({ activePanel, callback }: Props) => {
       <PanelHeader title="Views" callback={callback} />
 
       <section className="flex-1 overflow-y-auto">
-        <div className="p-4 text-sm text-gray-600 flex flex-col gap-4 h-full">
+        <div className="nav-rail-drawer-panel">
           <Views />
         </div>
       </section>

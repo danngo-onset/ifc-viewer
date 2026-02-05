@@ -91,7 +91,7 @@ export const RightDrawer = ({ isLoading }: SideDrawerProps) => {
         )}
 
         <div className="flex-1 overflow-y-auto">
-          <section className="p-4 text-sm text-gray-600 flex flex-col gap-4 h-full">
+          <section className="nav-rail-drawer-panel">
             <ItemInspector isLoading={isLoading} />
           </section>
         </div>
