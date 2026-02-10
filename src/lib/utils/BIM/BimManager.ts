@@ -84,8 +84,20 @@ export class BimManager {
     this.components.init();
     serviceLocator.register(BimComponent.Components, this.components);
 
-    /* const grids = this.components.get(OBC.Grids);
-    grids.create(this.world); */
+    const grid = this.components.get(OBC.Grids)
+                                .create(this.world);
+
+    const cameraProjectionChangedHandler = () => {
+      const projection: OBC.CameraProjection = this.world.camera.projection.current;
+      grid.fade = projection === "Perspective";
+    };
+    this.world.camera.projection.onChanged.add(cameraProjectionChangedHandler);
+
+    serviceLocator.register(BimComponent.World, this.world);
+
+    return () => {
+      this.world.camera.projection.onChanged.remove(cameraProjectionChangedHandler);
+    };
   }
 
   async initFragmentsManager(

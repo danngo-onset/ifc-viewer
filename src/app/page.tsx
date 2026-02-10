@@ -21,7 +21,7 @@ export default function Home() {
     const cleanupFunctions: Array<() => void> = [];
 
     (async () => {
-      await bimManager.init();
+      const initCleanup = await bimManager.init();
 
       const fragmentsManagerCleanup = await bimManager.initFragmentsManager(setLoadingMessage, setIsLoading);
       
@@ -42,19 +42,18 @@ export default function Home() {
         bimManager.initViews()
       ]);
         
+      if (initCleanup)                        cleanupFunctions.push(initCleanup);
       if (fragmentsManagerCleanup)            cleanupFunctions.push(fragmentsManagerCleanup);
       if (lengthMeasurementCleanup)           cleanupFunctions.push(lengthMeasurementCleanup);
       if (areaMeasurementCleanup)             cleanupFunctions.push(areaMeasurementCleanup);
       if (volumeMeasurementCleanup)           cleanupFunctions.push(volumeMeasurementCleanup);
       if (cameraDistanceLockCleanup)          cleanupFunctions.push(cameraDistanceLockCleanup); 
       if (highlighterCleanup)                 cleanupFunctions.push(highlighterCleanup);
+
+      cleanupFunctions.push(() => bimManager.dispose());
     })();
 
-    return () => {
-      cleanupFunctions.forEach(cleanup => cleanup());
-      
-      bimManager.dispose();
-    };
+    return () => cleanupFunctions.forEach(cleanup => cleanup());
   }, []);
 
   return (

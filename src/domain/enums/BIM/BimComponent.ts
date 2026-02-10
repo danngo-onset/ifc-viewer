@@ -1,6 +1,6 @@
 export const enum BimComponent {
   Components = "components",
-
+  World = "world",
   FragmentsManager = "fragmentsManager",
   AreaMeasurer = "areaMeasurer",
   LengthMeasurer = "lengthMeasurer",
