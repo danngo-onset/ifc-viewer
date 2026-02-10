@@ -16,9 +16,7 @@ export const LengthMeasurer = () => {
   }, [measurer]);
 
   return (
-    <section 
-      className="w-64 bim-component-container"
-    >
+    <section className="w-64 bim-component-container">
       <ul className="bim-component-guide">
         <li>Double click to measure</li>
       </ul>

@@ -6,8 +6,11 @@ import type { CameraDistanceLocker } from "@/lib/utils/BIM/CameraDistanceLocker"
 import type { BimComponent } from "@/domain/enums/BIM/BimComponent";
 import type { IBimComponent } from "@/domain/interfaces/BIM";
 
+import type { World } from "./World";
+
 export interface BimComponentTypeMap extends Record<BimComponent, IBimComponent> {
   [BimComponent.Components]: OBC.Components & IBimComponent;
+  [BimComponent.World]: World & IBimComponent;
   [BimComponent.FragmentsManager]: OBC.FragmentsManager & IBimComponent;
   [BimComponent.AreaMeasurer]: OBCF.AreaMeasurement & IBimComponent;
   [BimComponent.LengthMeasurer]: OBCF.LengthMeasurement & IBimComponent;
