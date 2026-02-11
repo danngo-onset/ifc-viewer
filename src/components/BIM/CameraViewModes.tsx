@@ -46,6 +46,16 @@ export const CameraViewModes = () => {
       world.camera.controls.dollySpeed = defaultCameraSpeed;
     } */
 
+      /* if (selectedValue === "FirstPerson") {
+        world.camera.controls.infinityDolly = true;
+        world.camera.controls.dollySpeed = 200;    // try 3–10
+        world.camera.controls.smoothTime = 0.0005; // optional: more responsive
+      } else {
+        world.camera.controls.infinityDolly = false;
+        world.camera.controls.dollySpeed = 1;
+        world.camera.controls.smoothTime = 0.25;
+      } */
+
     world.camera.set(selectedValue);
 
     setNavigationMode(selectedValue);
