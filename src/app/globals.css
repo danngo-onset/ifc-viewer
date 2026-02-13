@@ -82,5 +82,5 @@ body {
 }
 
 .bottom-toolbar-sub-container {
-  @apply bg-white border border-gray-300 rounded-md shadow-xl p-1 flex items-end gap-2;
+  @apply flex flex-row items-end gap-2 bg-white border border-gray-300 rounded-md shadow-xl p-1;
 }
