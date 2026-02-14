@@ -17,8 +17,6 @@
     "axios": "^1.13.5",
     "next": "16.1.5",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "stats.js": "^0.17.0",
     "three": "^0.175.0"
   },
   "overrides": {
@@ -30,8 +28,6 @@
     "@thatopen/fragments": "^3.3.1",
     "@types/node": "^20",
     "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "@types/stats.js": "^0.17.4",
     "@types/three": ">=0.175.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.5",
