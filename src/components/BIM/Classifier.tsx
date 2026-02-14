@@ -156,12 +156,12 @@ export const Classifier = () => {
               <bim-button label="Reset Visibility" @click=${onResetVisibility}></bim-button>
             </bim-panel-section>
             
-            <bim-panel-section label="Isolation">
+            <bim-panel-section label="Isolate">
               ${categoriesDropdownA}
               <bim-button label="Isolate Category" @click=${onIsolateCategory}></bim-button>
             </bim-panel-section>
 
-            <bim-panel-section label="Hiding">
+            <bim-panel-section label="Hide">
               ${categoriesDropdownB}
               <bim-button label="Hide Category" @click=${onHideCategory}></bim-button>
             </bim-panel-section>
