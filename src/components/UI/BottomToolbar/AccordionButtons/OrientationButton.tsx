@@ -4,12 +4,12 @@ import { ChevronUpIcon } from "@radix-ui/react-icons";
 
 import { useClickOutside } from "@/hooks";
 
-import { CameraViewModes } from "@/components/BIM";
+import { Orientation } from "@/components/BIM";
 
 import { WithTooltip } from "@/components/UI";
-import { IconCamera } from "@/components/UI/icons";
+import { IconCompass } from "@/components/UI/icons";
 
-export const CameraViewModesButton = () => {
+export const OrientationButton = () => {
   const [showComponent, setShowComponent] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -18,7 +18,7 @@ export const CameraViewModesButton = () => {
 
   return (
     <div ref={containerRef} className="relative flex flex-col items-center">
-      {showComponent && <CameraViewModes />}
+      {showComponent && <Orientation />}
 
       <ChevronUpIcon 
         onClick={() => setShowComponent(!showComponent)} 
@@ -26,12 +26,12 @@ export const CameraViewModesButton = () => {
         data-active={showComponent} 
       />
 
-      <WithTooltip message="Camera View Modes">
+      <WithTooltip message="Orientation">
         <button
           onClick={() => setShowComponent(!showComponent)}
           className="button-toolbar-button"
         >
-          <IconCamera classes="bottom-toolbar-icon" />
+          <IconCompass classes="bottom-toolbar-icon" />
         </button>
       </WithTooltip>
     </div>

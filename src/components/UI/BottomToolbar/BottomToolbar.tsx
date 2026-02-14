@@ -3,7 +3,7 @@ import {
   ClipperButton
 } from "./ToggleButtons";
 
-import { CameraViewModesButton } from "./AccordionButtons";
+import { CameraViewModesButton, OrientationButton } from "./AccordionButtons";
 
 export const BottomToolbar = () => {
   return (
@@ -24,6 +24,8 @@ export const BottomToolbar = () => {
 
       <div className="bottom-toolbar-sub-container">
         <CameraViewModesButton />
+
+        <OrientationButton />
       </div>
     </div>
   );
