@@ -3,5 +3,6 @@ export type Props = {
 }
 
 export * from "./IconCamera";
+export * from "./IconCompass";
 export * from "./IconSitemap";
 export * from "./IconPaintRoller";

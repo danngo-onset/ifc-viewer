@@ -1,4 +1,5 @@
 export * from "./AreaMeasurer";
+export * from "./CameraViewModes";
 export * from "./Classifier";
 export * from "./Clipper";
 export * from "./Highlighter";
@@ -6,5 +7,6 @@ export * from "./ItemInspector";
 export * from "./LengthMeasurer";
 export * from "./ModelAttributes";
 export * from "./ModelInspector";
+export * from "./Orientation";
 export * from "./Views";
 export * from "./VolumeMeasurer";

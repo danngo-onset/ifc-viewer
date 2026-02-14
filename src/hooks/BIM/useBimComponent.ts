@@ -9,7 +9,7 @@ export function useBimComponent<K extends BimComponent>(key: K) {
   const [component, setComponent] = useState<ReturnType<typeof serviceLocator.get<K>>>(null);
 
   useEffect(() => {
-    // Poll until component is available in DI
+    // Poll until component is available in container
     const interval = setInterval(() => {
       const instance = serviceLocator.get(key);
       if (instance) {
