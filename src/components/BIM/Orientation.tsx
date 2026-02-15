@@ -42,41 +42,43 @@ export const Orientation = () => {
       return;
     }
   }, [fragmentsManager?.list.size]);
+  
+  if (!fragmentsManager) return;
+
+  if (modelLoaded) return (
+    <ul className="
+      bim-component-container p-0! space-y-0!
+      *:hover:bg-gray-300 *:px-2 *:py-1 *:cursor-pointer
+    ">
+      <li className="rounded-t-md" onClick={async () => await viewFromOrientation("front")}>
+        Front
+      </li>
+
+      <li onClick={async () => await viewFromOrientation("back")}>
+        Back
+      </li>
+
+      <li onClick={async () => await viewFromOrientation("left")}>
+        Left
+      </li>
+
+      <li onClick={async () => await viewFromOrientation("right")}>
+        Right
+      </li>
+
+      <li onClick={async () => await viewFromOrientation("top")}>
+        Top
+      </li>
+
+      <li className="rounded-b-md" onClick={async () => await viewFromOrientation("bottom")}>
+        Bottom
+      </li>
+    </ul>
+  );
 
   return (
-    <>{modelLoaded 
-      ? <ul className="
-          bim-component-container p-0! space-y-0!
-          *:hover:bg-gray-300 *:px-2 *:py-1 *:cursor-pointer
-        ">
-          <li className="rounded-t-md" onClick={async () => await viewFromOrientation("front")}>
-            Front
-          </li>
-
-          <li onClick={async () => await viewFromOrientation("back")}>
-            Back
-          </li>
-
-          <li onClick={async () => await viewFromOrientation("left")}>
-            Left
-          </li>
-
-          <li onClick={async () => await viewFromOrientation("right")}>
-            Right
-          </li>
-
-          <li onClick={async () => await viewFromOrientation("top")}>
-            Top
-          </li>
-
-          <li className="rounded-b-md" onClick={async () => await viewFromOrientation("bottom")}>
-            Bottom
-          </li>
-        </ul>
-
-      : <section className="w-48 text-center bim-component-container">
-          <p>Load a model to view from different orientations</p>
-        </section>
-    }</>
+    <section className="w-48 text-center bim-component-container">
+      <p>Load a model to view from different orientations</p>
+    </section>
   );
 };
