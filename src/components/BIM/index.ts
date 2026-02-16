@@ -8,5 +8,6 @@ export * from "./LengthMeasurer";
 export * from "./ModelAttributes";
 export * from "./ModelInspector";
 export * from "./Orientation";
+export * from "./Shadow";
 export * from "./Views";
 export * from "./VolumeMeasurer";

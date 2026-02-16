@@ -16,7 +16,8 @@ export const ModelInspectorPanel = ({
   callback, 
   isLoading
 }: PanelProps) => {
-  if (!BimExtensions.isPanelActive(activePanel, SideDrawerPanel.ModelInspector)) return null;
+  if (!BimExtensions.isPanelActive(activePanel, SideDrawerPanel.ModelInspector))
+    return;
 
   return (
     <>

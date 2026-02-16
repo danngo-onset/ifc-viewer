@@ -2,22 +2,26 @@ import { BimExtensions } from "@/lib/extensions/BIM";
 
 import { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
 
-import { Classifier } from "@/components/BIM";
+import { Shadow } from "@/components/BIM";
 import { PanelHeader } from "@/components/UI/NavigationRailDrawer";
+
 
 import type { Props } from ".";
 
-export const ClassifierPanel = ({ activePanel, callback }: Props) => {
-  if (!BimExtensions.isPanelActive(activePanel, SideDrawerPanel.Classifier))
+export const SettingsPanel = ({ 
+  activePanel, 
+  callback
+}: Props) => {
+  if (!BimExtensions.isPanelActive(activePanel, SideDrawerPanel.Settings)) 
     return;
 
   return (
     <>
-      <PanelHeader title="Classify" callback={callback} />
+      <PanelHeader title="Settings" callback={callback} />
 
       <section className="flex-1 overflow-y-auto">
         <div className="nav-rail-drawer-panel">
-          <Classifier />
+          <Shadow />
         </div>
       </section>
     </>

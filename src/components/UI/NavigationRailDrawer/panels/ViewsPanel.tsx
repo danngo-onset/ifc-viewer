@@ -8,7 +8,8 @@ import { PanelHeader } from "@/components/UI/NavigationRailDrawer";
 import type { Props } from ".";
 
 export const ViewsPanel = ({ activePanel, callback }: Props) => {
-  if (!BimExtensions.isPanelActive(activePanel, SideDrawerPanel.Views)) return null;
+  if (!BimExtensions.isPanelActive(activePanel, SideDrawerPanel.Views))
+    return;
 
   return (
     <>

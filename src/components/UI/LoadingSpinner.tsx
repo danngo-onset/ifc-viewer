@@ -7,7 +7,7 @@ export const LoadingSpinner = ({
   isVisible = false, 
   message = "Loading model..." 
 }: Props) => {
-  if (!isVisible) return null;
+  if (!isVisible) return;
 
   return (
     <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50">

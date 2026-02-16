@@ -6,13 +6,11 @@ import { AreaMeasurer } from "@/components/BIM";
 
 import { BottomToolbarButton } from ".";
 
-export const AreaMeasurerButton = () => {
-  return (
-    <BottomToolbarButton
-      componentKey={BimComponent.AreaMeasurer}
-      componentNode={<AreaMeasurer />}
-      tooltipMessage="Area Measurer"
-      icon={<RulerSquareIcon className="bottom-toolbar-icon" />}
-    />
-  );
-};
+export const AreaMeasurerButton = () => (
+  <BottomToolbarButton
+    componentKey={BimComponent.AreaMeasurer}
+    componentNode={<AreaMeasurer />}
+    tooltipMessage="Area Measurer"
+    icon={<RulerSquareIcon className="bottom-toolbar-icon" />}
+  />
+);
