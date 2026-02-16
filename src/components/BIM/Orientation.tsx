@@ -37,10 +37,7 @@ export const Orientation = () => {
   useEffect(() => {
     if (!fragmentsManager) return;
 
-    if (fragmentsManager.list.size > 0) {
-      setModelLoaded(true);
-      return;
-    }
+    setModelLoaded(fragmentsManager.list.size > 0);
   }, [fragmentsManager?.list.size]);
   
   if (!fragmentsManager) return;
@@ -50,27 +47,27 @@ export const Orientation = () => {
       bim-component-container p-0! space-y-0!
       *:hover:bg-gray-300 *:px-2 *:py-1 *:cursor-pointer
     ">
-      <li className="rounded-t-md" onClick={async () => await viewFromOrientation("front")}>
+      <li className="rounded-t-md" onClick={() => viewFromOrientation("front")}>
         Front
       </li>
 
-      <li onClick={async () => await viewFromOrientation("back")}>
+      <li onClick={() => viewFromOrientation("back")}>
         Back
       </li>
 
-      <li onClick={async () => await viewFromOrientation("left")}>
+      <li onClick={() => viewFromOrientation("left")}>
         Left
       </li>
 
-      <li onClick={async () => await viewFromOrientation("right")}>
+      <li onClick={() => viewFromOrientation("right")}>
         Right
       </li>
 
-      <li onClick={async () => await viewFromOrientation("top")}>
+      <li onClick={() => viewFromOrientation("top")}>
         Top
       </li>
 
-      <li className="rounded-b-md" onClick={async () => await viewFromOrientation("bottom")}>
+      <li className="rounded-b-md" onClick={() => viewFromOrientation("bottom")}>
         Bottom
       </li>
     </ul>

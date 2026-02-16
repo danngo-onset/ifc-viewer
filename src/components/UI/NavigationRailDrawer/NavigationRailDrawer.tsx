@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-import { LayersIcon, EyeOpenIcon } from "@radix-ui/react-icons";
+import { LayersIcon, EyeOpenIcon, GearIcon } from "@radix-ui/react-icons";
 
 import { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
 
@@ -8,14 +8,15 @@ import { IconSitemap } from "@/components/UI/icons";
 
 import { PanelToggle } from ".";
 import { 
-  ModelInspectorPanel, ClassifierPanel, ViewsPanel
+  ModelInspectorPanel, ClassifierPanel, ViewsPanel,
+  SettingsPanel
 } from "./panels";
 
 type Props = {
   isLoading: boolean;
 };
 
-const RAIL_WIDTH = 160;
+const RAIL_WIDTH = 145;
 
 export const NavigationRailDrawer = ({ 
   isLoading 
@@ -101,6 +102,14 @@ export const NavigationRailDrawer = ({
           title="Views"
           icon={<EyeOpenIcon />}
         />
+
+        <PanelToggle
+          activePanel={activePanel}
+          targetPanel={SideDrawerPanel.Settings}
+          callback={() => togglePanel(SideDrawerPanel.Settings)}
+          title="Settings"
+          icon={<GearIcon />}
+        />
       </nav>
 
       <aside
@@ -122,6 +131,11 @@ export const NavigationRailDrawer = ({
         />
 
         <ViewsPanel
+          activePanel={activePanel}
+          callback={() => setActivePanel(SideDrawerPanel.None)}
+        />
+
+        <SettingsPanel
           activePanel={activePanel}
           callback={() => setActivePanel(SideDrawerPanel.None)}
         />

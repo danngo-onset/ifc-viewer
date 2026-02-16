@@ -7,6 +7,8 @@ import { useBimComponent } from "@/hooks/BIM";
 
 import { BimComponent } from "@/domain/enums/BIM/BimComponent";
 
+import { SwitchButton } from "@/components/UI/buttons";
+
 type ViewsListTableData = {
   Name    : string;
   Actions : string;
@@ -161,23 +163,20 @@ export const Views = () => {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex items-center gap-2 *:cursor-pointer">
-        <input 
-          type="checkbox" 
-          id="views-enabled" 
-          checked={viewsEnabled} 
-          onChange={e => {
+      <div>
+        <label htmlFor="views-enabled" className="cursor-pointer">2D Views enabled</label>
+
+        <SwitchButton 
+          id="views-enabled"
+          checked={viewsEnabled}
+          onClick={async () => {
             if (!views) return;
-
-            const checked = e.target.checked;
-            setViewsEnabled(checked);
-            
-            views.enabled = checked;
-          }} 
-          className="rounded"
+        
+            views.enabled = !views.enabled;
+            setViewsEnabled(views.enabled);
+          }}
+          colour="blue-400"
         />
-
-        <label htmlFor="views-enabled">2D Views enabled</label>
       </div>
 
       <div className="overflow-auto" ref={panelContainerRef} />

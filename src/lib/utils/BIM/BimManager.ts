@@ -57,16 +57,19 @@ export class BimManager {
     BUIManager.init();
     BUICManager.init();
 
-    this.world.scene = new OBC.SimpleScene(this.components);
-    this.world.scene.setup();
-    this.world.scene.three.background = null; // light scene
+    this.world.scene = new OBC.ShadowedScene(this.components);
 
-    //world.renderer = new OBC.SimpleRenderer(components, containerRef.current);
-    this.world.renderer = new OBCF.PostproductionRenderer(this.components, this.container);
+    this.world.renderer = new OBC.SimpleRenderer(this.components, this.container);
+    //this.world.renderer = new OBCF.PostproductionRenderer(this.components, this.container);
+    this.world.renderer.three.shadowMap.enabled = true;
 
     this.world.camera = new OBC.OrthoPerspectiveCamera(this.components);
     //world.camera.controls.maxDistance = 300;
     //world.camera.controls.infinityDolly = false;
+
+    this.world.scene.setup();
+    //this.world.scene.three.background = null; // light scene
+
     await this.world.camera.controls.setLookAt(12, 6, 8, 0, 0, -10, false);
     
     // Disable damping to stop continuous movement after scroll stops
@@ -126,6 +129,13 @@ export class BimManager {
       this.world.scene.three.add(model.object);
 
       // TODO: need a global state to be signalled when a model is loaded
+
+      model.object.traverse((obj) => {
+        if (obj instanceof THREE.Mesh) {
+          obj.castShadow = true;
+          obj.receiveShadow = true;
+        }
+      });
       
       setLoadingMessage("Rendering model...");
       await fragmentsManager.core.update(true);
