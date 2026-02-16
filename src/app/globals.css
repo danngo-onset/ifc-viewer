@@ -84,3 +84,11 @@ body {
 .bottom-toolbar-sub-container {
   @apply flex flex-row items-end gap-2 bg-white border border-gray-300 rounded-md shadow-xl p-1;
 }
+
+.nav-rail-panel-toggle[data-active="true"] {
+  @apply bg-blue-600 text-white;
+}
+
+.nav-rail-panel-toggle[data-active="false"] {
+  @apply text-gray-400 hover:bg-gray-800 hover:text-white;
+}

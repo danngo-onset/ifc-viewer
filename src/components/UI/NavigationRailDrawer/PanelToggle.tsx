@@ -28,11 +28,8 @@ export const PanelToggle = ({
   return (
     <button
       onClick={callback}
-      className={`w-full p-2 rounded-lg transition-colors flex items-center gap-2 cursor-pointer 
-        ${BimExtensions.isPanelActive(activePanel, targetPanel) 
-          ? "bg-blue-600 text-white" 
-          : "text-gray-400 hover:bg-gray-800 hover:text-white"}
-      `}
+      data-active={BimExtensions.isPanelActive(activePanel, targetPanel)}
+      className="w-full p-2 rounded-lg transition-colors flex items-center gap-2 cursor-pointer nav-rail-panel-toggle"
     >
       {iconEl}
 
