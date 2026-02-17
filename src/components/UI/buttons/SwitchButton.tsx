@@ -4,6 +4,8 @@ import { Switch } from "@mui/material";
 interface SwitchButtonProps extends Props {
   id: string;
   checked: boolean;
+
+  /** Colour in Tailwind @example "blue-400" */
   colour: string;
 }
 
