@@ -5,7 +5,6 @@ import { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
 import { Shadow } from "@/components/BIM";
 import { PanelHeader } from "@/components/UI/NavigationRailDrawer";
 
-
 import type { Props } from ".";
 
 export const SettingsPanel = ({ 

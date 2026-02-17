@@ -1,5 +1,6 @@
-import type { Props } from ".";
 import { Switch } from "@mui/material";
+
+import type { Props } from ".";
 
 interface SwitchButtonProps extends Props {
   id: string;
