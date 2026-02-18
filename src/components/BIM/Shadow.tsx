@@ -28,11 +28,9 @@ export const Shadow = () => {
         onClick={async () => {
           if (!world) return;
       
-          //console.log(world.scene.shadowsEnabled);
           world.scene.shadowsEnabled = !world.scene.shadowsEnabled;
           await world.scene.updateShadows();
           setShadowsEnabled(world.scene.shadowsEnabled);
-          //console.log(world.scene.shadowsEnabled);
         }}
         colour="blue-400"
       />

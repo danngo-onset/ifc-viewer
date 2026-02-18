@@ -20,9 +20,12 @@ export const TopBar = ({
   setIsLoading,
   setLoadingMessage,
 }: TopBarProps) => {
+  const world = useBimComponent(BimComponent.World);
   const fragmentsManager = useBimComponent(BimComponent.FragmentsManager);
 
   async function loadIfc(e: React.ChangeEvent<HTMLInputElement>) {
+    if (!world || !fragmentsManager ) return;
+    
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -47,7 +50,8 @@ export const TopBar = ({
         c => c.charCodeAt(0)
       ).buffer;
 
-      await fragmentsManager?.core.load(buffer, { modelId: response.data.id });
+      const model = await fragmentsManager.core.load(buffer, { modelId: response.data.id });
+      world.scene.three.add(model.object);
     } catch (error) {
       console.error('Error loading fragments:', error);
       setIsLoading(false);
@@ -59,6 +63,8 @@ export const TopBar = ({
   }
 
   async function loadById(e: React.FormEvent<HTMLFormElement>) {
+    if (!world || !fragmentsManager) return;
+    
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
@@ -67,11 +73,6 @@ export const TopBar = ({
     if (!id.trim()) return;
 
     try {
-      if (!fragmentsManager) {
-        console.error("FragmentsManager not available yet");
-        return;
-      }
-      
       setIsLoading(true);
       setLoadingMessage(`Loading model: ${id}...`);
 
@@ -82,7 +83,8 @@ export const TopBar = ({
         c => c.charCodeAt(0)
       ).buffer;
 
-      await fragmentsManager.core.load(buffer, { modelId: id });
+      const model = await fragmentsManager.core.load(buffer, { modelId: id });
+      world.scene.three.add(model.object);
 
       // Testing for Views (#28)
       /* const fragPaths = [

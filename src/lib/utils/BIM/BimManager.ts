@@ -1,6 +1,6 @@
 import * as OBC from "@thatopen/components";
 import * as OBCF from "@thatopen/components-front";
-import type { FragmentsModel, ItemData, BIMMaterial } from "@thatopen/fragments";
+import type { FragmentsModel, ItemData, BIMMaterial, BIMMesh } from "@thatopen/fragments";
 
 import * as THREE from "three";
 
@@ -62,15 +62,28 @@ export class BimManager {
     this.world.renderer = new OBC.SimpleRenderer(this.components, this.container);
     //this.world.renderer = new OBCF.PostproductionRenderer(this.components, this.container);
     this.world.renderer.three.shadowMap.enabled = true;
+    this.world.renderer.three.shadowMap.type = THREE.PCFSoftShadowMap;
 
     this.world.camera = new OBC.OrthoPerspectiveCamera(this.components);
+    this.world.camera.three.far = 10000;
     //world.camera.controls.maxDistance = 300;
     //world.camera.controls.infinityDolly = false;
 
-    this.world.scene.setup();
-    //this.world.scene.three.background = null; // light scene
+
+    const worldSetupConfig: Partial<OBC.ShadowedSceneConfig> = {
+      shadows: {
+        cascade: 1,
+        resolution: 1024
+      }
+    };
+    this.world.scene.setup(worldSetupConfig);
+    this.world.scene.three.background = null; // light scene
 
     await this.world.camera.controls.setLookAt(12, 6, 8, 0, 0, -10, false);
+    await this.world.scene.updateShadows();
+
+    const cameraRestHandler = async () => await this.world.scene.updateShadows();
+    this.world.camera.controls.addEventListener("rest", cameraRestHandler);
     
     // Disable damping to stop continuous movement after scroll stops
     //world.camera.controls.dampingFactor = 0;
@@ -99,6 +112,7 @@ export class BimManager {
     serviceLocator.register(BimComponent.World, this.world);
 
     return () => {
+      this.world.camera.controls.removeEventListener("rest", cameraRestHandler);
       this.world.camera.projection.onChanged.remove(cameraProjectionChangedHandler);
     };
   }
@@ -124,16 +138,21 @@ export class BimManager {
     const cameraRestHandler = async () => await fragmentsManager.core.update(true);
     this.world.camera.controls.addEventListener("rest", cameraRestHandler);
 
+
     const modelSetHandler = async ({ value: model }: { value: FragmentsModel }) => {
       model.useCamera(this.world.camera.three);
       this.world.scene.three.add(model.object);
 
       // TODO: need a global state to be signalled when a model is loaded
 
-      model.object.traverse((obj) => {
-        if (obj instanceof THREE.Mesh) {
-          obj.castShadow = true;
-          obj.receiveShadow = true;
+      // TODO: do we need to clean this up?
+      model.tiles.onItemSet.add(({ value: mesh }: { value: BIMMesh }) => {
+        if ("isMesh" in mesh) {
+          const material = mesh.material as THREE.MeshStandardMaterial[];
+          if (material[0].opacity === 1) {
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+          }
         }
       });
       
@@ -142,6 +161,7 @@ export class BimManager {
       setIsLoading(false);
     };
     fragmentsManager.list.onItemSet.add(modelSetHandler);
+
 
     const zFightingHandler = ({ value: material }: { value: BIMMaterial }) => {
       if (!("isLodMaterial" in material && material.isLodMaterial)) {
@@ -157,13 +177,19 @@ export class BimManager {
                     .onItemSet
                     .add(zFightingHandler);
 
+
+    const updateHandler = async () => await fragmentsManager.core.update(true);
+    this.world.camera.controls.addEventListener("update", updateHandler);
+
+
     const cameraChangeHandler = async (camera: OBC.OrthoPerspectiveCamera) => {
       for (const model of fragmentsManager.list.values()) {
         model.useCamera(camera.three);
       }
-      await fragmentsManager.core.update(true);
+      await updateHandler();
     };
     this.world.onCameraChanged.add(cameraChangeHandler);
+
 
     serviceLocator.register(BimComponent.FragmentsManager, fragmentsManager);
 
@@ -171,6 +197,7 @@ export class BimManager {
       //URL.revokeObjectURL(worker.url);
       this.world.camera.controls.removeEventListener("rest", cameraRestHandler);
       this.world.onCameraChanged.remove(cameraChangeHandler);
+      this.world.camera.controls.removeEventListener("update", updateHandler);
       fragmentsManager.list.onItemSet.remove(modelSetHandler);
       fragmentsManager.core.models.materials.list.onItemSet.remove(zFightingHandler);
     };
