@@ -23,7 +23,7 @@ export const SwitchButton = ({
     slotProps={{
       switchBase: {className: `text-${colour}`},  // ripple effect
       thumb: {className: `text-${colour}`},  // thumb
-      track: {className: `bg-gray-700 [.MuiSwitch-root:has(.Mui-checked)_&]:bg-${colour}`} // track
+      track: {className: `${checked ? `bg-${colour}` : "bg-gray-700"}`} // track
     }} 
   />
 );
