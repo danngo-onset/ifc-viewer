@@ -5,6 +5,7 @@ import type { FragmentsModel, ItemData, BIMMaterial, BIMMesh } from "@thatopen/f
 import * as THREE from "three";
 
 import { serviceLocator } from "@/lib";
+import { BimExtensions } from "@/lib/extensions/BIM/bim-extensions";
 
 import { Constants } from "@/domain/Constants";
 
@@ -46,16 +47,7 @@ export class BimManager {
    * - Components
    */
   async init() {
-    const [
-      { Manager: BUIManager },
-      { Manager: BUICManager }
-    ] = await Promise.all([
-      import("@thatopen/ui"),
-      import("@thatopen/ui-obc")
-    ]);
-    
-    BUIManager.init();
-    BUICManager.init();
+    await BimExtensions.initBUI();
 
     this.world.scene = new OBC.ShadowedScene(this.components);
 
