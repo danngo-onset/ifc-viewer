@@ -18,7 +18,7 @@ type TopBarProps = {
 export const TopBar = ({
   isLoading,
   setIsLoading,
-  setLoadingMessage,
+  setLoadingMessage
 }: TopBarProps) => {
   const world = useBimComponent(BimComponent.World);
   const fragmentsManager = useBimComponent(BimComponent.FragmentsManager);
