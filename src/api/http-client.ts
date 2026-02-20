@@ -13,7 +13,7 @@ const getApiBaseUrl = () => {
   return process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
 };
 
-const api = axios.create({
+const httpClient = axios.create({
   baseURL: getApiBaseUrl(),
   timeout: 300000, // 5 minutes timeout for large file uploads
   headers: {
@@ -22,15 +22,15 @@ const api = axios.create({
 });
 
 // Request interceptor
-api.interceptors.request.use(
+httpClient.interceptors.request.use(
   config => config,
   error => Promise.reject(error)
 );
 
 // Response interceptor
-api.interceptors.response.use(
+httpClient.interceptors.response.use(
   response => response,
   error => Promise.reject(error)
 );
 
-export { api };
+export { httpClient };

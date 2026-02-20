@@ -1,4 +1,4 @@
-import { api } from "@/lib";
+import { httpClient } from "@/api";
 
 import { useBimComponent } from "@/hooks/BIM";
 
@@ -36,7 +36,7 @@ export const TopBar = ({
       const formData = new FormData();
       formData.append("file", file);
     
-      const response = await api.post("/fragments", formData, {
+      const response = await httpClient.post("/fragments", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         }
@@ -76,7 +76,7 @@ export const TopBar = ({
       setIsLoading(true);
       setLoadingMessage(`Loading model: ${id}...`);
 
-      const response = await api.get(`/fragments/${id}`);
+      const response = await httpClient.get(`/fragments/${id}`);
       
       const buffer = Uint8Array.from(
         atob(response.data.fragments), 
