@@ -1,6 +1,6 @@
-import type { BimComponent } from "@/domain/enums/BIM/BimComponent";
-import type { IBimComponent } from "@/domain/interfaces/BIM";
-import type { BimComponentTypeMap } from "@/domain/types/BIM";
+import type { BimComponent } from "@/domain/enums/bim/BimComponent";
+import type { IBimComponent } from "@/domain/interfaces/bim";
+import type { BimComponentTypeMap } from "@/domain/types/bim";
 
 class ServiceLocator {
   private container: Map<BimComponent, IBimComponent> = new Map();

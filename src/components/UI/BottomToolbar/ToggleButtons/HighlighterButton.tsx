@@ -1,7 +1,7 @@
-import { BimComponent } from "@/domain/enums/BIM/BimComponent";
+import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
-import { Highlighter } from "@/components/BIM";
-import { IconPaintRoller } from "@/components/UI/icons";
+import { Highlighter } from "@/components/bim";
+import { IconPaintRoller } from "@/components/ui/icons";
 
 import { BottomToolbarButton } from ".";
 

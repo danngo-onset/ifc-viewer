@@ -9,10 +9,10 @@ import { BimExtensions } from "@/lib/extensions/BIM/bim-extensions";
 
 import { Constants } from "@/domain/Constants";
 
-import { BimComponent } from "@/domain/enums/BIM/BimComponent";
+import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
 import type { SetState } from "@/domain/types/SetState";
-import type { World } from "@/domain/types/BIM/World";
+import type { World } from "@/domain/types/bim/World";
 
 import { CameraDistanceLocker } from ".";
 

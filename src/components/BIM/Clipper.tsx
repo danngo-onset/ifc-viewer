@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { BimComponent } from "@/domain/enums/BIM/BimComponent";
+import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
 import { useBimComponent } from "@/hooks/BIM";
 

@@ -6,9 +6,9 @@ import { serviceLocator } from "@/lib";
 
 import { Constants } from "@/domain/Constants";
 
-import { BimComponent } from "@/domain/enums/BIM";
-import type { World } from "@/domain/types/BIM";
-import type { IBimComponent } from "@/domain/interfaces/BIM";
+import { BimComponent } from "@/domain/enums/bim";
+import type { World } from "@/domain/types/bim";
+import type { IBimComponent } from "@/domain/interfaces/bim";
 
 export class CameraDistanceLocker implements IBimComponent {
   enabled = false;

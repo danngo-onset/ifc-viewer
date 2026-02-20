@@ -6,7 +6,7 @@ import type * as TBUI from "@thatopen/ui";
 import type * as TBUIC from "@thatopen/ui-obc";
 
 import { useBimComponent } from "@/hooks/BIM";
-import { BimComponent } from "@/domain/enums/BIM/BimComponent";
+import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
 export const ModelAttributes = () => {
   const panelContainerRef = useRef<HTMLDivElement>(null);

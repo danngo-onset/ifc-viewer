@@ -1,8 +1,8 @@
 import { RulerHorizontalIcon } from "@radix-ui/react-icons";
 
-import { BimComponent } from "@/domain/enums/BIM/BimComponent";
+import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
-import { LengthMeasurer } from "@/components/BIM";
+import { LengthMeasurer } from "@/components/bim";
 
 import { BottomToolbarButton } from ".";
 

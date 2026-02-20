@@ -4,7 +4,7 @@ import { LayersIcon, EyeOpenIcon, GearIcon } from "@radix-ui/react-icons";
 
 import { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
 
-import { IconSitemap } from "@/components/UI/icons";
+import { IconSitemap } from "@/components/ui/icons";
 
 import { PanelToggle } from ".";
 import { 

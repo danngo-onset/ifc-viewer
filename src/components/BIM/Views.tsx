@@ -5,9 +5,9 @@ import type * as TBUI from "@thatopen/ui";
 
 import { useBimComponent } from "@/hooks/BIM";
 
-import { BimComponent } from "@/domain/enums/BIM/BimComponent";
+import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
-import { SwitchButton } from "@/components/UI/buttons";
+import { SwitchButton } from "@/components/ui/buttons";
 
 type ViewsListTableData = {
   Name    : string;

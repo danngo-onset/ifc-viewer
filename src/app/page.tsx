@@ -2,10 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { BimManager } from "@/lib/utils/BIM";
+import { BimManager } from "@/lib/utils/bim";
 
-import { LoadingSpinner, TopBar } from "@/components/UI";
-import { BottomToolbar } from "@/components/UI/BottomToolbar";
+import { LoadingSpinner, TopBar } from "@/components/ui";
+import { BottomToolbar } from "@/components/ui/BottomToolbar";
 
 export default function Home() {
   const containerRef = useRef<HTMLElement | null>(null);

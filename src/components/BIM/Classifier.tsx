@@ -5,7 +5,7 @@ import type * as TBUI from "@thatopen/ui";
 
 import { useBimComponent } from "@/hooks/BIM";
 
-import { BimComponent } from "@/domain/enums/BIM/BimComponent";
+import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
 export const Classifier = () => {
   const panelContainerRef = useRef<HTMLDivElement>(null);

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 
-import { ItemInspector } from "@/components/BIM";
+import { ItemInspector } from "@/components/bim";
 
 import { CrossButton } from "./buttons";
 

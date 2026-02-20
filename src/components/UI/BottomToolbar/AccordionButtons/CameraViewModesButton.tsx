@@ -4,10 +4,10 @@ import { ChevronUpIcon } from "@radix-ui/react-icons";
 
 import { useClickOutside } from "@/hooks";
 
-import { CameraViewModes } from "@/components/BIM";
+import { CameraViewModes } from "@/components/bim";
 
-import { WithTooltip } from "@/components/UI";
-import { IconCamera } from "@/components/UI/icons";
+import { WithTooltip } from "@/components/ui";
+import { IconCamera } from "@/components/ui/icons";
 
 export const CameraViewModesButton = () => {
   const [showComponent, setShowComponent] = useState(false);

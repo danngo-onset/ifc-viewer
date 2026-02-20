@@ -1,4 +1,4 @@
-import { CrossButton } from "@/components/UI/buttons";
+import { CrossButton } from "@/components/ui/buttons";
 
 type Props = {
   title    : string;

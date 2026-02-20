@@ -6,7 +6,7 @@ import type { ItemsDataTableData, ItemsDataState } from "@thatopen/ui-obc";
 
 import { useBimComponent } from "@/hooks/BIM";
 
-import { BimComponent } from "@/domain/enums/BIM/BimComponent";
+import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
 type Props = {
   isLoading: boolean;

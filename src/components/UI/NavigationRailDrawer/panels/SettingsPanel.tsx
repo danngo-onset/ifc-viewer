@@ -2,8 +2,8 @@ import { BimExtensions } from "@/lib/extensions/BIM";
 
 import { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
 
-import { Shadow } from "@/components/BIM";
-import { PanelHeader } from "@/components/UI/NavigationRailDrawer";
+import { Shadow } from "@/components/bim";
+import { PanelHeader } from "@/components/ui/NavigationRailDrawer";
 
 import type { Props } from ".";
 

@@ -1,8 +1,8 @@
 import { CubeIcon } from "@radix-ui/react-icons";
 
-import { BimComponent } from "@/domain/enums/BIM/BimComponent";
+import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
-import { VolumeMeasurer } from "@/components/BIM";
+import { VolumeMeasurer } from "@/components/bim";
 
 import { BottomToolbarButton } from ".";
 

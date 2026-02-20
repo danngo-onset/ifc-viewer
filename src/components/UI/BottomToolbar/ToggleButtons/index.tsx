@@ -5,10 +5,10 @@ import { ChevronUpIcon } from "@radix-ui/react-icons";
 import { useClickOutside } from "@/hooks";
 import { useBimComponent } from "@/hooks/BIM";
 
-import { BimComponent } from "@/domain/enums/BIM/BimComponent";
-import { IBimComponentNode } from "@/domain/interfaces/BIM";
+import { BimComponent } from "@/domain/enums/bim/BimComponent";
+import { IBimComponentNode } from "@/domain/interfaces/bim";
 
-import { WithTooltip } from "@/components/UI";
+import { WithTooltip } from "@/components/ui";
 
 type Props = {
   componentKey   : BimComponent;

@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 
 import { useBimComponent } from "@/hooks/BIM";
 
-import { BimComponent } from "@/domain/enums/BIM";
+import { BimComponent } from "@/domain/enums/bim";
 
-import { SwitchButton } from "@/components/UI/buttons";
+import { SwitchButton } from "@/components/ui/buttons";
 
 // TODO: not working
 export const Shadow = () => {

@@ -4,7 +4,7 @@ import { useBimComponent } from "@/hooks/BIM";
 
 import * as OBC from "@thatopen/components";
 
-import { BimComponent } from "@/domain/enums/BIM/BimComponent";
+import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
 type OrientationOptions = OBC.BoundingBoxer.OrientationOptions;
 

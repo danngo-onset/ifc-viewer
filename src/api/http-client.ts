@@ -1,6 +1,5 @@
 import axios from "axios";
 
-// Environment-based API URL configuration
 const getApiBaseUrl = () => {
   if (typeof window === "undefined") {
     return process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
@@ -18,16 +17,14 @@ const httpClient = axios.create({
   timeout: 300000, // 5 minutes timeout for large file uploads
   headers: {
     "Content-Type": "application/json",
-  },
+  }
 });
 
-// Request interceptor
 httpClient.interceptors.request.use(
   config => config,
   error => Promise.reject(error)
 );
 
-// Response interceptor
 httpClient.interceptors.response.use(
   response => response,
   error => Promise.reject(error)

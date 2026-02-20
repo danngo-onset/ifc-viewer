@@ -2,7 +2,7 @@ import { httpClient } from "@/api";
 
 import { useBimComponent } from "@/hooks/BIM";
 
-import { BimComponent } from "@/domain/enums/BIM/BimComponent";
+import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
 import type { SetState } from "@/domain/types/SetState";
 

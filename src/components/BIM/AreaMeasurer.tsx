@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 
 import { useBimComponent } from "@/hooks/BIM";
 
-import { BimComponent } from "@/domain/enums/BIM/BimComponent";
-import { IBimComponentNode } from "@/domain/interfaces/BIM";
+import { BimComponent } from "@/domain/enums/bim/BimComponent";
+import { IBimComponentNode } from "@/domain/interfaces/bim";
 
 export const AreaMeasurer: IBimComponentNode = () => {
   const [visible, setVisible] = useState(false);

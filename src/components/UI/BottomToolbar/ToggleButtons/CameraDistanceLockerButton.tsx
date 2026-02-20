@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 
 import { useBimComponent } from "@/hooks/BIM";
 
-import { BimComponent } from "@/domain/enums/BIM/BimComponent";
+import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
-import { WithTooltip } from "@/components/UI";
-import { IconCamera } from "@/components/UI/icons";
+import { WithTooltip } from "@/components/ui";
+import { IconCamera } from "@/components/ui/icons";
 
 export const CameraDistanceLockerButton = () => {
   const [cameraDistanceLockEnabled, setCameraDistanceEnabled] = useState(false);

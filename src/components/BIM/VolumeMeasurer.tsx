@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { useBimComponent } from "@/hooks/BIM";
 
-import { BimComponent } from "@/domain/enums/BIM/BimComponent";
+import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
 export const VolumeMeasurer = () => {
   const [visible, setVisible] = useState(false);

@@ -1,8 +1,8 @@
 import { ScissorsIcon } from "@radix-ui/react-icons";
 
-import { BimComponent } from "@/domain/enums/BIM/BimComponent";
+import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
-import { Clipper } from "@/components/BIM";
+import { Clipper } from "@/components/bim";
 
 import { BottomToolbarButton } from ".";
 

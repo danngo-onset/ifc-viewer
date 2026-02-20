@@ -1,10 +1,10 @@
 import type * as OBC from "@thatopen/components";
 import type * as OBCF from "@thatopen/components-front";
 
-import type { CameraDistanceLocker } from "@/lib/utils/BIM/CameraDistanceLocker";
+import type { CameraDistanceLocker } from "@/lib/utils/bim/CameraDistanceLocker";
 
-import type { BimComponent } from "@/domain/enums/BIM/BimComponent";
-import type { IBimComponent } from "@/domain/interfaces/BIM";
+import type { BimComponent } from "@/domain/enums/bim/BimComponent";
+import type { IBimComponent } from "@/domain/interfaces/bim";
 
 import type { World } from "./World";
 

@@ -1,8 +1,8 @@
 import { RulerSquareIcon } from "@radix-ui/react-icons";
 
-import { BimComponent } from "@/domain/enums/BIM/BimComponent";
+import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
-import { AreaMeasurer } from "@/components/BIM";
+import { AreaMeasurer } from "@/components/bim";
 
 import { BottomToolbarButton } from ".";
 

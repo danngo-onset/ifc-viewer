@@ -4,10 +4,10 @@ import { ChevronUpIcon } from "@radix-ui/react-icons";
 
 import { useClickOutside } from "@/hooks";
 
-import { Orientation } from "@/components/BIM";
+import { Orientation } from "@/components/bim";
 
-import { WithTooltip } from "@/components/UI";
-import { IconCompass } from "@/components/UI/icons";
+import { WithTooltip } from "@/components/ui";
+import { IconCompass } from "@/components/ui/icons";
 
 export const OrientationButton = () => {
   const [showComponent, setShowComponent] = useState(false);
