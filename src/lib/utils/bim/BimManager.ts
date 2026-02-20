@@ -5,7 +5,7 @@ import type { FragmentsModel, ItemData, BIMMaterial, BIMMesh } from "@thatopen/f
 import * as THREE from "three";
 
 import { serviceLocator } from "@/lib";
-import { BimExtensions } from "@/lib/extensions/BIM/bim-extensions";
+import { BimExtensions } from "@/lib/extensions/bim/bim-extensions";
 
 import { Constants } from "@/domain/Constants";
 

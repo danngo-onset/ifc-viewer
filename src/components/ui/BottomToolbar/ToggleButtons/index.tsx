@@ -3,7 +3,7 @@ import { ReactElement, useEffect, useRef, useState } from "react";
 import { ChevronUpIcon } from "@radix-ui/react-icons";
 
 import { useClickOutside } from "@/hooks";
-import { useBimComponent } from "@/hooks/BIM";
+import { useBimComponent } from "@/hooks/bim";
 
 import { BimComponent } from "@/domain/enums/bim/BimComponent";
 import { IBimComponentNode } from "@/domain/interfaces/bim";

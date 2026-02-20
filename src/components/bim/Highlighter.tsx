@@ -1,4 +1,4 @@
-import { useBimComponent } from "@/hooks/BIM";
+import { useBimComponent } from "@/hooks/bim";
 
 import { BimComponent } from "@/domain/enums/bim/BimComponent";
 

@@ -1,6 +1,6 @@
 import { cloneElement } from "react";
 
-import { BimExtensions } from "@/lib/extensions/BIM";
+import { BimExtensions } from "@/lib/extensions/bim";
 
 import type { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
 

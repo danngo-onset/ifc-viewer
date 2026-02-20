@@ -1,4 +1,4 @@
-import { BimExtensions } from "@/lib/extensions/BIM";
+import { BimExtensions } from "@/lib/extensions/bim";
 
 import { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
 

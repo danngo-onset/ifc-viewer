@@ -4,7 +4,7 @@ import type * as OBC from "@thatopen/components";
 import type { Table, UpdateFunction } from "@thatopen/ui";
 import type { ItemsDataTableData, ItemsDataState } from "@thatopen/ui-obc";
 
-import { useBimComponent } from "@/hooks/BIM";
+import { useBimComponent } from "@/hooks/bim";
 
 import { BimComponent } from "@/domain/enums/bim/BimComponent";
 

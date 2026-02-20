@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
-import { useBimComponent } from "@/hooks/BIM";
+import { useBimComponent } from "@/hooks/bim";
 
 export const LengthMeasurer = () => {
   const [visible, setVisible] = useState(false);
