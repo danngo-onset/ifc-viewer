@@ -2,6 +2,7 @@ import type { BimComponent } from "@/domain/enums/bim/BimComponent";
 import type { IBimComponent } from "@/domain/interfaces/bim";
 import type { BimComponentTypeMap } from "@/domain/types/bim";
 
+// TODO: Check whether this can be refactored following this https://blog.ploeh.dk/2010/02/03/ServiceLocatorisanAnti-Pattern/#c74efcff64084de68a0cc3ee0a9a21e5
 class ServiceLocator {
   private container: Map<BimComponent, IBimComponent> = new Map();
 
