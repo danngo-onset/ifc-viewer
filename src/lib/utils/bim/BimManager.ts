@@ -373,7 +373,7 @@ export class BimManager {
   }
 
   async initHighlighter() {
-    const fragmentsManager = serviceLocator.get(BimComponent.FragmentsManager);
+    const fragmentsManager = serviceLocator.resolve(BimComponent.FragmentsManager);
     if (!fragmentsManager) return;
 
     const world = this.world;

@@ -20,13 +20,13 @@ class ServiceLocator {
   }
 
   /** Shouldn't be called directly in components, use useBimComponent hook instead */
-  get<K extends BimComponent>(key: K): BimComponentTypeMap[K] | null {
+  resolve<K extends BimComponent>(key: K): BimComponentTypeMap[K] | null {
     const instance = this.container.get(key);
     return (instance as BimComponentTypeMap[K] | undefined) || null;
   }
 
   dispose(key: BimComponent) {
-    const instance = this.get(key);
+    const instance = this.resolve(key);
     if (instance && typeof instance.dispose === "function") {
       instance.dispose();
     }

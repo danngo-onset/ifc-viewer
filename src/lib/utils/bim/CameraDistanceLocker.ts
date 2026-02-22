@@ -35,7 +35,7 @@ export class CameraDistanceLocker implements IBimComponent {
     private readonly container : HTMLElement,
     private readonly world     : World
   ) {
-    const components = serviceLocator.get(BimComponent.Components);
+    const components = serviceLocator.resolve(BimComponent.Components);
     if (!components) {
       throw new Error("Components not initialised");
     }
