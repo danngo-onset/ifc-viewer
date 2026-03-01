@@ -466,6 +466,9 @@ export class BimManager {
   }
 
   async initViews() {
+    const fragmentsManager = serviceLocator.resolve(BimComponent.FragmentsManager);
+    if (!fragmentsManager) return;
+
     // The range defines how far the view will "see"
     // We can specify a default value, but it can be changed independently for each view instance after creation
     OBC.Views.defaultRange = 100;
@@ -475,18 +478,22 @@ export class BimManager {
     views.world = this.world;
     views.enabled = false;
 
-    // we can specify which models the storeys will be taken from
-    // in order to create the views
-    // in this case, just the architectural model will be used
-    const config: OBC.CreateViewFromIfcStoreysConfig = {
-      modelIds: [/arq/]
-    };
-    await views.createFromIfcStoreys(config); // Assuming the fragments model comes from an IFC model. 
-                                              // If the model uses a different schema than IFC, 
-                                              // then the views have to be manually created based on its attributes.
+    // Create views after a model is loaded (not at init time, when fragments.list is empty)
+    const createViewsHandler = async () => {
+      // we can specify which models the storeys will be taken from
+      // in order to create the views
+      // in this case, just the architectural model will be used
+      const config: OBC.CreateViewFromIfcStoreysConfig = {
+        modelIds: [/arq/]
+      };
+      await views.createFromIfcStoreys(config); // Assuming the fragments model comes from an IFC model. 
+                                                // If the model uses a different schema than IFC, 
+                                                // then the views have to be manually created based on its attributes.
 
-    // TODO: Create views from cardinal directions by default, not working
-    //views.createElevations({ combine: true });
+      // TODO: Create views from cardinal directions by default, not working
+      views.createElevations({ combine: true });
+    };
+    fragmentsManager.core.onModelLoaded.add(createViewsHandler);
 
     window.addEventListener(
       "dblclick",
@@ -525,6 +532,10 @@ export class BimManager {
     );
 
     serviceLocator.register(BimComponent.Views, views);
+
+    return () => {
+      fragmentsManager.core.onModelLoaded.remove(createViewsHandler);
+    };
   }
 
   dispose() {
