@@ -1,4 +1,5 @@
 import { create } from "zustand";
+
 import type { SetZustandState } from "@/domain/types";
 
 type State = {
