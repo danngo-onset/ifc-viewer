@@ -1,16 +1,19 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+
+import { useUiStore } from "@/store";
 
 import { BimManager } from "@/lib/utils/bim";
 
-import { LoadingSpinner, TopBar } from "@/components/ui";
+import { LoadingSpinner } from "@/components/ui";
+import { TopBar } from "@/components/ui/TopBar";
 import { BottomToolbar } from "@/components/ui/BottomToolbar";
 
 export default function Home() {
   const containerRef = useRef<HTMLElement | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [loadingMessage, setLoadingMessage] = useState("Loading model...");
+
+  const { isLoading, loadingMessage } = useUiStore();
 
   useEffect(() => {
     const container = containerRef.current;
@@ -23,7 +26,7 @@ export default function Home() {
     (async () => {
       const initCleanup = await bimManager.init();
 
-      const fragmentsManagerCleanup = await bimManager.initFragmentsManager(setLoadingMessage, setIsLoading);
+      const fragmentsManagerCleanup = await bimManager.initFragmentsManager();
       
       const [
         lengthMeasurementCleanup,
@@ -60,11 +63,7 @@ export default function Home() {
     <>
       <LoadingSpinner isVisible={isLoading} message={loadingMessage} />
       
-      <TopBar 
-        isLoading={isLoading}
-        setIsLoading={setIsLoading}
-        setLoadingMessage={setLoadingMessage}
-      />
+      <TopBar />
       
       <main 
         ref={containerRef} 

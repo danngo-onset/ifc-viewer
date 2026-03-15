@@ -4,6 +4,8 @@ import type { FragmentsModel, ItemData, BIMMaterial, BIMMesh } from "@thatopen/f
 
 import * as THREE from "three";
 
+import { useUiStore } from "@/store";
+
 import { serviceLocator } from "@/lib";
 import { BimExtensions } from "@/lib/extensions/bim/bim-extensions";
 
@@ -11,7 +13,6 @@ import { Constants } from "@/domain/Constants";
 
 import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
-import type { SetState } from "@/domain/types/SetState";
 import type { World } from "@/domain/types/bim/World";
 
 import { CameraDistanceLocker } from ".";
@@ -21,6 +22,8 @@ export class BimManager {
   private readonly world      : World;
 
   private readonly abortController : AbortController;
+
+  private readonly uiState = useUiStore.getState();
 
   private static instance: BimManager;
 
@@ -109,10 +112,7 @@ export class BimManager {
     };
   }
 
-  async initFragmentsManager(
-    setLoadingMessage: SetState<string>,
-    setIsLoading: SetState<boolean>
-  ) {
+  async initFragmentsManager() {
     const fragmentsManager = this.components.get(OBC.FragmentsManager);
 
     /* const githubUrl = "https://thatopen.github.io/engine_fragment/resources/worker.mjs";
@@ -130,7 +130,7 @@ export class BimManager {
     const cameraRestHandler = async () => await fragmentsManager.core.update(true);
     this.world.camera.controls.addEventListener("rest", cameraRestHandler);
 
-
+    
     const modelSetHandler = async ({ value: model }: { value: FragmentsModel }) => {
       model.useCamera(this.world.camera.three);
       this.world.scene.three.add(model.object);
@@ -148,9 +148,9 @@ export class BimManager {
         }
       });
       
-      setLoadingMessage("Rendering model...");
+      this.uiState.setLoadingMessage("Rendering model...");
       await fragmentsManager.core.update(true);
-      setIsLoading(false);
+      this.uiState.setIsLoading(false);
     };
     fragmentsManager.list.onItemSet.add(modelSetHandler);
 
