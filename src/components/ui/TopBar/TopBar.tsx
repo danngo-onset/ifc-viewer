@@ -1,27 +1,19 @@
 import { httpClient } from "@/api";
 
+import { useUiStore } from "@/store";
+
 import { useBimComponent } from "@/hooks/bim";
 
 import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
-import type { SetState } from "@/domain/types/SetState";
+import { NavigationRailDrawer } from "@/components/ui/NavigationRailDrawer";
+import { RightDrawer } from "@/components/ui/RightDrawer";
 
-import { NavigationRailDrawer } from "./NavigationRailDrawer";
-import { RightDrawer } from "./RightDrawer";
-
-type TopBarProps = {
-  isLoading: boolean;
-  setIsLoading: SetState<boolean>;
-  setLoadingMessage: SetState<string>;
-};
-
-export const TopBar = ({
-  isLoading,
-  setIsLoading,
-  setLoadingMessage
-}: TopBarProps) => {
+export const TopBar = () => {
   const world = useBimComponent(BimComponent.World);
   const fragmentsManager = useBimComponent(BimComponent.FragmentsManager);
+
+  const { isLoading, setIsLoading, setLoadingMessage } = useUiStore();
 
   async function loadIfc(e: React.ChangeEvent<HTMLInputElement>) {
     if (!world || !fragmentsManager ) return;
@@ -53,7 +45,7 @@ export const TopBar = ({
       const model = await fragmentsManager.core.load(buffer, { modelId: response.data.id });
       world.scene.three.add(model.object);
     } catch (error) {
-      console.error('Error loading fragments:', error);
+      console.error("Error loading fragments:", error);
       setIsLoading(false);
     } finally {
       if (e.target) {
@@ -101,7 +93,7 @@ export const TopBar = ({
         }),
       ); */
     } catch (error) {
-      console.error('Error loading fragments by ID:', error);
+      console.error("Error loading fragments by ID:", error);
       setIsLoading(false);
     }
 
@@ -132,10 +124,10 @@ export const TopBar = ({
         <label 
           htmlFor="file-input" 
           className={`cursor-pointer border border-gray-300 rounded-md p-2 ${
-            isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-400 hover:bg-blue-500'
+            isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-400 hover:bg-blue-500"
           } transition-colors`}
         >
-          {isLoading ? 'Loading...' : 'Upload an IFC file'}
+          {isLoading ? "Loading..." : "Upload an IFC file"}
         </label>
       </div>
 
@@ -157,11 +149,11 @@ export const TopBar = ({
           disabled={isLoading}
           className={`border border-gray-300 rounded-md p-2 ${
             isLoading 
-              ? 'bg-gray-400 cursor-not-allowed' 
-              : 'bg-green-400 hover:bg-green-500 cursor-pointer'
+              ? "bg-gray-400 cursor-not-allowed" 
+              : "bg-green-400 hover:bg-green-500 cursor-pointer"
           } transition-colors`}
         >
-          {isLoading ? 'Loading...' : 'Load'}
+          {isLoading ? "Loading..." : "Load"}
         </button>
       </form>
 

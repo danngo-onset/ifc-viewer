@@ -81,13 +81,13 @@ export const CameraViewModes = () => {
   return (
     <section className="w-64 bim-component-container">
       <div>
-        <label htmlFor="navigation-mode">Navigation Mode</label>
+        <label className="cursor-pointer" htmlFor="navigation-mode">Navigation Mode</label>
 
         <select 
           id="navigation-mode"
           value={navigationMode} 
           onChange={handleNavigationModeChange}
-          className="rounded border border-gray-400 p-1 w-28"
+          className="rounded border border-gray-400 p-1 w-28 cursor-pointer"
         >
           <option value="Orbit">Orbit</option>
           <option value="FirstPerson">First Person</option>
@@ -96,13 +96,13 @@ export const CameraViewModes = () => {
       </div>
 
       <div >
-        <label htmlFor="projection">Projection</label>
+        <label className="cursor-pointer" htmlFor="projection">Projection</label>
 
         <select 
           id="projection"
           value={projection} 
           onChange={handleProjectionChange}
-          className="rounded border border-gray-400 p-1 w-28"
+          className="rounded border border-gray-400 p-1 w-28 cursor-pointer"
         >
           <option value="Orthographic">Orthographic</option>
           <option value="Perspective">Perspective</option>
