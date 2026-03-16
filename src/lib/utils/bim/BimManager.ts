@@ -23,7 +23,7 @@ export class BimManager {
 
   private readonly abortController : AbortController;
 
-  private readonly uiState = useUiStore.getState();
+  private readonly uiStore = useUiStore.getState();
 
   private static instance: BimManager;
 
@@ -148,9 +148,9 @@ export class BimManager {
         }
       });
       
-      this.uiState.setLoadingMessage("Rendering model...");
+      this.uiStore.setLoadingMessage("Rendering model...");
       await fragmentsManager.core.update(true);
-      this.uiState.setIsLoading(false);
+      this.uiStore.setIsLoading(false);
     };
     fragmentsManager.list.onItemSet.add(modelSetHandler);
 
