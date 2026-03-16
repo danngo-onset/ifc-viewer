@@ -1,1 +1,1 @@
-export * from "./useUiStore";
+export * from "./uiStore";
