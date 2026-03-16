@@ -18,14 +18,14 @@ export const useUiStore = create<Store>((set) => ({
   isLoading: false,
   loadingMessage: "",
   
-  setIsLoading: (isLoading) => mutateIsLoading(set, isLoading),
-  setLoadingMessage: (loadingMessage) => mutateLoadingMessage(set, loadingMessage)
+  setIsLoading: (isLoading) => setIsLoading(set, isLoading),
+  setLoadingMessage: (loadingMessage) => setLoadingMessage(set, loadingMessage)
 }));
 
-function mutateIsLoading(set: SetZustandState<State>, isLoading: boolean) {
+function setIsLoading(set: SetZustandState<State>, isLoading: boolean) {
   set({ isLoading });
 }
 
-function mutateLoadingMessage(set: SetZustandState<State>, loadingMessage: string) {
+function setLoadingMessage(set: SetZustandState<State>, loadingMessage: string) {
   set({ loadingMessage });
 }
