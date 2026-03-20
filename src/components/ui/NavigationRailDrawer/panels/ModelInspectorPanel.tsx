@@ -1,35 +1,16 @@
-import { BimExtensions } from "@/lib/extensions/bim";
-
-import { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
-
-import { ModelInspector, ModelAttributes } from "@/components/bim";
 import { PanelHeader } from "@/components/ui/NavigationRailDrawer";
+import { ModelInspector, ModelAttributes } from "@/components/bim";
 
-import type { Props } from ".";
+export const ModelInspectorPanel = () => (
+  <>
+    <PanelHeader title="Model Inspector" />
 
-interface PanelProps extends Props {
-  isLoading: boolean;
-};
-
-export const ModelInspectorPanel = ({ 
-  activePanel, 
-  callback, 
-  isLoading
-}: PanelProps) => {
-  if (!BimExtensions.isPanelActive(activePanel, SideDrawerPanel.ModelInspector))
-    return;
-
-  return (
-    <>
-      <PanelHeader title="Model Inspector" callback={callback} />
-
-      <section className="flex-1 overflow-y-auto">
-        <div className="nav-rail-drawer-panel">
-          <ModelInspector isLoading={isLoading} />
-          
-          <ModelAttributes />
-        </div>
-      </section>
-    </>
-  );
-};
+    <section className="flex-1 overflow-y-auto">
+      <div className="nav-rail-drawer-panel">
+        <ModelInspector />
+        
+        <ModelAttributes />
+      </div>
+    </section>
+  </>
+);

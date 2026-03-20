@@ -2,8 +2,6 @@
 
 import { useEffect, useRef } from "react";
 
-import { useUiStore } from "@/store";
-
 import { BimManager } from "@/lib/utils/bim";
 
 import { LoadingSpinner } from "@/components/ui";
@@ -12,8 +10,6 @@ import { BottomToolbar } from "@/components/ui/BottomToolbar";
 
 export default function Home() {
   const containerRef = useRef<HTMLElement | null>(null);
-
-  const { isLoading, loadingMessage } = useUiStore();
 
   useEffect(() => {
     const container = containerRef.current;
@@ -61,7 +57,7 @@ export default function Home() {
 
   return (
     <>
-      <LoadingSpinner isVisible={isLoading} message={loadingMessage} />
+      <LoadingSpinner />
       
       <TopBar />
       

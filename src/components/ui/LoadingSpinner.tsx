@@ -1,13 +1,16 @@
-type Props = {
-  isVisible : boolean;
-  message?  : string;
-}
+import { useShallow } from "zustand/shallow";
 
-export const LoadingSpinner = ({ 
-  isVisible = false, 
-  message = "Loading model..." 
-}: Props) => {
-  if (!isVisible) return;
+import { useUiStore } from "@/store";
+
+export const LoadingSpinner = () => {
+  const { isVisible, message } = useUiStore(
+    useShallow(s => ({
+      isVisible: s.isLoading,
+      message: s.loadingMessage
+    }))
+  );
+
+  if (!isVisible) return null;
 
   return (
     <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50">

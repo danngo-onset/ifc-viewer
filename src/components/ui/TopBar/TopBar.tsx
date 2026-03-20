@@ -1,3 +1,5 @@
+import { useShallow } from "zustand/shallow";
+
 import { httpClient } from "@/api";
 
 import { useUiStore } from "@/store";
@@ -13,7 +15,13 @@ export const TopBar = () => {
   const world = useBimComponent(BimComponent.World);
   const fragmentsManager = useBimComponent(BimComponent.FragmentsManager);
 
-  const { isLoading, setIsLoading, setLoadingMessage } = useUiStore();
+  const { isLoading, setIsLoading, setLoadingMessage } = useUiStore(
+    useShallow(s => ({
+      isLoading: s.isLoading,
+      setIsLoading: s.setIsLoading,
+      setLoadingMessage: s.setLoadingMessage
+    }))
+  );
 
   async function loadIfc(e: React.ChangeEvent<HTMLInputElement>) {
     if (!world || !fragmentsManager ) return;
@@ -93,7 +101,7 @@ export const TopBar = () => {
 
   return (
     <section className="flex justify-center items-center space-x-4 py-4 bg-gray-300 relative">
-      <NavigationRailDrawer isLoading={isLoading} />
+      <NavigationRailDrawer />
 
       <div>
         <input 
@@ -136,7 +144,7 @@ export const TopBar = () => {
         </button>
       </form>
 
-      <RightDrawer isLoading={isLoading} />
+      <RightDrawer />
     </section>
   );
 };

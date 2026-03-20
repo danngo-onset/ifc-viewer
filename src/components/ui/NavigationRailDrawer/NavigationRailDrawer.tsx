@@ -1,37 +1,73 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 
-import { LayersIcon, EyeOpenIcon, GearIcon } from "@radix-ui/react-icons";
+import { LayersIcon, StackIcon, EyeOpenIcon, GearIcon } from "@radix-ui/react-icons";
+
+import { useUiStore } from "@/store";
 
 import { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
 
 import { IconSitemap } from "@/components/ui/icons";
 
 import { PanelToggle } from ".";
+
 import { 
   ModelInspectorPanel, ClassifierPanel, ViewsPanel,
   SettingsPanel
 } from "./panels";
 
-type Props = {
-  isLoading: boolean;
-};
-
 const RAIL_WIDTH = 145;
 
-export const NavigationRailDrawer = ({ 
-  isLoading 
-}: Props) => {
-  const [activePanel, setActivePanel] = useState<SideDrawerPanel>(SideDrawerPanel.None);
+const PANELS: {
+  id        : SideDrawerPanel;
+  title     : string;
+  icon      : React.ReactElement;
+  component : React.ReactElement;
+}[] = [
+  {
+    id: SideDrawerPanel.Models,
+    title: "Models",
+    icon: <LayersIcon />,
+    component: <></>
+  },
+  {
+    id: SideDrawerPanel.ModelInspector,
+    title: "Model Inspector",
+    icon: <StackIcon />,
+    component: <ModelInspectorPanel />
+  },
+  {
+    id: SideDrawerPanel.Classifier,
+    title: "Classifier",
+    icon: <IconSitemap />,
+    component: <ClassifierPanel />
+  },
+  {
+    id: SideDrawerPanel.Views,
+    title: "Views",
+    icon: <EyeOpenIcon />,
+    component: <ViewsPanel />
+  },
+  {
+    id: SideDrawerPanel.Settings,
+    title: "Settings",
+    icon: <GearIcon />,
+    component: <SettingsPanel />
+  }
+] as const;
+
+export const NavigationRailDrawer = () => {
+  const activeNavRailPanel = useUiStore(s => s.activeNavRailPanel);
+
   const [panelWidth, setPanelWidth] = useState(320);
   const [isResizing, setIsResizing] = useState(false);
 
   const panelRef = useRef<HTMLDivElement>(null);
 
-  const isPanelOpen = activePanel !== SideDrawerPanel.None;
+  const activePanel = useMemo(
+    () => PANELS.find(panel => panel.id === activeNavRailPanel)?.component
+  , [activeNavRailPanel]);
 
-  const togglePanel = (panelId: SideDrawerPanel) => {
-    setActivePanel(prev => prev === panelId ? SideDrawerPanel.None : panelId);
-  };
+  const isPanelOpen = activeNavRailPanel !== SideDrawerPanel.None;
 
   useEffect(() => {
     if (!isResizing) return;
@@ -79,66 +115,23 @@ export const NavigationRailDrawer = ({
         style={{ width: RAIL_WIDTH }}
         className="flex flex-col items-start h-full bg-gray-900 border-r border-gray-700 py-4 gap-2 px-2"
       >
-        <PanelToggle
-          activePanel={activePanel}
-          targetPanel={SideDrawerPanel.ModelInspector}
-          callback={() => togglePanel(SideDrawerPanel.ModelInspector)}
-          title="Model Inspector"
-          icon={<LayersIcon />}
-        />
-
-        <PanelToggle
-          activePanel={activePanel}
-          targetPanel={SideDrawerPanel.Classifier}
-          callback={() => togglePanel(SideDrawerPanel.Classifier)}
-          title="Classifier"
-          icon={<IconSitemap />}
-        />
-
-        <PanelToggle
-          activePanel={activePanel}
-          targetPanel={SideDrawerPanel.Views}
-          callback={() => togglePanel(SideDrawerPanel.Views)}
-          title="Views"
-          icon={<EyeOpenIcon />}
-        />
-
-        <PanelToggle
-          activePanel={activePanel}
-          targetPanel={SideDrawerPanel.Settings}
-          callback={() => togglePanel(SideDrawerPanel.Settings)}
-          title="Settings"
-          icon={<GearIcon />}
-        />
+        {PANELS.map(panel => (
+          <PanelToggle 
+            key={panel.id} 
+            targetPanel={panel.id} 
+            title={panel.title} 
+            icon={panel.icon} 
+          />
+        ))}
       </nav>
 
       <aside
         ref={panelRef}
         id="navigation-rail-drawer-container"
-        className="flex flex-col h-full bg-white shadow-xl border-r transform transition-all duration-300 overflow-hidden"
         data-open={isPanelOpen}
         style={{ width: isPanelOpen ? `${panelWidth}px` : 0 }}
       >
-        <ModelInspectorPanel 
-          activePanel={activePanel} 
-          callback={() => setActivePanel(SideDrawerPanel.None)} 
-          isLoading={isLoading} 
-        />
-
-        <ClassifierPanel 
-          activePanel={activePanel} 
-          callback={() => setActivePanel(SideDrawerPanel.None)} 
-        />
-
-        <ViewsPanel
-          activePanel={activePanel}
-          callback={() => setActivePanel(SideDrawerPanel.None)}
-        />
-
-        <SettingsPanel
-          activePanel={activePanel}
-          callback={() => setActivePanel(SideDrawerPanel.None)}
-        />
+        {activePanel}
 
         {/* Resize handler */}
         {isPanelOpen && (

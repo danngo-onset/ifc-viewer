@@ -4,15 +4,15 @@ import type * as OBC from "@thatopen/components";
 import type { Table, UpdateFunction } from "@thatopen/ui";
 import type { ItemsDataTableData, ItemsDataState } from "@thatopen/ui-obc";
 
+import { useUiStore } from "@/store";
+
 import { useBimComponent } from "@/hooks/bim";
 
 import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
-type Props = {
-  isLoading: boolean;
-};
-
-export const ItemInspector = ({ isLoading }: Props) => {
+export const ItemInspector = () => {
+  const isLoading = useUiStore(s => s.isLoading);
+  
   const panelContainerRef = useRef<HTMLDivElement>(null);
   
   const components = useBimComponent(BimComponent.Components);

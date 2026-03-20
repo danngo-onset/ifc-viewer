@@ -3,15 +3,15 @@ import { useEffect, useRef } from "react";
 import type { Table } from "@thatopen/ui";
 import type { SpatialTreeData } from "@thatopen/ui-obc";
 
+import { useUiStore } from "@/store";
+
 import { useBimComponent } from "@/hooks/bim";
 
 import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
-type Props = {
-  isLoading: boolean;
-};
+export const ModelInspector = () => {
+  const isLoading = useUiStore(s => s.isLoading);
 
-export const ModelInspector = ({ isLoading }: Props) => {
   const panelContainerRef = useRef<HTMLDivElement>(null);
   
   const components = useBimComponent(BimComponent.Components);

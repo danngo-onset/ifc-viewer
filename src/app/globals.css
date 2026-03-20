@@ -58,6 +58,10 @@ body {
   @apply w-4 h-4;
 }
 
+#navigation-rail-drawer-container {
+  @apply flex flex-col h-full bg-white shadow-xl border-r transform transition-all duration-300 overflow-hidden;
+}
+
 #navigation-rail-drawer-container[data-open="true"] {
   @apply opacity-100;
 }
@@ -84,6 +88,10 @@ body {
 
 .bottom-toolbar-sub-container {
   @apply flex flex-row items-end gap-2 bg-white border border-gray-300 rounded-md shadow-xl p-1;
+}
+
+.nav-rail-panel-toggle{
+  @apply w-full p-2 rounded-lg transition-colors flex items-center gap-2 cursor-pointer;
 }
 
 .nav-rail-panel-toggle[data-active="true"] {

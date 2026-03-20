@@ -6,11 +6,7 @@ import { ItemInspector } from "@/components/bim";
 
 import { CrossButton } from "./buttons";
 
-type SideDrawerProps = {
-  isLoading: boolean;
-}
-
-export const RightDrawer = ({ isLoading }: SideDrawerProps) => {
+export const RightDrawer = () => {
   const [open, setOpen] = useState(false);
   const [width, setWidth] = useState(320); // Default width: w-80 = 320px
   const [isResizing, setIsResizing] = useState(false);
@@ -92,7 +88,7 @@ export const RightDrawer = ({ isLoading }: SideDrawerProps) => {
 
         <div className="flex-1 overflow-y-auto">
           <section className="nav-rail-drawer-panel">
-            <ItemInspector isLoading={isLoading} />
+            <ItemInspector />
           </section>
         </div>
       </aside>

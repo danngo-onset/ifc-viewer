@@ -1,35 +1,40 @@
 import { cloneElement } from "react";
 
-import { BimExtensions } from "@/lib/extensions/bim";
+import { useShallow } from "zustand/shallow";
+
+import { useUiStore } from "@/store";
 
 import type { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
 
-import type { Props } from "./panels";
-
-interface ToggleProps extends Props {
+type Props = {
   targetPanel : SideDrawerPanel;
   title       : string;
   icon        : React.ReactElement;
 }
 
 export const PanelToggle = ({
-  activePanel,  // TODO: set up global state for this
   targetPanel,
-  callback,
   title,
   icon
-}: ToggleProps) => {
+}: Props) => {
   const className = "w-4 h-4";
   const iconEl = cloneElement(
     icon, 
     { className: className, classes: className } as React.HTMLAttributes<HTMLElement>
   );
 
+  const { activeNavRailPanel, toggleNavRailPanel } = useUiStore(
+    useShallow(s => ({
+      activeNavRailPanel: s.activeNavRailPanel,
+      toggleNavRailPanel: s.toggleNavRailPanel
+    }))
+  );
+
   return (
     <button
-      onClick={callback}
-      data-active={BimExtensions.isPanelActive(activePanel, targetPanel)}
-      className="w-full p-2 rounded-lg transition-colors flex items-center gap-2 cursor-pointer nav-rail-panel-toggle"
+      onClick={() => toggleNavRailPanel(targetPanel)}
+      data-active={activeNavRailPanel === targetPanel}
+      className="nav-rail-panel-toggle"
     >
       {iconEl}
 
