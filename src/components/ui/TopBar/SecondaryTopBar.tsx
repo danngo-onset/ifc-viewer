@@ -1,4 +1,4 @@
-export const SecondaryTopBar = () => {
+export function SecondaryTopBar() {
   return (
     <>
     </>

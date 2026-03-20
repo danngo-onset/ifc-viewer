@@ -33,7 +33,6 @@ export const TopBar = () => {
           "Content-Type": "multipart/form-data",
         }
       });
-      console.log(response.data);
     
       setLoadingMessage("Loading fragments into viewer...");
     
@@ -77,21 +76,6 @@ export const TopBar = () => {
 
       const model = await fragmentsManager.core.load(buffer, { modelId: id });
       world.scene.three.add(model.object);
-
-      // Testing for Views (#28)
-      /* const fragPaths = [
-        "https://thatopen.github.io/engine_components/resources/frags/school_arq.frag",
-        "https://thatopen.github.io/engine_components/resources/frags/school_str.frag",
-      ];
-      await Promise.all(
-        fragPaths.map(async (path) => {
-          const modelId = path.split("/").pop()?.split(".").shift();
-          if (!modelId) return null;
-          const file = await fetch(path);
-          const buffer = await file.arrayBuffer();
-          return fragmentsManager.core.load(buffer, { modelId });
-        }),
-      ); */
     } catch (error) {
       console.error("Error loading fragments by ID:", error);
       setIsLoading(false);
@@ -123,9 +107,8 @@ export const TopBar = () => {
 
         <label 
           htmlFor="file-input" 
-          className={`cursor-pointer border border-gray-300 rounded-md p-2 ${
-            isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-400 hover:bg-blue-500"
-          } transition-colors`}
+          id="upload-ifc-btn"
+          data-disabled={isLoading}
         >
           {isLoading ? "Loading..." : "Upload an IFC file"}
         </label>
@@ -146,12 +129,8 @@ export const TopBar = () => {
 
         <button 
           type="submit" 
+          id="load-frags-btn"
           disabled={isLoading}
-          className={`border border-gray-300 rounded-md p-2 ${
-            isLoading 
-              ? "bg-gray-400 cursor-not-allowed" 
-              : "bg-green-400 hover:bg-green-500 cursor-pointer"
-          } transition-colors`}
         >
           {isLoading ? "Loading..." : "Load"}
         </button>
