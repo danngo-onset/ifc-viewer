@@ -3,15 +3,11 @@ import { useEffect, useRef } from "react";
 import type { Table } from "@thatopen/ui";
 import type { SpatialTreeData } from "@thatopen/ui-obc";
 
-import { useUiStore } from "@/store";
-
 import { useBimComponent } from "@/hooks/bim";
 
 import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
 export const ModelInspector = () => {
-  const isLoading = useUiStore(s => s.isLoading);
-
   const panelContainerRef = useRef<HTMLDivElement>(null);
   
   const components = useBimComponent(BimComponent.Components);
@@ -93,14 +89,6 @@ export const ModelInspector = () => {
       }
     };
   }, [components, fragmentsManager]);
-
-  if (!components || !fragmentsManager) {
-    return (
-      <div className="p-4 text-sm text-gray-500">
-        {isLoading ? "Loading model structure..." : "No models loaded"}
-      </div>
-    );
-  }
 
   return (
     <div className="overflow-auto max-h-1/2" ref={panelContainerRef} />
