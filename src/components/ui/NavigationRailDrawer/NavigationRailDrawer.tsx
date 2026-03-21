@@ -12,7 +12,7 @@ import { PanelToggle } from ".";
 
 import { 
   ModelInspectorPanel, ClassifierPanel, ViewsPanel,
-  SettingsPanel
+  SettingsPanel, ModelsPanel
 } from "./panels";
 
 const RAIL_WIDTH = 145;
@@ -27,7 +27,7 @@ const PANELS: {
     id: SideDrawerPanel.Models,
     title: "Models",
     icon: <LayersIcon />,
-    component: <></>
+    component: <ModelsPanel />
   },
   {
     id: SideDrawerPanel.ModelInspector,
