@@ -1,8 +1,6 @@
 import { cloneElement } from "react";
 
-import { useShallow } from "zustand/shallow";
-
-import { useUiStore } from "@/store";
+import { useUiStoreShallow } from "@/store";
 
 import type { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
 
@@ -23,12 +21,10 @@ export const PanelToggle = ({
     { className: className, classes: className } as React.HTMLAttributes<HTMLElement>
   );
 
-  const { activeNavRailPanel, toggleNavRailPanel } = useUiStore(
-    useShallow(s => ({
-      activeNavRailPanel: s.activeNavRailPanel,
-      toggleNavRailPanel: s.toggleNavRailPanel
-    }))
-  );
+  const { activeNavRailPanel, toggleNavRailPanel } = useUiStoreShallow(s => ({
+    activeNavRailPanel: s.activeNavRailPanel,
+    toggleNavRailPanel: s.toggleNavRailPanel
+  }));
 
   return (
     <button

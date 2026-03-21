@@ -1,14 +1,10 @@
-import { useShallow } from "zustand/shallow";
-
-import { useUiStore } from "@/store";
+import { useUiStoreShallow } from "@/store";
 
 export const LoadingSpinner = () => {
-  const { isVisible, message } = useUiStore(
-    useShallow(s => ({
-      isVisible: s.isLoading,
-      message: s.loadingMessage
-    }))
-  );
+  const { isVisible, message } = useUiStoreShallow(s => ({
+    isVisible: s.isLoading,
+    message: s.loadingMessage
+  }));
 
   if (!isVisible) return;
 

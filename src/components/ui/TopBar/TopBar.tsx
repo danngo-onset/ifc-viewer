@@ -1,8 +1,6 @@
-import { useShallow } from "zustand/shallow";
-
 import { httpClient } from "@/api";
 
-import { useUiStore } from "@/store";
+import { useUiStoreShallow } from "@/store";
 
 import { useBimComponent } from "@/hooks/bim";
 
@@ -15,13 +13,11 @@ export const TopBar = () => {
   const world = useBimComponent(BimComponent.World);
   const fragmentsManager = useBimComponent(BimComponent.FragmentsManager);
 
-  const { isLoading, setIsLoading, setLoadingMessage } = useUiStore(
-    useShallow(s => ({
-      isLoading: s.isLoading,
-      setIsLoading: s.setIsLoading,
-      setLoadingMessage: s.setLoadingMessage
-    }))
-  );
+  const { isLoading, setIsLoading, setLoadingMessage } = useUiStoreShallow(s => ({
+    isLoading: s.isLoading,
+    setIsLoading: s.setIsLoading,
+    setLoadingMessage: s.setLoadingMessage
+  }));
 
   async function loadIfc(e: React.ChangeEvent<HTMLInputElement>) {
     if (!world || !fragmentsManager ) return;

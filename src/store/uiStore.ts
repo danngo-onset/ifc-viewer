@@ -1,5 +1,7 @@
 import { create } from "zustand";
 
+import { createShallowStore } from "@/lib";
+
 import type { SetZustandState } from "@/domain/types";
 import { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
 
@@ -18,18 +20,6 @@ type Action = {
 };
 
 type Store = State & Action;
-
-export const useUiStore = create<Store>((set, get) => ({
-  isLoading: false,
-  loadingMessage: "",
-  activeNavRailPanel: SideDrawerPanel.None,
-
-  setIsLoading: (isLoading) => setIsLoading(set, isLoading),
-  setLoadingMessage: (loadingMessage) => setLoadingMessage(set, loadingMessage),
-  setActiveNavRailPanel: (activeNavRailPanel) => setActiveNavRailPanel(set, activeNavRailPanel),
-  closeNavRailPanel: () => closeNavRailPanel(set),
-  toggleNavRailPanel: (targetPanel) => toggleNavRailPanel(set, targetPanel)
-}));
 
 function setIsLoading(set: SetZustandState<State>, isLoading: boolean) {
   set({ isLoading });
@@ -53,3 +43,17 @@ function toggleNavRailPanel(set: SetZustandState<State>, targetPanel: SideDrawer
                                                              : targetPanel
   }));
 }
+
+export const useUiStore = create<Store>((set, get) => ({
+  isLoading: false,
+  loadingMessage: "",
+  activeNavRailPanel: SideDrawerPanel.None,
+
+  setIsLoading: (isLoading) => setIsLoading(set, isLoading),
+  setLoadingMessage: (loadingMessage) => setLoadingMessage(set, loadingMessage),
+  setActiveNavRailPanel: (activeNavRailPanel) => setActiveNavRailPanel(set, activeNavRailPanel),
+  closeNavRailPanel: () => closeNavRailPanel(set),
+  toggleNavRailPanel: (targetPanel) => toggleNavRailPanel(set, targetPanel)
+}));
+
+export const useUiStoreShallow = createShallowStore(useUiStore);
