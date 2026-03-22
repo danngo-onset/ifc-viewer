@@ -2,6 +2,8 @@
 
 import { useEffect, useRef } from "react";
 
+import { httpClient } from "@/api";
+
 import { BimManager } from "@/lib/utils/bim";
 
 import { LoadingSpinner } from "@/components/ui";
@@ -53,6 +55,10 @@ export default function Home() {
     })();
 
     return () => cleanupFunctions.forEach(cleanup => cleanup());
+  }, []);
+
+  useEffect(() => {
+    (async () => await httpClient.get("/"))();
   }, []);
 
   return (
