@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
+
+import { useBimStore } from "@/store";
 
 import { useBimComponent } from "@/hooks/bim";
 
@@ -9,7 +11,7 @@ import { BimComponent } from "@/domain/enums/bim/BimComponent";
 type OrientationOptions = OBC.BoundingBoxer.OrientationOptions;
 
 export const Orientation = () => {
-  const [modelLoaded, setModelLoaded] = useState(false);
+  const modelLoaded = useBimStore(s => s.modelLoaded);
 
   const components = useBimComponent(BimComponent.Components);
   const world = useBimComponent(BimComponent.World);
@@ -33,12 +35,6 @@ export const Orientation = () => {
     },
     [components, world]
   );
-
-  useEffect(() => {
-    if (!fragmentsManager) return;
-
-    setModelLoaded(fragmentsManager.list.size > 0);
-  }, [fragmentsManager?.list.size]);
   
   if (!fragmentsManager) return;
 

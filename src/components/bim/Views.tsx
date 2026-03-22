@@ -169,7 +169,7 @@ export const Views = () => {
         <SwitchButton 
           id="views-enabled"
           checked={viewsEnabled}
-          onClick={async () => {
+          onClick={() => {
             if (!views) return;
         
             views.enabled = !views.enabled;

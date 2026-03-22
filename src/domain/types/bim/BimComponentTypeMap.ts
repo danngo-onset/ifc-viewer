@@ -19,4 +19,5 @@ export interface BimComponentTypeMap extends Record<BimComponent, IBimComponent>
   [BimComponent.Clipper]: OBC.Clipper & IBimComponent;
   [BimComponent.Views]: OBC.Views & IBimComponent;
   [BimComponent.VolumeMeasurer]: OBCF.VolumeMeasurement & IBimComponent;
+  [BimComponent.Grids]: OBC.SimpleGrid & IBimComponent;
 };
