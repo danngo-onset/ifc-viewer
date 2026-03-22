@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, ChangeEvent } from "react";
 
 import * as OBC from "@thatopen/components";
 
@@ -21,7 +21,7 @@ export const CameraViewModes = () => {
     //console.log(world.camera.controls);
   }, [world]);
 
-  const handleNavigationModeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleNavigationModeChange = (event: ChangeEvent<HTMLSelectElement>) => {
     if (!world) return;
 
     const selectedValue = event.target.value as OBC.NavModeID;
@@ -61,7 +61,7 @@ export const CameraViewModes = () => {
     setNavigationMode(selectedValue);
   };
 
-  const handleProjectionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleProjectionChange = (event: ChangeEvent<HTMLSelectElement>) => {
     if (!world) return;
 
     const selectedValue = event.target.value as OBC.CameraProjection;

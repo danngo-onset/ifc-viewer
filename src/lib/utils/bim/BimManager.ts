@@ -4,7 +4,7 @@ import type { FragmentsModel, ItemData, BIMMaterial, BIMMesh } from "@thatopen/f
 
 import * as THREE from "three";
 
-import { useUiStore } from "@/store";
+import { useBimStore, useUiStore } from "@/store";
 
 import { serviceLocator } from "@/lib";
 import { BimExtensions } from "@/lib/extensions/bim/bim-extensions";
@@ -24,6 +24,7 @@ export class BimManager {
   private readonly abortController : AbortController;
 
   private readonly uiStore = useUiStore.getState();
+  private readonly bimStore = useBimStore.getState();
 
   private static instance: BimManager;
 
@@ -104,6 +105,7 @@ export class BimManager {
     };
     this.world.camera.projection.onChanged.add(cameraProjectionChangedHandler);
 
+    serviceLocator.register(BimComponent.Grids, grid);
     serviceLocator.register(BimComponent.World, this.world);
 
     return () => {
@@ -115,16 +117,7 @@ export class BimManager {
   async initFragmentsManager() {
     const fragmentsManager = this.components.get(OBC.FragmentsManager);
 
-    /* const githubUrl = "https://thatopen.github.io/engine_fragment/resources/worker.mjs";
-    const fetchedUrl = await fetch(githubUrl);
-    const workerBlob = await fetchedUrl.blob();
-    const workerFile = new File([workerBlob], "worker.mjs", {
-      type: "text/javascript",
-    });
-    const workerUrl = URL.createObjectURL(workerFile); */
-
     const worker = await fetch("/thatopen/worker.mjs");
-
     fragmentsManager.init(worker.url);
 
     const cameraRestHandler = async () => await fragmentsManager.core.update(true);
@@ -134,8 +127,6 @@ export class BimManager {
     const modelSetHandler = async ({ value: model }: { value: FragmentsModel }) => {
       model.useCamera(this.world.camera.three);
       this.world.scene.three.add(model.object);
-
-      // TODO: need a global state to be signalled when a model is loaded
 
       // TODO: do we need to clean this up?
       model.tiles.onItemSet.add(({ value: mesh }: { value: BIMMesh }) => {
@@ -151,8 +142,12 @@ export class BimManager {
       this.uiStore.setLoadingMessage("Rendering model...");
       await fragmentsManager.core.update(true);
       this.uiStore.setIsLoading(false);
+      this.bimStore.setModelLoaded(fragmentsManager.list.size > 0);
     };
     fragmentsManager.list.onItemSet.add(modelSetHandler);
+
+    
+    fragmentsManager.list.onItemDeleted.add(() => this.bimStore.setModelLoaded(fragmentsManager.list.size > 0));
 
 
     const zFightingHandler = ({ value: material }: { value: BIMMaterial }) => {
@@ -186,7 +181,6 @@ export class BimManager {
     serviceLocator.register(BimComponent.FragmentsManager, fragmentsManager);
 
     return () => {
-      //URL.revokeObjectURL(worker.url);
       this.world.camera.controls.removeEventListener("rest", cameraRestHandler);
       this.world.onCameraChanged.remove(cameraChangeHandler);
       this.world.camera.controls.removeEventListener("update", updateHandler);

@@ -1,5 +1,5 @@
 import { PanelHeader } from "@/components/ui/NavigationRailDrawer";
-import { Shadow } from "@/components/bim";
+import { Shadow, Grids } from "@/components/bim";
 
 export const SettingsPanel = () => (
   <>
@@ -8,6 +8,8 @@ export const SettingsPanel = () => (
     <section className="flex-1 overflow-y-auto">
       <div className="nav-rail-drawer-panel">
         <Shadow />
+        
+        <Grids />
       </div>
     </section>
   </>

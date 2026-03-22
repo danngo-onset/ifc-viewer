@@ -6,7 +6,6 @@ import { BimComponent } from "@/domain/enums/bim";
 
 import { SwitchButton } from "@/components/ui/buttons";
 
-// TODO: not working
 export const Shadow = () => {
   const [shadowsEnabled, setShadowsEnabled] = useState(false);
 
