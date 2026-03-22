@@ -31,7 +31,7 @@ export const BottomToolbarButton = ({
   const component = useBimComponent(componentKey);
 
   useEffect(() => {
-    if (component && component.enabled !== undefined) {
+    if (component && typeof component.enabled === "boolean") {
       setEnabled(component.enabled);
     }
   }, [component]);
