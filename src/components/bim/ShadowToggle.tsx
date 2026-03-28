@@ -6,30 +6,30 @@ import { BimComponent } from "@/domain/enums/bim";
 
 import { SwitchButton } from "@/components/ui/buttons";
 
-export const Shadow = () => {
-  const [shadowsEnabled, setShadowsEnabled] = useState(false);
+export const ShadowToggle = () => {
+  const [shadowVisible, setShadowVisible] = useState(false);
 
   const world = useBimComponent(BimComponent.World);
 
   useEffect(() => {
     if (!world) return;
 
-    setShadowsEnabled(world.scene.shadowsEnabled);
+    setShadowVisible(world.scene.shadowsEnabled);
   }, [world?.scene.shadowsEnabled]);
 
   return (
     <div>
-      <label htmlFor="shadows-enabled" className="cursor-pointer">Shadows enabled</label>
+      <label htmlFor="shadow-visible" className="cursor-pointer">Shadow visible</label>
 
       <SwitchButton 
-        id="shadows-enabled"
-        checked={shadowsEnabled}
+        id="shadow-visible"
+        checked={shadowVisible}
         onClick={async () => {
           if (!world) return;
       
           world.scene.shadowsEnabled = !world.scene.shadowsEnabled;
           await world.scene.updateShadows();
-          setShadowsEnabled(world.scene.shadowsEnabled);
+          setShadowVisible(world.scene.shadowsEnabled);
         }}
         colour="blue-400"
       />
