@@ -10,7 +10,7 @@ import { BimComponent } from "@/domain/enums/bim";
 
 import { SwitchButton } from "@/components/ui/buttons";
 
-export const Grids = () => {
+export const GridsSettings = () => {
   const { modelLoaded, selectedGridLevel, setSelectedGridLevel } = useBimStoreShallow(s => ({
     modelLoaded: s.modelLoaded,
     selectedGridLevel: s.selectedGridLevel,
@@ -75,8 +75,6 @@ export const Grids = () => {
     grids.three.position.setY(elevation);
   };
 
-  if (!fragmentsManager) return;
-
   return (
     <div className="flex flex-col space-y-3">
       <div>
@@ -95,29 +93,32 @@ export const Grids = () => {
         />
       </div>
 
-      {modelLoaded && <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2">
         <label className="cursor-pointer" htmlFor="grid-level">Grid level</label>
 
-        <select 
-          id="grid-level" 
-          value={selectedGridLevel}
-          onChange={e => onGridLevelChange(e)}
-          className="rounded border border-gray-400 p-1 w-28 cursor-pointer"
-        >
-          {itemsData.map(attribute => {
-            if (!("Name" in attribute && "value" in attribute.Name))
-              return;
+        { modelLoaded 
+          ? <select 
+              id="grid-level" 
+              value={selectedGridLevel}
+              onChange={e => onGridLevelChange(e)}
+              className="rounded border border-gray-400 p-1 w-28 cursor-pointer"
+            >
+              {itemsData.map(attribute => {
+                if (!("Name" in attribute && "value" in attribute.Name))
+                  return;
 
-            const value = attribute.Name.value;
+                const value = attribute.Name.value;
 
-            return (
-              <option key={value.toString()} value={value}>
-                {value}
-              </option>
-            );
-          })}
-        </select>
-      </div>}
+                return (
+                  <option key={value.toString()} value={value}>
+                    {value}
+                  </option>
+                );
+              })}
+            </select>
+          : <p>Load a model to select a grid level</p>
+        }
+      </div>
     </div>
   );
 };

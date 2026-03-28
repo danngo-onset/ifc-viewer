@@ -1,5 +1,5 @@
 import { PanelHeader } from "@/components/ui/NavigationRailDrawer";
-import { ShadowToggle, Grids } from "@/components/bim";
+import { ShadowToggle, GridsSettings } from "@/components/bim";
 
 export const SettingsPanel = () => (
   <>
@@ -9,7 +9,7 @@ export const SettingsPanel = () => (
       <div className="nav-rail-drawer-panel">
         <ShadowToggle />
         
-        <Grids />
+        <GridsSettings />
       </div>
     </section>
   </>
