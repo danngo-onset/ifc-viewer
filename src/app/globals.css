@@ -103,7 +103,7 @@ body {
 }
 
 #upload-ifc-btn {
-  @apply cursor-pointer border border-gray-300 rounded-md p-2 transition-colors;
+  @apply border border-gray-300 rounded-md p-2 transition-colors;
 }
 
 #upload-ifc-btn[data-disabled="true"] {
@@ -111,7 +111,7 @@ body {
 }
 
 #upload-ifc-btn[data-disabled="false"] {
-  @apply bg-blue-400 hover:bg-blue-500;
+  @apply bg-blue-400 hover:bg-blue-500 cursor-pointer;
 }
 
 #load-frags-btn {
@@ -123,5 +123,5 @@ body {
 }
 
 #load-frags-btn:not(:disabled) {
-  @apply bg-green-400 hover:bg-green-500;
+  @apply bg-green-400 hover:bg-green-500 cursor-pointer;
 }
