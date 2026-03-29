@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
-import * as OBC from "@thatopen/components";
-import type * as TBUI from "@thatopen/ui";
+import { Components, Views } from "@thatopen/components";
+import type { Table, StatefullComponent, PanelSection } from "@thatopen/ui";
 
 import { useBimComponent } from "@/hooks/bim";
 
@@ -15,10 +15,10 @@ type ViewsListTableData = {
 }
 
 interface ViewsListState {
-  components: OBC.Components;
+  components: Components;
 }
 
-export const Views = () => {
+export const TwoDViews = () => {
   const panelContainerRef = useRef<HTMLDivElement>(null);
 
   const [modelLoaded, setModelLoaded] = useState(false);
@@ -49,15 +49,15 @@ export const Views = () => {
     (async () => {
       const BUI = await import("@thatopen/ui");
 
-      const viewsTemplate: TBUI.StatefullComponent<ViewsListState> = (state) => {
+      const viewsTemplate: StatefullComponent<ViewsListState> = (state) => {
         // TODO: Might not be needed
         const stateComponents = state.components;
-        const stateViews = stateComponents.get(OBC.Views);
+        const stateViews = stateComponents.get(Views);
 
         const onCreated = (e?: Element) => {
           if (!e) return;
 
-          const table = e as TBUI.Table<ViewsListTableData>;
+          const table = e as Table<ViewsListTableData>;
           table.data = [...stateViews.list.keys()].map(key => {
             return {
               data: {
@@ -72,7 +72,7 @@ export const Views = () => {
       };
 
       const [viewsTable, updateViewsTable] = BUI.Component.create<
-        TBUI.Table<ViewsListTableData>,
+        Table<ViewsListTableData>,
         ViewsListState
       >(viewsTemplate, { components: views.components });
 
@@ -120,7 +120,7 @@ export const Views = () => {
       views.list.onItemUpdated.add(updateFunction);
       views.list.onCleared.add(updateFunction);
 
-      const panel = BUI.Component.create<TBUI.PanelSection>(() => {
+      const panel = BUI.Component.create<PanelSection>(() => {
         const onCloseView = () => views.close();
 
         return BUI.html`

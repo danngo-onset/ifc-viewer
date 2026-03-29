@@ -1,11 +1,12 @@
 import { useEffect, useRef } from "react";
 
-import * as OBC from "@thatopen/components";
+import { FragmentsManager, Components, Hider } from "@thatopen/components";
 import type { FragmentsModel } from "@thatopen/fragments";
-import type * as TBUI from "@thatopen/ui";
-import type * as TBUIC from "@thatopen/ui-obc";
+import type { ChartLegend, Button } from "@thatopen/ui";
+import type { ChartAttributesState } from "@thatopen/ui-obc";
 
 import { useBimComponent } from "@/hooks/bim";
+
 import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
 export const ModelAttributes = () => {
@@ -18,7 +19,7 @@ export const ModelAttributes = () => {
 
     const abortController = new AbortController();
 
-    const fragmentsManager = components.get(OBC.FragmentsManager);
+    const fragmentsManager = components.get(FragmentsManager);
   
     let modelSetHandler: (event: { value: FragmentsModel }) => Promise<void>;
 
@@ -31,23 +32,23 @@ export const ModelAttributes = () => {
         import("@thatopen/ui-obc")
       ]);
 
-      const pieChartState: TBUIC.ChartAttributesState = {
+      const pieChartState: ChartAttributesState = {
         type: "pie",
         addLabels: false,
         attribute: /empty/,
         category: /empty/,
         modelId: "",
-        components : components as OBC.Components,
+        components : components as Components
       };
       const [pieChart, updatePieChart] = BUIC.charts.attributesChart(pieChartState);
   
-      const barChartState: TBUIC.ChartAttributesState = {
+      const barChartState: ChartAttributesState = {
         type: "bar",
         addLabels: false,
         attribute: /empty/,
         category: /empty/,
         modelId: "",
-        components : components as OBC.Components,
+        components : components as Components
       };
       const [barChart, updateBarChart] = BUIC.charts.attributesChart(barChartState);
   
@@ -71,9 +72,9 @@ export const ModelAttributes = () => {
             </bim-label>
           </bim-chart-legend>
         `;
-      }) as TBUI.ChartLegend;
+      }) as ChartLegend;
   
-      const hider = components.get(OBC.Hider);
+      const hider = components.get(Hider);
       
       labels.addEventListener(
         "label-click",
@@ -108,7 +109,7 @@ export const ModelAttributes = () => {
         await fragmentsManager.core.update(true);
 
         // TODO: the attribute and category should be dynamic
-        const chartState: Partial<TBUIC.ChartAttributesState> = {
+        const chartState: Partial<ChartAttributesState> = {
           attribute: /name/i,
           category: /door/i,
           modelId: model.modelId
@@ -132,7 +133,7 @@ export const ModelAttributes = () => {
         return BUI.html`
           <bim-button 
             label="Highlight" 
-            @click=${({ target }: { target: TBUI.Button }) => {
+            @click=${({ target }: { target: Button }) => {
               target.loading= true;
   
               pieChart.highlight((entry) => {
@@ -157,7 +158,7 @@ export const ModelAttributes = () => {
         return BUI.html`
           <bim-button 
             label="Filter" 
-            @click=${({ target }: { target: TBUI.Button }) => {
+            @click=${({ target }: { target: Button }) => {
               target.loading= true;
               
               pieChart.filterByValue((entry) => {
@@ -182,7 +183,7 @@ export const ModelAttributes = () => {
         return BUI.html`
           <bim-button 
             label="Reset" 
-            @click=${({ target }: { target: TBUI.Button }) => {
+            @click=${({ target }: { target: Button }) => {
               target.loading= true;
   
               pieChart.reset();

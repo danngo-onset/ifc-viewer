@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useRef, useState } from "react";
+import { type ReactElement, type ReactNode, useEffect, useRef, useState } from "react";
 
 import { ChevronUpIcon } from "@radix-ui/react-icons";
 
@@ -14,7 +14,7 @@ type Props = {
   componentKey   : BimComponent;
   componentNode  : ReactElement<IBimComponentNode>; // TODO: fix type assertion of this
   tooltipMessage : string;
-  icon           : React.ReactNode;
+  icon           : ReactNode;
 }
 
 export const BottomToolbarButton = ({

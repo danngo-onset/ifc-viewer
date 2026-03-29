@@ -1,6 +1,6 @@
-import * as OBC from "@thatopen/components";
+import { Components, Raycasters } from "@thatopen/components";
 
-import * as THREE from "three";
+import { Mesh, CircleGeometry, DoubleSide, MeshBasicMaterial, type Vector3 } from "three";
 
 import { serviceLocator } from "@/lib";
 
@@ -13,13 +13,13 @@ import type { IBimComponent } from "@/domain/interfaces/bim";
 export class CameraDistanceLocker implements IBimComponent {
   enabled = false;
 
-  private readonly components         : OBC.Components;
+  private readonly components         : Components;
 
   private readonly onMouseDownHandler : (event: MouseEvent) => Promise<void>;
   private abortController             : AbortController;
 
   private isActive = false;
-  private marker?                     : THREE.Mesh;
+  private marker?                     : Mesh;
 
   private static instance: CameraDistanceLocker;
 
@@ -47,7 +47,7 @@ export class CameraDistanceLocker implements IBimComponent {
       if (event.button !== 0 || !this.isActive) return; // only left mouse button
 
       // Each raycaster is associated with a specific world.
-      const raycaster = this.components.get(OBC.Raycasters)
+      const raycaster = this.components.get(Raycasters)
                                        .get(this.world);
 
       const intersection = await raycaster.castRay();
@@ -99,16 +99,16 @@ export class CameraDistanceLocker implements IBimComponent {
     }
   }
 
-  private createMarker(point: THREE.Vector3) { 
-    const geometry = new THREE.CircleGeometry(0.5, 16);
-    const material = new THREE.MeshBasicMaterial({ 
+  private createMarker(point: Vector3) { 
+    const geometry = new CircleGeometry(0.5, 16);
+    const material = new MeshBasicMaterial({ 
       color: Constants.Color.OrbitLock, 
       transparent: true, 
       opacity: 0.8,
-      side: THREE.DoubleSide
+      side: DoubleSide
     });
     
-    const marker = new THREE.Mesh(geometry, material);
+    const marker = new Mesh(geometry, material);
     marker.position.copy(point);
     
     // Orient the circle to face the camera

@@ -1,5 +1,5 @@
 import { PanelHeader } from "@/components/ui/NavigationRailDrawer";
-import { Views } from "@/components/bim";
+import { TwoDViews } from "@/components/bim";
 
 export const ViewsPanel = () => (
   <>
@@ -7,7 +7,7 @@ export const ViewsPanel = () => (
 
     <section className="flex-1 overflow-y-auto">
       <div className="nav-rail-drawer-panel">
-        <Views />
+        <TwoDViews />
       </div>
     </section>
   </>

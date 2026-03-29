@@ -1,3 +1,5 @@
+import type { SubmitEvent, ChangeEvent } from "react";
+
 import { httpClient } from "@/api";
 
 import { useUiStoreShallow } from "@/store";
@@ -19,7 +21,7 @@ export const TopBar = () => {
     setLoadingMessage: s.setLoadingMessage
   }));
 
-  async function loadIfc(e: React.ChangeEvent<HTMLInputElement>) {
+  async function loadIfc(e: ChangeEvent<HTMLInputElement>) {
     if (!world || !fragmentsManager ) return;
     
     const file = e.target.files?.[0];
@@ -57,7 +59,7 @@ export const TopBar = () => {
     }
   }
 
-  async function loadById(e: React.FormEvent<HTMLFormElement>) {
+  async function loadById(e: SubmitEvent<HTMLFormElement>) {
     if (!world || !fragmentsManager) return;
     
     e.preventDefault();

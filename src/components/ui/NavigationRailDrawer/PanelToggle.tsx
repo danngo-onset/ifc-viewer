@@ -1,4 +1,4 @@
-import { cloneElement } from "react";
+import { type ReactElement, type HTMLAttributes, cloneElement } from "react";
 
 import { useUiStoreShallow } from "@/store";
 
@@ -7,7 +7,7 @@ import type { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
 type Props = {
   targetPanel : SideDrawerPanel;
   title       : string;
-  icon        : React.ReactElement;
+  icon        : ReactElement;
 }
 
 export const PanelToggle = ({
@@ -18,7 +18,7 @@ export const PanelToggle = ({
   const className = "w-4 h-4";
   const iconEl = cloneElement(
     icon, 
-    { className: className, classes: className } as React.HTMLAttributes<HTMLElement>
+    { className: className, classes: className } as HTMLAttributes<HTMLElement>
   );
 
   const { activeNavRailPanel, toggleNavRailPanel } = useUiStoreShallow(s => ({

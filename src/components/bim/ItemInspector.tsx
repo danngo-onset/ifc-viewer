@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-import type * as OBC from "@thatopen/components";
+import type { ModelIdMap } from "@thatopen/components";
 import type { Table, UpdateFunction } from "@thatopen/ui";
 import type { ItemsDataTableData, ItemsDataState } from "@thatopen/ui-obc";
 
@@ -24,7 +24,7 @@ export const ItemInspector = () => {
 
     const containerElement = panelContainerRef.current;
     let panelElement: HTMLElement | null = null;
-    let highlightHandler: (modelIdMap: OBC.ModelIdMap) => void;
+    let highlightHandler: (modelIdMap: ModelIdMap) => void;
     let highlightClearHandler: () => void;
     
     (async () => {
@@ -44,14 +44,14 @@ export const ItemInspector = () => {
       propertiesTable.indentationInText = false;
       propertiesTable.style.cursor = "pointer";
 
-      highlightHandler = (modelIdMap: OBC.ModelIdMap) => updatePropertiesTable({ modelIdMap });
+      highlightHandler = (modelIdMap: ModelIdMap) => updatePropertiesTable({ modelIdMap });
       highlightClearHandler = () => updatePropertiesTable({ modelIdMap: {} });
       highlighter.events.select.onHighlight.add(highlightHandler);
       highlighter.events.select.onClear.add(highlightClearHandler);
 
       const panel = BUI.Component.create(() => {
         const onTextInput = (e: Event) => {
-          const input = e.target as HTMLInputElement | null;
+          const input = e.target as HTMLInputElement;
           if (!input) return;
 
           propertiesTable.queryString = input.value !== "" ? input.value : null;

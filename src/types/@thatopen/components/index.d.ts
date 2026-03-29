@@ -1,4 +1,4 @@
-import * as OBC from "@thatopen/components";
+import type { BoundingBoxer } from "@thatopen/components";
 
 declare module "@thatopen/components" {
   namespace BoundingBoxer {

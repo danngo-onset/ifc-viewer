@@ -9,7 +9,7 @@ export * from "./ModelAttributes";
 export * from "./ModelInspector";
 export * from "./Orientation";
 export * from "./ShadowToggle";
-export * from "./Views";
+export * from "./TwoDViews";
 export * from "./VolumeMeasurer";
 export * from "./ModelsList";
 export * from "./GridsSettings";

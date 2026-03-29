@@ -1,6 +1,6 @@
-import { useEffect, useState, ChangeEvent } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 
-import * as OBC from "@thatopen/components";
+import type { NavModeID, CameraProjection } from "@thatopen/components";
 
 import { useBimComponent } from "@/hooks/bim";
 
@@ -9,8 +9,8 @@ import { BimComponent } from "@/domain/enums/bim/BimComponent";
 export const CameraViewModes = () => {
   const world = useBimComponent(BimComponent.World);
 
-  const [navigationMode, setNavigationMode] = useState<OBC.NavModeID>("Orbit");
-  const [projection, setProjection] = useState<OBC.CameraProjection>("Perspective");
+  const [navigationMode, setNavigationMode] = useState<NavModeID>("Orbit");
+  const [projection, setProjection] = useState<CameraProjection>("Perspective");
 
   useEffect(() => {
     if (!world) return;
@@ -24,7 +24,7 @@ export const CameraViewModes = () => {
   const handleNavigationModeChange = (event: ChangeEvent<HTMLSelectElement>) => {
     if (!world) return;
 
-    const selectedValue = event.target.value as OBC.NavModeID;
+    const selectedValue = event.target.value as NavModeID;
 
     const { current } = world.camera.projection;
     const isOrtho = current === "Orthographic";
@@ -64,7 +64,7 @@ export const CameraViewModes = () => {
   const handleProjectionChange = (event: ChangeEvent<HTMLSelectElement>) => {
     if (!world) return;
 
-    const selectedValue = event.target.value as OBC.CameraProjection;
+    const selectedValue = event.target.value as CameraProjection;
 
     const isOrtho = selectedValue === "Orthographic";
     const isFirstPerson = world.camera.mode.id === "FirstPerson";

@@ -4,11 +4,11 @@ import { useBimStore } from "@/store";
 
 import { useBimComponent } from "@/hooks/bim";
 
-import * as OBC from "@thatopen/components";
+import { BoundingBoxer } from "@thatopen/components";
 
 import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
-type OrientationOptions = OBC.BoundingBoxer.OrientationOptions;
+type OrientationOptions = BoundingBoxer.OrientationOptions;
 
 export const Orientation = () => {
   const modelLoaded = useBimStore(s => s.modelLoaded);
@@ -22,7 +22,7 @@ export const Orientation = () => {
       if (!components || !world || !world.camera.hasCameraControls()) 
         return;
   
-      const boundingBoxer = components.get(OBC.BoundingBoxer);
+      const boundingBoxer = components.get(BoundingBoxer);
       const { position, target } = await boundingBoxer.getCameraOrientation(orientation, 0.5);
 
       // TODO: Handle distance for large models

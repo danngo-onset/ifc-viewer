@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { type ReactElement, useState, useEffect, useRef, useMemo } from "react";
 
 import { LayersIcon, StackIcon, EyeOpenIcon, GearIcon } from "@radix-ui/react-icons";
 
@@ -20,8 +20,8 @@ const RAIL_WIDTH = 145;
 const PANELS: {
   id        : SideDrawerPanel;
   title     : string;
-  icon      : React.ReactElement;
-  component : React.ReactElement;
+  icon      : ReactElement;
+  component : ReactElement;
 }[] = [
   {
     id: SideDrawerPanel.Models,

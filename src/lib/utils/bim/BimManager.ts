@@ -1,8 +1,14 @@
-import * as OBC from "@thatopen/components";
-import * as OBCF from "@thatopen/components-front";
+import { 
+  Components, Worlds, ShadowedScene, SimpleRenderer, OrthoPerspectiveCamera, Grids, FragmentsManager, Raycasters, Clipper, Views
+} from "@thatopen/components";
+import type { ShadowedSceneConfig, CameraProjection, ModelIdMap, CreateViewFromIfcStoreysConfig } from "@thatopen/components";
+
+import { AreaMeasurement, LengthMeasurement, Highlighter, VolumeMeasurement, Line } from "@thatopen/components-front";
+import type { Area, Volume, HighlighterConfig } from "@thatopen/components-front";
 import type { FragmentsModel, ItemData, BIMMaterial, BIMMesh } from "@thatopen/fragments";
 
-import * as THREE from "three";
+import { PCFSoftShadowMap, Color, Vector3, Sphere } from "three";
+import type { MeshStandardMaterial} from "three";
 
 import { useBimStore, useUiStore } from "@/store";
 
@@ -18,7 +24,7 @@ import type { World } from "@/domain/types/bim/World";
 import { CameraDistanceLocker } from ".";
 
 export class BimManager {
-  private readonly components : OBC.Components;
+  private readonly components : Components;
   private readonly world      : World;
 
   private readonly abortController : AbortController;
@@ -37,8 +43,8 @@ export class BimManager {
   }
 
   private constructor(private readonly container: HTMLElement) {
-    this.components = new OBC.Components();
-    this.world = this.components.get(OBC.Worlds)
+    this.components = new Components();
+    this.world = this.components.get(Worlds)
                                 .create() as World;
 
     this.abortController = new AbortController();
@@ -53,20 +59,20 @@ export class BimManager {
   async init() {
     await BimExtensions.initBUI();
 
-    this.world.scene = new OBC.ShadowedScene(this.components);
+    this.world.scene = new ShadowedScene(this.components);
 
-    this.world.renderer = new OBC.SimpleRenderer(this.components, this.container);
+    this.world.renderer = new SimpleRenderer(this.components, this.container);
     //this.world.renderer = new OBCF.PostproductionRenderer(this.components, this.container);
     this.world.renderer.three.shadowMap.enabled = true;
-    this.world.renderer.three.shadowMap.type = THREE.PCFSoftShadowMap;
+    this.world.renderer.three.shadowMap.type = PCFSoftShadowMap;
 
-    this.world.camera = new OBC.OrthoPerspectiveCamera(this.components);
+    this.world.camera = new OrthoPerspectiveCamera(this.components);
     this.world.camera.three.far = 10000;
     //world.camera.controls.maxDistance = 300;
     //world.camera.controls.infinityDolly = false;
 
 
-    const worldSetupConfig: Partial<OBC.ShadowedSceneConfig> = {
+    const worldSetupConfig: Partial<ShadowedSceneConfig> = {
       shadows: {
         cascade: 1,
         resolution: 1024
@@ -96,11 +102,11 @@ export class BimManager {
     this.components.init();
     serviceLocator.register(BimComponent.Components, this.components);
 
-    const grid = this.components.get(OBC.Grids)
+    const grid = this.components.get(Grids)
                                 .create(this.world);
 
     const cameraProjectionChangedHandler = () => {
-      const projection: OBC.CameraProjection = this.world.camera.projection.current;
+      const projection: CameraProjection = this.world.camera.projection.current;
       grid.fade = projection === "Perspective";
     };
     this.world.camera.projection.onChanged.add(cameraProjectionChangedHandler);
@@ -115,7 +121,7 @@ export class BimManager {
   }
 
   async initFragmentsManager() {
-    const fragmentsManager = this.components.get(OBC.FragmentsManager);
+    const fragmentsManager = this.components.get(FragmentsManager);
 
     const worker = await fetch("/thatopen/worker.mjs");
     fragmentsManager.init(worker.url);
@@ -131,7 +137,7 @@ export class BimManager {
       // TODO: do we need to clean this up?
       model.tiles.onItemSet.add(({ value: mesh }: { value: BIMMesh }) => {
         if ("isMesh" in mesh) {
-          const material = mesh.material as THREE.MeshStandardMaterial[];
+          const material = mesh.material as MeshStandardMaterial[];
           if (material[0].opacity === 1) {
             mesh.castShadow = true;
             mesh.receiveShadow = true;
@@ -169,7 +175,7 @@ export class BimManager {
     this.world.camera.controls.addEventListener("update", updateHandler);
 
 
-    const cameraChangeHandler = async (camera: OBC.OrthoPerspectiveCamera) => {
+    const cameraChangeHandler = async (camera: OrthoPerspectiveCamera) => {
       for (const model of fragmentsManager.list.values()) {
         model.useCamera(camera.three);
       }
@@ -190,9 +196,9 @@ export class BimManager {
   }
 
   async initLengthMeasurer() {
-    const measurer = this.components.get(OBCF.LengthMeasurement);
+    const measurer = this.components.get(LengthMeasurement);
     measurer.world = this.world;
-    measurer.color = new THREE.Color(Constants.Color.Measurer);
+    measurer.color = new Color(Constants.Color.Measurer);
     measurer.enabled = false;
     measurer.mode = "free";
 
@@ -226,12 +232,12 @@ export class BimManager {
       { signal: this.abortController.signal }
     );
 
-    const zoomHandler = async (line: OBCF.Line) => {
-      const center = new THREE.Vector3();
+    const zoomHandler = async (line: Line) => {
+      const center = new Vector3();
       line.getCenter(center);
 
       const radius = line.distance() / 3;
-      const sphere = new THREE.Sphere(center, radius);
+      const sphere = new Sphere(center, radius);
 
       await this.world.camera.controls.fitToSphere(sphere, true);
     };
@@ -245,9 +251,9 @@ export class BimManager {
   }
 
   async initAreaMeasurer() {
-    const measurer = this.components.get(OBCF.AreaMeasurement);
+    const measurer = this.components.get(AreaMeasurement);
     measurer.world = this.world;
-    measurer.color = new THREE.Color(Constants.Color.Measurer);
+    measurer.color = new Color(Constants.Color.Measurer);
     measurer.enabled = false;
     measurer.mode = "square";
 
@@ -280,10 +286,10 @@ export class BimManager {
       { signal: this.abortController.signal }
     );
 
-    const zoomHandler = async (area: OBCF.Area) => {
+    const zoomHandler = async (area: Area) => {
       if (!area.boundingBox || !this.world.camera.controls) return;
 
-      const sphere = new THREE.Sphere();
+      const sphere = new Sphere();
       area.boundingBox.getBoundingSphere(sphere);
       await this.world.camera.controls.fitToSphere(sphere, true);
     };
@@ -297,9 +303,9 @@ export class BimManager {
   }
 
   async initVolumeMeasurer() {
-    const measurer = this.components.get(OBCF.VolumeMeasurement);
+    const measurer = this.components.get(VolumeMeasurement);
     measurer.world = this.world;
-    measurer.color = new THREE.Color(Constants.Color.Measurer);
+    measurer.color = new Color(Constants.Color.Measurer);
     measurer.enabled = false;
 
     // TODO: do we need this?
@@ -336,9 +342,9 @@ export class BimManager {
       { signal: this.abortController.signal }
     );
 
-    const zoomHandler = async (volume: OBCF.Volume) => {
+    const zoomHandler = async (volume: Volume) => {
       const box = await volume.getBox();
-      const sphere = new THREE.Sphere();
+      const sphere = new Sphere();
 
       box.getBoundingSphere(sphere);
 
@@ -371,15 +377,15 @@ export class BimManager {
     if (!fragmentsManager) return;
 
     const world = this.world;
-    this.components.get(OBC.Raycasters)
+    this.components.get(Raycasters)
                    .get(world);
     
-    const highlighter = this.components.get(OBCF.Highlighter);
+    const highlighter = this.components.get(Highlighter);
 
-    const config: Partial<OBCF.HighlighterConfig> = {
+    const config: Partial<HighlighterConfig> = {
       world,
       selectMaterialDefinition: {
-        color: new THREE.Color(Constants.Color.Highlighter),
+        color: new Color(Constants.Color.Highlighter),
         opacity: 1,
         transparent: false,
         renderedFaces: 0
@@ -389,7 +395,7 @@ export class BimManager {
     highlighter.zoomToSelection = true;
     highlighter.enabled = false;
 
-    const highlightHandler = async (modelIdMap: OBC.ModelIdMap) => {
+    const highlightHandler = async (modelIdMap: ModelIdMap) => {
       const promises: Array<Promise<ItemData[]>> = [];
       for (const [modelId, localIds] of Object.entries(modelIdMap)) {
         const model = fragmentsManager.list.get(modelId);
@@ -416,10 +422,10 @@ export class BimManager {
 
   initClipper() {
     // Init the Raycaster for the world to track mouse position for clipping planes
-    /* const raycaster = this.components.get(OBC.Raycasters)
+    /* const raycaster = this.components.get(Raycasters)
                                      .get(this.world); */
 
-    const clipper = this.components.get(OBC.Clipper);
+    const clipper = this.components.get(Clipper);
     clipper.enabled = false;
 
     this.container.addEventListener(
@@ -465,9 +471,9 @@ export class BimManager {
 
     // The range defines how far the view will "see"
     // We can specify a default value, but it can be changed independently for each view instance after creation
-    OBC.Views.defaultRange = 100;
+    Views.defaultRange = 100;
 
-    const views = this.components.get(OBC.Views);
+    const views = this.components.get(Views);
 
     views.world = this.world;
     views.enabled = false;
@@ -477,7 +483,7 @@ export class BimManager {
       // we can specify which models the storeys will be taken from
       // in order to create the views
       // in this case, just the architectural model will be used
-      const config: OBC.CreateViewFromIfcStoreysConfig = {
+      const config: CreateViewFromIfcStoreysConfig = {
         modelIds: [/arq/]
       };
       await views.createFromIfcStoreys(config); // Assuming the fragments model comes from an IFC model. 
@@ -494,7 +500,7 @@ export class BimManager {
       async () => {
         if (!views.enabled) return;
 
-        const rayCaster = this.components.get(OBC.Raycasters)
+        const rayCaster = this.components.get(Raycasters)
                                          .get(this.world);
 
         const result = await rayCaster.castRay();

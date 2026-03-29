@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
-import * as OBC from "@thatopen/components";
-import type * as TBUI from "@thatopen/ui";
+import { type ModelIdMap, Hider } from "@thatopen/components";
+import type { Dropdown, PanelSection, Button } from "@thatopen/ui";
 
 import { useBimComponent } from "@/hooks/bim";
 
@@ -37,15 +37,15 @@ export const Classifier = () => {
     (async () => {
       const BUI = await import("@thatopen/ui");
       
-      const hider = components.get(OBC.Hider);
+      const hider = components.get(Hider);
 
       async function isolateByCategory(categories: string[]) {
         if (!fragmentsManager || !hider) return;
 
-        // An OBC.ModelIdMapp represents selection within the engine
+        // A ModelIdMap represents selection within the engine
         // This defines a selection of the loaded model
         // that includes all items belonging to the specified category
-        const modelIdMap: OBC.ModelIdMap = {};
+        const modelIdMap: ModelIdMap = {};
 
         const categoriesRegex = categories.map(x => new RegExp(`^${x}$`));
 
@@ -62,7 +62,7 @@ export const Classifier = () => {
       async function hideByCategory(categories: string[]) {
         if (!fragmentsManager || !hider) return;
 
-        const modelIdMap: OBC.ModelIdMap = {};
+        const modelIdMap: ModelIdMap = {};
 
         const categoriesRegex = categories.map(x => new RegExp(`^${x}$`));
 
@@ -86,7 +86,7 @@ export const Classifier = () => {
         const onCreated = async (e?: Element) => {
           if (!e) return;
           
-          const dropdown = e as TBUI.Dropdown;
+          const dropdown = e as Dropdown;
 
           const modelCategories = new Set<string>();
           for (const [, model] of fragmentsManager.list) {
@@ -112,11 +112,11 @@ export const Classifier = () => {
         `;
       };
 
-      const panel = BUI.Component.create<TBUI.PanelSection>(() => {
-        const categoriesDropdownA = BUI.Component.create<TBUI.Dropdown>(categoriesDropdownTemplate);
-        const categoriesDropdownB = BUI.Component.create<TBUI.Dropdown>(categoriesDropdownTemplate);
+      const panel = BUI.Component.create<PanelSection>(() => {
+        const categoriesDropdownA = BUI.Component.create<Dropdown>(categoriesDropdownTemplate);
+        const categoriesDropdownB = BUI.Component.create<Dropdown>(categoriesDropdownTemplate);
 
-        const onIsolateCategory = async({ target }: { target: TBUI.Button }) => {
+        const onIsolateCategory = async({ target }: { target: Button }) => {
           if (!categoriesDropdownA) return;
 
           const categories = categoriesDropdownA.value;
@@ -129,7 +129,7 @@ export const Classifier = () => {
           target.loading = false;
         };
 
-        const onHideCategory = async({ target }: { target: TBUI.Button }) => {
+        const onHideCategory = async({ target }: { target: Button }) => {
           if (!categoriesDropdownB) return;
 
           const categories = categoriesDropdownB.value;
@@ -142,7 +142,7 @@ export const Classifier = () => {
           target.loading = false;
         };
         
-        const onResetVisibility = async({ target }: { target: TBUI.Button }) => {
+        const onResetVisibility = async({ target }: { target: Button }) => {
           target.loading = true;
 
           await resetVisibility();
