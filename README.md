@@ -4,7 +4,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 Dependencies: web-ifc -> @thatopen/fragments -> the rest
 
-Command to bump @thatopen packages
+Command to upgrade @thatopen packages
 ```bash
 npm i @thatopen/components@latest @thatopen/components-front@latest @thatopen/fragments@latest @thatopen/ui@latest @thatopen/ui-obc@latest
 ```

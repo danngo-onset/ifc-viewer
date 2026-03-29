@@ -13,3 +13,4 @@ export * from "./Views";
 export * from "./VolumeMeasurer";
 export * from "./ModelsList";
 export * from "./GridsSettings";
+export * from "./GhostModeToggle";
