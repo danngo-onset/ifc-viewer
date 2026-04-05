@@ -4,13 +4,13 @@ import { createShallowStore } from "@/lib";
 
 import type { SetZustandState } from "@/domain/types";
 
-type State = {
+interface State {
   modelLoaded: boolean;
   selectedGridLevel: string;
   ghostModeEnabled: boolean;
 };
 
-type Action = {
+interface Action {
   setModelLoaded: (modelLoaded: boolean) => void;
   setSelectedGridLevel: (selectedGridLevel: string) => void;
   setGhostModeEnabled: (ghostModeEnabled: boolean) => void;

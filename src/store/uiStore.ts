@@ -5,13 +5,13 @@ import { createShallowStore } from "@/lib";
 import type { SetZustandState } from "@/domain/types";
 import { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
 
-type State = {
+interface State {
   isLoading: boolean;
   loadingMessage: string;
   activeNavRailPanel: SideDrawerPanel;
 };
 
-type Action = {
+interface Action {
   setIsLoading: (isLoading: boolean) => void;
   setLoadingMessage: (loadingMessage: string) => void;
   setActiveNavRailPanel: (activeNavRailPanel: SideDrawerPanel) => void;
