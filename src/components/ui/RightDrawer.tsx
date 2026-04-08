@@ -50,48 +50,46 @@ export const RightDrawer = () => {
     };
   }, [isResizing]);
 
-  return (
-    <>
-      {!open && (
-        <button
-          className="fixed top-4 right-4 z-1000 rounded p-2 bg-white/80 hover:bg-white shadow cursor-pointer"
-          onClick={() => setOpen(true)}
-        >
-          <HamburgerMenuIcon />
-        </button>
+  return <>
+    {!open && (
+      <button
+        className="fixed top-4 right-4 z-1000 rounded p-2 bg-white/80 hover:bg-white shadow cursor-pointer"
+        onClick={() => setOpen(true)}
+      >
+        <HamburgerMenuIcon />
+      </button>
+    )}
+
+    <aside
+      ref={drawerRef}
+      id="right-drawer-container"
+      className="flex flex-col fixed inset-y-0 right-0 z-1000 h-full bg-white shadow-xl border-l transform transition-transform duration-300 overflow-hidden"
+      data-open={open}
+      style={{ width: `${width}px` }}
+    >
+      <div className="flex items-center justify-between p-4 border-b">
+        <CrossButton onClick={() => setOpen(false)} />
+
+        <p className="text-sm font-medium">Menu</p>
+      </div>
+
+      {/* Resize handler */}
+      {open && (
+        <span
+          onMouseDown={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setIsResizing(true);
+          }}
+          className="resize-handler"
+        />
       )}
 
-      <aside
-        ref={drawerRef}
-        id="right-drawer-container"
-        className="flex flex-col fixed inset-y-0 right-0 z-1000 h-full bg-white shadow-xl border-l transform transition-transform duration-300 overflow-hidden"
-        data-open={open}
-        style={{ width: `${width}px` }}
-      >
-        <div className="flex items-center justify-between p-4 border-b">
-          <CrossButton onClick={() => setOpen(false)} />
-
-          <p className="text-sm font-medium">Menu</p>
-        </div>
-
-        {/* Resize handler */}
-        {open && (
-          <span
-            onMouseDown={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setIsResizing(true);
-            }}
-            className="resize-handler"
-          />
-        )}
-
-        <div className="flex-1 overflow-y-auto">
-          <section className="nav-rail-drawer-panel">
-            <ItemInspector />
-          </section>
-        </div>
-      </aside>
-    </>
-  );
+      <div className="flex-1 overflow-y-auto">
+        <section className="nav-rail-drawer-panel">
+          <ItemInspector />
+        </section>
+      </div>
+    </aside>
+  </>
 };

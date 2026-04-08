@@ -61,19 +61,17 @@ export default function Home() {
     (async () => await httpClient.get("/"))();
   }, []);
 
-  return (
-    <>
-      <LoadingSpinner />
-      
-      <TopBar />
-      
-      <main 
-        ref={containerRef} 
-        id="container" 
-        className="flex-1"
-      ></main>
+  return <>
+    <LoadingSpinner />
+    
+    <TopBar />
+    
+    <main 
+      ref={containerRef} 
+      id="container" 
+      className="flex-1"
+    ></main>
 
-      <BottomToolbar />
-    </>
-  );
+    <BottomToolbar />
+  </>
 };
