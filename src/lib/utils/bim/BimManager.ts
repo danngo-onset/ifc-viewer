@@ -1,9 +1,9 @@
 import { 
   Components, Worlds, ShadowedScene, SimpleRenderer, OrthoPerspectiveCamera, Grids, FragmentsManager, Raycasters, Clipper, Views
 } from "@thatopen/components";
-import type { ShadowedSceneConfig, CameraProjection, ModelIdMap, CreateViewFromIfcStoreysConfig } from "@thatopen/components";
+import type { CameraProjection, ModelIdMap, CreateViewFromIfcStoreysConfig } from "@thatopen/components";
 
-import { AreaMeasurement, LengthMeasurement, Highlighter, VolumeMeasurement, Line } from "@thatopen/components-front";
+import { PostproductionRenderer, AreaMeasurement, LengthMeasurement, Highlighter, VolumeMeasurement, Line } from "@thatopen/components-front";
 import type { Area, Volume, HighlighterConfig } from "@thatopen/components-front";
 import type { FragmentsModel, ItemData, BIMMaterial, BIMMesh } from "@thatopen/fragments";
 
@@ -61,24 +61,23 @@ export class BimManager {
 
     this.world.scene = new ShadowedScene(this.components);
 
-    this.world.renderer = new SimpleRenderer(this.components, this.container);
-    //this.world.renderer = new OBCF.PostproductionRenderer(this.components, this.container);
+    //this.world.renderer = new SimpleRenderer(this.components, this.container);
+    this.world.renderer = new PostproductionRenderer(this.components, this.container);
     this.world.renderer.three.shadowMap.enabled = true;
     this.world.renderer.three.shadowMap.type = PCFSoftShadowMap;
 
     this.world.camera = new OrthoPerspectiveCamera(this.components);
-    this.world.camera.three.far = 10000;
+    this.world.camera.three.far = 10_000;
     //world.camera.controls.maxDistance = 300;
     //world.camera.controls.infinityDolly = false;
 
 
-    const worldSetupConfig: Partial<ShadowedSceneConfig> = {
+    this.world.scene.setup({
       shadows: {
         cascade: 1,
         resolution: 1024
       }
-    };
-    this.world.scene.setup(worldSetupConfig);
+    });
     this.world.scene.three.background = null; // light scene
 
     await this.world.camera.controls.setLookAt(12, 6, 8, 0, 0, -10, false);

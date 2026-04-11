@@ -5,6 +5,6 @@ export type World = SimpleWorld<
   //SimpleScene, 
   ShadowedScene,
   OrthoPerspectiveCamera, 
-  SimpleRenderer
-  //PostproductionRenderer
+  //SimpleRenderer
+  PostproductionRenderer
 >;
