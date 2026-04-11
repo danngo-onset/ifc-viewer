@@ -19,7 +19,7 @@
     "@thatopen/fragments": "^3.3.7",
     "@thatopen/ui": "^3.3.7",
     "@thatopen/ui-obc": "^3.3.3",
-    "axios": "1.13.5",
+    "axios": "1.15.0",
     "next": "16.2.3",
     "react": "^19.0.0",
     "three": "^0.175.0",
