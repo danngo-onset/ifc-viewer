@@ -1,5 +1,7 @@
 import type { BIMMaterial } from "@thatopen/fragments";
 
+import { BimExtensions } from "@/lib/extensions/bim";
+
 import { useBimStoreShallow } from "@/store/bimStore";
 
 import { useBimComponent } from "@/hooks/bim";
@@ -11,8 +13,9 @@ import { SwitchButton } from "@/components/ui/buttons";
 const originalColours = new Map<BIMMaterial, { colour: number; transparent: boolean; opacity: number }>();
 
 export const GhostModeToggle = () => {
-  const { ghostModeEnabled, setGhostModeEnabled } = useBimStoreShallow(s => ({
+  const { ghostModeEnabled, darkSceneEnabled, setGhostModeEnabled } = useBimStoreShallow(s => ({
     ghostModeEnabled: s.ghostModeEnabled,
+    darkSceneEnabled: s.darkSceneEnabled,
     setGhostModeEnabled: s.setGhostModeEnabled
   }));
 
@@ -45,16 +48,9 @@ export const GhostModeToggle = () => {
       material.transparent = true;
       material.opacity = 0.1;
       material.needsUpdate = true;
-
-      // TODO: handle ghost colour for dark mode (white)
-      const ghostColour = "Black";
-      if ("color" in material) {
-        material.color.setColorName(ghostColour);
-      } else {
-        material.lodColor.setColorName(ghostColour);
-      }
     }
 
+    BimExtensions.applyGhostTintToMaterials(materials, darkSceneEnabled);
     setGhostModeEnabled(true);
   };
 

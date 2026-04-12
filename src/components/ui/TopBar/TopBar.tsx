@@ -10,6 +10,7 @@ import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
 import { NavigationRailDrawer } from "@/components/ui/NavigationRailDrawer";
 import { RightDrawer } from "@/components/ui/RightDrawer";
+import { DarkSceneToggle } from "@/components/bim";
 
 export const TopBar = () => {
   const world = useBimComponent(BimComponent.World);
@@ -98,7 +99,7 @@ export const TopBar = () => {
   }
 
   return (
-    <section className="flex justify-center items-center space-x-4 py-4 bg-gray-300 relative">
+    <section className="flex justify-center items-center space-x-4 py-4 bg-gray-300 relative z-1">
       <NavigationRailDrawer />
 
       <div>
@@ -141,6 +142,8 @@ export const TopBar = () => {
           {isLoading ? "Loading..." : "Load"}
         </button>
       </form>
+
+      <DarkSceneToggle />
 
       <RightDrawer />
     </section>

@@ -48,7 +48,7 @@ export const BottomToolbarButton = ({
         data-active={showComponent}
       />
 
-      <WithTooltip message={tooltipMessage}>
+      <WithTooltip message={tooltipMessage} position="top">
         <button
           onClick={() => {
             if (!component) return;

@@ -3,9 +3,10 @@ import { ReactNode, useState } from "react";
 type Props = {
   message  : string;
   children : ReactNode;
+  position : "top" | "bottom";
 }
 
-export const WithTooltip = ({ message, children }: Props) => {
+export const WithTooltip = ({ message, children, position }: Props) => {
   const [showTooltip, setShowTooltip] = useState(false);
 
   return (
@@ -16,9 +17,8 @@ export const WithTooltip = ({ message, children }: Props) => {
     >
       {children}
 
-      {
-        showTooltip && 
-        <p className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 text-white text-xs rounded whitespace-nowrap pointer-events-none">
+      { showTooltip && 
+        <p className="tooltip" data-position={position}>
           {message}
         </p>
       }
