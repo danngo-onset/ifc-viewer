@@ -6,11 +6,10 @@ import { Clipper } from "@/components/bim";
 
 import { BottomToolbarButton } from ".";
 
-export const ClipperButton = () => (
+export const ClipperButton = () =>
   <BottomToolbarButton
     componentKey={BimComponent.Clipper}
     componentNode={<Clipper />}
     tooltipMessage="Clipper"
     icon={<ScissorsIcon className="bottom-toolbar-icon" />}
   />
-);

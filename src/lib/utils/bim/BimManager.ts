@@ -1,13 +1,17 @@
 import { 
   Components, Worlds, ShadowedScene, SimpleRenderer, OrthoPerspectiveCamera, Grids, FragmentsManager, Raycasters, Clipper, Views
 } from "@thatopen/components";
-import type { CameraProjection, ModelIdMap, CreateViewFromIfcStoreysConfig } from "@thatopen/components";
+import type { CameraProjection, ModelIdMap } from "@thatopen/components";
 
-import { PostproductionRenderer, AreaMeasurement, LengthMeasurement, Highlighter, VolumeMeasurement, Line } from "@thatopen/components-front";
-import type { Area, Volume, HighlighterConfig } from "@thatopen/components-front";
+import { 
+  PostproductionRenderer, AreaMeasurement, LengthMeasurement, Highlighter, VolumeMeasurement, AngleMeasurement 
+} from "@thatopen/components-front";
+import type { Line, Area, Volume, Angle } from "@thatopen/components-front";
+
+import { SnappingClass } from "@thatopen/fragments";
 import type { FragmentsModel, ItemData, BIMMaterial, BIMMesh } from "@thatopen/fragments";
 
-import { PCFSoftShadowMap, Color, Vector3, Sphere } from "three";
+import { PCFSoftShadowMap, Color, Vector3, Sphere, Box3 } from "three";
 import type { MeshStandardMaterial} from "three";
 
 import { useBimStore, useUiStore } from "@/store";
@@ -233,7 +237,11 @@ export class BimManager {
 
     this.container.addEventListener(
       "dblclick", 
-      async () => await measurer.create(), 
+      async () => {
+        if (!measurer.enabled) return;
+
+        await measurer.create()
+      }, 
       { signal: this.abortController.signal }
     );
 
@@ -287,12 +295,16 @@ export class BimManager {
 
     this.container.addEventListener(
       "dblclick", 
-      async () => await measurer.create(), 
+      async () => {
+        if (!measurer.enabled) return;
+
+        await measurer.create()
+      }, 
       { signal: this.abortController.signal }
     );
 
     const zoomHandler = async (area: Area) => {
-      if (!area.boundingBox || !this.world.camera.controls) return;
+      if (!area.boundingBox) return;
 
       const sphere = new Sphere();
       area.boundingBox.getBoundingSphere(sphere);
@@ -340,6 +352,8 @@ export class BimManager {
     this.container.addEventListener(
       "dblclick",
       async () => {
+        if (!measurer.enabled) return;
+
         await measurer.create();
 
         setTimeout(() => measurer.endCreation(), 100);
@@ -358,6 +372,70 @@ export class BimManager {
     measurer.list.onItemAdded.add(zoomHandler);
 
     serviceLocator.register(BimComponent.VolumeMeasurer, measurer);
+
+    return () => {
+      measurer.list.onItemAdded.remove(zoomHandler);
+    };
+  }
+
+  initAngleMeasurer() {
+    const measurer = this.components.get(AngleMeasurement);
+    measurer.world = this.world;
+    measurer.color = new Color(Constants.Color.Measurer);
+    measurer.enabled = false;
+    measurer.snappings = [SnappingClass.POINT];
+
+    this.container.addEventListener(
+      "dblclick",
+      async () => {
+        if (!measurer.enabled) return;
+
+        await measurer.create();
+      },
+      { signal: this.abortController.signal }
+    );
+
+    // TODO: use right click or CTRL click
+    window.addEventListener(
+      "keydown",
+      e => {
+        if (e.code !== "Delete" && e.code !== "Backspace") return;
+
+        if (measurer.list.size > 0) {
+          measurer.delete();
+        }
+      },
+      { signal: this.abortController.signal }
+    );
+
+    const zoomHandler = async (angle: Angle) => {
+      if (!this.world.camera.controls) return;
+      const box = new Box3().setFromPoints([angle.start, angle.vertex, angle.end]);
+
+      const sphere = new Sphere();
+      box.getBoundingSphere(sphere);
+
+      if (sphere.radius < 0.000_001) 
+        sphere.radius = 0.5; // degenerate / tiny
+
+      await this.world.camera.controls.fitToSphere(sphere, true);
+
+      /* const center = new Vector3()
+        .copy(angle.start)
+        .add(angle.vertex)
+        .add(angle.end)
+        .multiplyScalar(1 / 3);
+      const radius =
+        Math.max(
+          center.distanceTo(angle.start),
+          center.distanceTo(angle.vertex),
+          center.distanceTo(angle.end),
+        ) * 1.2;
+      await this.world.camera.controls.fitToSphere(new Sphere(center, radius), true); */
+    };
+    measurer.list.onItemAdded.add(zoomHandler);
+
+    serviceLocator.register(BimComponent.AngleMeasurer, measurer);
 
     return () => {
       measurer.list.onItemAdded.remove(zoomHandler);
@@ -387,7 +465,7 @@ export class BimManager {
     
     const highlighter = this.components.get(Highlighter);
 
-    const config: Partial<HighlighterConfig> = {
+    highlighter.setup({
       world,
       selectMaterialDefinition: {
         color: new Color(Constants.Color.Highlighter),
@@ -395,8 +473,8 @@ export class BimManager {
         transparent: false,
         renderedFaces: 0
       }
-    };
-    highlighter.setup(config);
+    });
+
     highlighter.zoomToSelection = true;
     highlighter.enabled = false;
 
@@ -436,9 +514,9 @@ export class BimManager {
     this.container.addEventListener(
       "dblclick", 
       async () => {
-        if (clipper.enabled) {
-          await clipper.create(this.world);
-        }
+        if (!clipper.enabled) return;
+
+        await clipper.create(this.world);
       }, 
       { signal: this.abortController.signal }
     );
@@ -488,12 +566,10 @@ export class BimManager {
       // we can specify which models the storeys will be taken from
       // in order to create the views
       // in this case, just the architectural model will be used
-      const config: CreateViewFromIfcStoreysConfig = {
-        modelIds: [/arq/]
-      };
-      await views.createFromIfcStoreys(config); // Assuming the fragments model comes from an IFC model. 
-                                                // If the model uses a different schema than IFC, 
-                                                // then the views have to be manually created based on its attributes.
+      await views.createFromIfcStoreys({
+        modelIds: [/arq/]  // Assuming the fragments model comes from an IFC model. 
+      });                  // If the model uses a different schema than IFC, 
+                           // then the views have to be manually created based on its attributes.
 
       // TODO: Create views from cardinal directions by default, not working
       views.createElevations({ combine: true });

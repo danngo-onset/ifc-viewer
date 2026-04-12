@@ -15,7 +15,7 @@ export const ShadowToggle = () => {
     if (!world) return;
 
     setShadowVisible(world.scene.shadowsEnabled);
-  }, [world?.scene.shadowsEnabled]);
+  }, [world]);
 
   return (
     <div>

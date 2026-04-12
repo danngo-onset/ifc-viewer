@@ -24,6 +24,7 @@ body {
   @apply bg-gray-500 text-white px-2 py-1 rounded hover:bg-gray-600 text-center w-full block! cursor-pointer;
 }
 
+/* TODO: should *:items-center *:justify-between be here? */
 .bim-component-container {
   @apply 
     flex flex-col space-y-3 absolute bottom-full mb-3 bg-white border border-gray-300 rounded-lg shadow-lg p-4 
