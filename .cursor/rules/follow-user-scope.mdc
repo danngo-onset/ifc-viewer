@@ -1,0 +1,43 @@
+---
+description: Do not add scope or refactors the user did not ask for (no extra config files, no unsolicited extraction). Desktop-only UI; no unsolicited responsive work.
+alwaysApply: true
+---
+
+# Follow the user’s scope
+
+- **Only do what the user asked.** If they want a UI fix or a single behavior change, implement that change without “while we’re here” refactors.
+- **Do not create new files** (e.g. `*-config.ts`, shared constants modules, barrel files, READMEs) **unless the user explicitly asked** for that structure or file.
+- **Do not extract** navigation lists, copy, or helpers into separate modules **unless asked.** Keep data next to the component that uses it (e.g. inline in `layout.tsx` and pass props into client components).
+- **Do not add features** (breadcrumb, nav-config, cross-platform scripts, etc.) **unless the user asked** for them in that message.
+- If something truly must be shared (e.g. a client component needs data from a server parent), **pass props from the file the user is already editing** instead of introducing a new global config file.
+
+## Markup
+
+- **Do not use** any `aria-*` attributes.
+- **Do not set** `type="button"` on `<button>` tags.
+
+## Exports
+
+- Prefer **`export const`** (e.g. `export const MyComponent = () => { ... }`) over **`export function`** or **`export default function`** for components and helpers, **except** in **Next.js route files** (`page.tsx`, `layout.tsx`, `template.tsx`, `loading.tsx`, `error.tsx`, `not-found.tsx`, etc.) where the framework expects a **default export** of the page or layout component.
+
+## Zustand
+
+- If a component needs **more than one** field or action from the same store, use that store’s **shallow** hook (e.g. `useBimStoreShallow`, from `createShallowStore` in `@/lib/create-shallow-store`) with a single selector that returns an object—**do not** use multiple separate `useBimStore` subscriptions for multiple values.
+
+## Tailwind
+
+- **Prioritize** built-in Tailwind utility classes from the framework.
+- **Do not use** arbitrary value classes (e.g. `w-[123px]`, `bg-[#fff]`, `top-[3.14rem]`).
+- **Avoid** `leading-*` and `tracking-*` classes.
+
+When in doubt: **smallest diff, fewest new files.**
+
+## Solution answers (options + code)
+
+When the user asks for **solutions**, **how to fix** something, **approaches**, **patterns**, or **what to do**:
+
+- **Always** give **more than one option** when it is reasonable (e.g. trade-offs, library vs hand-rolled, component vs store). If only one approach makes sense, still frame it with a short **“alternative”** or **“if you prefer”** note when applicable.
+- **Every** option must include **concrete code snippets** (minimal copy-paste examples, excerpts, or sketch diffs)—not only descriptions.
+- **Do not** answer with **plain prose alone** for these requests; pair explanation with snippets so the user can act immediately.
+
+Purely conceptual “why” questions with no implementation angle can stay prose-only.

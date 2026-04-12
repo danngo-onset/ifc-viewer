@@ -78,7 +78,13 @@ export class BimManager {
         resolution: 1024
       }
     });
-    this.world.scene.three.background = null; // light scene
+
+    if (!this.bimStore.darkSceneEnabled)
+      this.world.scene.three.background = null;
+
+    /* const bg = this.world.scene.three.background;
+    if (bg instanceof Color)
+      console.log(`#${bg.getHexString()}`); */
 
     await this.world.camera.controls.setLookAt(12, 6, 8, 0, 0, -10, false);
     await this.world.scene.updateShadows();

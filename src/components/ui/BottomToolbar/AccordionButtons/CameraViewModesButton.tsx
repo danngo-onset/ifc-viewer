@@ -26,7 +26,7 @@ export const CameraViewModesButton = () => {
         data-active={showComponent} 
       />
 
-      <WithTooltip message="Camera View Modes">
+      <WithTooltip message="Camera View Modes" position="top">
         <button
           onClick={() => setShowComponent(!showComponent)}
           className="button-toolbar-button"

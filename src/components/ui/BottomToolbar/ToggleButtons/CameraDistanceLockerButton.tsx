@@ -19,7 +19,7 @@ export const CameraDistanceLockerButton = () => {
   }, [cameraDistanceLocker]);
 
   return (
-    <WithTooltip message="Lock Camera Distance">
+    <WithTooltip message="Lock Camera Distance" position="top">
       <button
         onClick={() => {
           if (!cameraDistanceLocker) return;

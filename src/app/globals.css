@@ -125,3 +125,27 @@ body {
 #load-frags-btn:not(:disabled) {
   @apply bg-green-400 hover:bg-green-500 cursor-pointer;
 }
+
+.tooltip {
+  @apply absolute left-1/2 -translate-x-1/2 px-3 py-1.5 bg-white text-black text-xs rounded whitespace-nowrap;
+}
+
+.tooltip[data-position="bottom"] {
+  @apply top-full mt-3;
+}
+
+.tooltip[data-position="top"] {
+  @apply bottom-full mb-2;
+}
+
+#dark-scene-toggle {
+  @apply fixed top-4 right-16 rounded p-2 cursor-pointer shadow;
+}
+
+#dark-scene-toggle[data-enabled="true"] {
+  @apply bg-gray-800 text-white hover:bg-gray-800/80;
+}
+
+#dark-scene-toggle[data-enabled="false"] {
+  @apply bg-white/80 hover:bg-white;
+}

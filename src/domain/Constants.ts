@@ -5,5 +5,6 @@ export class Constants {
     Measurer           : "#494CB6",
     Highlighter        : "#BCF124",
     CameraDistanceLock : "#FF0000",
+    DarkScene          : "#202932"
   };
 };

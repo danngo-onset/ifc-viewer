@@ -26,7 +26,7 @@ export const OrientationButton = () => {
         data-active={showComponent} 
       />
 
-      <WithTooltip message="Orientation">
+      <WithTooltip message="Orientation" position="top">
         <button
           onClick={() => setShowComponent(!showComponent)}
           className="button-toolbar-button"
