@@ -1,4 +1,4 @@
-import { create, SetState, GetState } from "zustand";
+import { create, type SetState, type GetState } from "zustand";
 
 import { Color } from "three";
 

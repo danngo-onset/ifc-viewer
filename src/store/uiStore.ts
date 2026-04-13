@@ -1,4 +1,4 @@
-import { create, SetState } from "zustand";
+import { create, type SetState } from "zustand";
 
 import { createShallowStore } from "@/lib";
 
