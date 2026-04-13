@@ -1,8 +1,7 @@
-import { create } from "zustand";
+import { create, SetState } from "zustand";
 
 import { createShallowStore } from "@/lib";
 
-import type { SetZustandState } from "@/domain/types";
 import { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
 
 interface State {
@@ -21,30 +20,30 @@ interface Action {
 
 type Store = State & Action;
 
-function setIsLoading(set: SetZustandState<State>, isLoading: boolean) {
+function setIsLoading(set: SetState<State>, isLoading: boolean) {
   set({ isLoading });
 }
 
-function setLoadingMessage(set: SetZustandState<State>, loadingMessage: string) {
+function setLoadingMessage(set: SetState<State>, loadingMessage: string) {
   set({ loadingMessage });
 }
 
-function setActiveNavRailPanel(set: SetZustandState<State>, activeNavRailPanel: SideDrawerPanel) {
+function setActiveNavRailPanel(set: SetState<State>, activeNavRailPanel: SideDrawerPanel) {
   set({ activeNavRailPanel });
 }
 
-function closeNavRailPanel(set: SetZustandState<State>) {
+function closeNavRailPanel(set: SetState<State>) {
   set({ activeNavRailPanel: SideDrawerPanel.None });
 }
 
-function toggleNavRailPanel(set: SetZustandState<State>, targetPanel: SideDrawerPanel) {
+function toggleNavRailPanel(set: SetState<State>, targetPanel: SideDrawerPanel) {
   set(s => ({
     activeNavRailPanel: s.activeNavRailPanel === targetPanel ? SideDrawerPanel.None 
                                                              : targetPanel
   }));
 }
 
-export const useUiStore = create<Store>((set, get) => ({
+export const useUiStore = create<Store>(set => ({
   isLoading: false,
   loadingMessage: "",
   activeNavRailPanel: SideDrawerPanel.None,

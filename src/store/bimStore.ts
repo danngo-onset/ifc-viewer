@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import { create, SetState, GetState } from "zustand";
 
 import { Color } from "three";
 
@@ -6,7 +6,6 @@ import { createShallowStore, serviceLocator } from "@/lib";
 import { BimExtensions } from "@/lib/extensions/bim";
 
 import { Constants } from "@/domain/Constants";
-import type { SetZustandState, GetZustandState } from "@/domain/types";
 import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
 interface State {
@@ -14,7 +13,6 @@ interface State {
   selectedGridLevel: string;
   ghostModeEnabled: boolean;
   darkSceneEnabled: boolean;
-  angleMeasurerSyncPicking: boolean;
 };
 
 interface Action {
@@ -22,24 +20,23 @@ interface Action {
   setSelectedGridLevel: (selectedGridLevel: string) => void;
   setGhostModeEnabled: (ghostModeEnabled: boolean) => void;
   setDarkSceneEnabled: (darkModeEnabled: boolean) => void;
-  setAngleMeasurerSyncPicking: (angleMeasurerSyncPicking: boolean) => void;
 };
 
 type Store = State & Action;
 
-function setModelLoaded(set: SetZustandState<State>, modelLoaded: boolean) {
+function setModelLoaded(set: SetState<State>, modelLoaded: boolean) {
   set({ modelLoaded });
 }
 
-function setSelectedGridLevel(set: SetZustandState<State>, selectedGridLevel: string) {
+function setSelectedGridLevel(set: SetState<State>, selectedGridLevel: string) {
   set({ selectedGridLevel });
 }
 
-function setGhostModeEnabled(set: SetZustandState<State>, ghostModeEnabled: boolean) {
+function setGhostModeEnabled(set: SetState<State>, ghostModeEnabled: boolean) {
   set({ ghostModeEnabled });
 }
 
-function setDarkSceneEnabled(set: SetZustandState<State>, get: GetZustandState<State>, darkModeEnabled: boolean) {
+function setDarkSceneEnabled(set: SetState<State>, get: GetState<State>, darkModeEnabled: boolean) {
   set({ darkSceneEnabled: darkModeEnabled });
 
   const world = serviceLocator.resolve(BimComponent.World);
@@ -57,22 +54,16 @@ function setDarkSceneEnabled(set: SetZustandState<State>, get: GetZustandState<S
   }
 }
 
-function setAngleMeasurerSyncPicking(set: SetZustandState<State>, angleMeasurerSyncPicking: boolean) {
-  set({ angleMeasurerSyncPicking });
-}
-
 export const useBimStore = create<Store>((set, get) => ({
   modelLoaded: false,
   selectedGridLevel: "",
   ghostModeEnabled: false,
   darkSceneEnabled: false,
-  angleMeasurerSyncPicking: false,
-
+  
   setModelLoaded: modelLoaded => setModelLoaded(set, modelLoaded),
   setSelectedGridLevel: selectedGridLevel => setSelectedGridLevel(set, selectedGridLevel),
   setGhostModeEnabled: ghostModeEnabled => setGhostModeEnabled(set, ghostModeEnabled),
   setDarkSceneEnabled: darkModeEnabled => setDarkSceneEnabled(set, get, darkModeEnabled),
-  setAngleMeasurerSyncPicking: angleMeasurerSyncPicking => setAngleMeasurerSyncPicking(set, angleMeasurerSyncPicking)
 }));
 
 export const useBimStoreShallow = createShallowStore(useBimStore);
