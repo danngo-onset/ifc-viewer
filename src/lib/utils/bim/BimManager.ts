@@ -419,19 +419,6 @@ export class BimManager {
         sphere.radius = 0.5; // degenerate / tiny
 
       await this.world.camera.controls.fitToSphere(sphere, true);
-
-      /* const center = new Vector3()
-        .copy(angle.start)
-        .add(angle.vertex)
-        .add(angle.end)
-        .multiplyScalar(1 / 3);
-      const radius =
-        Math.max(
-          center.distanceTo(angle.start),
-          center.distanceTo(angle.vertex),
-          center.distanceTo(angle.end),
-        ) * 1.2;
-      await this.world.camera.controls.fitToSphere(new Sphere(center, radius), true); */
     };
     measurer.list.onItemAdded.add(zoomHandler);
 
