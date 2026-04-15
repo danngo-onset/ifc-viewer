@@ -16,15 +16,9 @@ export const DarkSceneToggle = () => {
       id="dark-scene-toggle"
       data-enabled={darkSceneEnabled}
     >
-      { darkSceneEnabled 
-        ? <WithTooltip message="Switch to light scene" position="bottom">
-            <MoonIcon /> 
-          </WithTooltip>
-
-        : <WithTooltip message="Switch to dark scene" position="bottom">
-            <SunIcon /> 
-          </WithTooltip>
-      }
+      <WithTooltip message={`Switch to ${darkSceneEnabled ? "light" : "dark"} scene`} position="bottom">
+        {darkSceneEnabled ? <MoonIcon /> : <SunIcon />}
+      </WithTooltip>
     </button>
   );
 };

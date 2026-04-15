@@ -1,6 +1,4 @@
-import { useEffect, RefObject } from "react";
-
-import type { SetState } from "@/domain/types/SetState";
+import { useEffect, RefObject, type SetState } from "react";
 
 export const useClickOutside = (
   ref       : RefObject<HTMLDivElement | null>,

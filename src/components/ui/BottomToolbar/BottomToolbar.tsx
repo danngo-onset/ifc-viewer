@@ -1,6 +1,6 @@
 import { 
   LengthMeasurerButton, AreaMeasurerButton, VolumeMeasurerButton, CameraDistanceLockerButton, HighlighterButton,
-  ClipperButton
+  ClipperButton, AngleMeasurerButton
 } from "./ToggleButtons";
 
 import { CameraViewModesButton, OrientationButton } from "./AccordionButtons";
@@ -13,6 +13,8 @@ export const BottomToolbar = () => (
       <AreaMeasurerButton />
 
       <VolumeMeasurerButton />
+
+      <AngleMeasurerButton />
 
       {/* <CameraDistanceLockerButton /> */}
 

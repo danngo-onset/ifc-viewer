@@ -30,12 +30,14 @@ export default function Home() {
         lengthMeasurementCleanup,
         areaMeasurementCleanup, 
         volumeMeasurementCleanup,
+        angleMeasurementCleanup,
         //cameraDistanceLockCleanup,
         highlighterCleanup
       ] = await Promise.all([
         bimManager.initLengthMeasurer(),
         bimManager.initAreaMeasurer(),
         bimManager.initVolumeMeasurer(),
+        bimManager.initAngleMeasurer(),
         //bimManager.initCameraOrbitLock(),
         bimManager.initHighlighter(),
         
@@ -48,6 +50,7 @@ export default function Home() {
       if (lengthMeasurementCleanup)           cleanupFunctions.push(lengthMeasurementCleanup);
       if (areaMeasurementCleanup)             cleanupFunctions.push(areaMeasurementCleanup);
       if (volumeMeasurementCleanup)           cleanupFunctions.push(volumeMeasurementCleanup);
+      if (angleMeasurementCleanup)            cleanupFunctions.push(angleMeasurementCleanup);
       //if (cameraDistanceLockCleanup)          cleanupFunctions.push(cameraDistanceLockCleanup); 
       if (highlighterCleanup)                 cleanupFunctions.push(highlighterCleanup);
 
