@@ -1,11 +1,9 @@
-import { useState } from "react";
-
 import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
 import { useBimComponent } from "@/hooks/bim";
 
 export const LengthMeasurer = () => {
-  const [measurer, updateMeasurer] = useBimComponent(BimComponent.LengthMeasurer);
+  const [measurer, mutateMeasurer] = useBimComponent(BimComponent.LengthMeasurer);
 
   const visible = measurer?.visible ?? false;
 
@@ -20,7 +18,7 @@ export const LengthMeasurer = () => {
           type="checkbox" 
           id="length-measurement-visible" 
           checked={visible} 
-          onChange={e => updateMeasurer(x => x.visible = e.target.checked)}
+          onChange={e => mutateMeasurer(x => x.visible = e.target.checked)}
           className="rounded"
         />
 

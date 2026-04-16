@@ -38,7 +38,7 @@ export const TwoDViews = () => {
     };
   }, [fragmentsManager]);
 
-  const [views, updateViews] = useBimComponent(BimComponent.Views);
+  const [views, mutateViews] = useBimComponent(BimComponent.Views);
 
   const viewsEnabled = views?.enabled ?? false;
 
@@ -165,7 +165,7 @@ export const TwoDViews = () => {
         <SwitchButton 
           id="views-enabled"
           checked={viewsEnabled}
-          onClick={() => updateViews(x => x.enabled = !viewsEnabled)}
+          onClick={() => mutateViews(x => x.enabled = !viewsEnabled)}
           colour="blue-400"
         />
       </div>

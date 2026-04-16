@@ -23,7 +23,7 @@ export const BottomToolbarButton = ({
   tooltipMessage,
   icon,
 }: Props) => {
-  const [component, updateComponent] = useBimComponent(componentKey);
+  const [component, mutateComponent] = useBimComponent(componentKey);
 
   const [showComponent, setShowComponent] = useState(false);
 
@@ -45,7 +45,7 @@ export const BottomToolbarButton = ({
 
       <WithTooltip message={tooltipMessage} position="top">
         <button
-          onClick={() => updateComponent(x => x.enabled = !enabled)}
+          onClick={() => mutateComponent(x => x.enabled = !enabled)}
           data-active={enabled}
           className="button-toolbar-button"
         >

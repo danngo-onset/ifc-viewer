@@ -5,7 +5,7 @@ import { BimComponent } from "@/domain/enums/bim";
 import { SwitchButton } from "@/components/ui/buttons";
 
 export const ShadowToggle = () => {
-  const [world, updateWorld] = useBimComponent(BimComponent.World);
+  const [world, mutateWorld] = useBimComponent(BimComponent.World);
   const shadowVisible = world?.scene.shadowsEnabled ?? false;
 
   return (
@@ -18,7 +18,7 @@ export const ShadowToggle = () => {
         onClick={async () => {
           if (!world) return;
       
-          const success = updateWorld(x => x.scene.shadowsEnabled = !shadowVisible);
+          const success = mutateWorld(x => x.scene.shadowsEnabled = !shadowVisible);
           if (!success) return;
 
           await world.scene.updateShadows();

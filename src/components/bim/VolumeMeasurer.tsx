@@ -3,7 +3,7 @@ import { useBimComponent } from "@/hooks/bim";
 import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
 export const VolumeMeasurer = () => {
-  const [measurer, updateMeasurer] = useBimComponent(BimComponent.VolumeMeasurer);
+  const [measurer, mutateMeasurer] = useBimComponent(BimComponent.VolumeMeasurer);
 
   const visible = measurer?.visible ?? false;
 
@@ -18,7 +18,7 @@ export const VolumeMeasurer = () => {
           type="checkbox" 
           id="volume-measurement-visible" 
           checked={visible} 
-          onChange={e => updateMeasurer(x => x.visible = e.target.checked)}
+          onChange={e => mutateMeasurer(x => x.visible = e.target.checked)}
           className="rounded"
         />
 

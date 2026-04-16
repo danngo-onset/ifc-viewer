@@ -28,7 +28,7 @@ export function useBimComponent<TKey extends BimComponent>(key: TKey) {
     return () => clearInterval(interval);
   }, [key]);
 
-  const updateComponent = useCallback(
+  const mutateComponent = useCallback(
     (mutate: (x: TValue<TKey>) => void) => {
       if (!component) return false;
 
@@ -37,8 +37,8 @@ export function useBimComponent<TKey extends BimComponent>(key: TKey) {
       
       return true;
     }, 
-    [component, bump]
+    [component]
   );
 
-  return [component, updateComponent] as const;
+  return [component, mutateComponent] as const;
 };

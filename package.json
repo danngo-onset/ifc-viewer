@@ -5,8 +5,9 @@
   "scripts": {
     "dev": "npx rimraf .next && next dev --turbopack",
     "build": "next build",
+    "build:dev": "npm run lint && next build",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

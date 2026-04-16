@@ -5,7 +5,7 @@ import { useBimComponent } from "@/hooks/bim";
 import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
 export const AngleMeasurer = () => {
-  const [measurer, updateMeasurer] = useBimComponent(BimComponent.AngleMeasurer);
+  const [measurer, mutateMeasurer] = useBimComponent(BimComponent.AngleMeasurer);
 
   const visible = measurer?.visible ?? false;
   const unit = measurer?.units ?? "deg";
@@ -21,7 +21,7 @@ export const AngleMeasurer = () => {
           type="checkbox" 
           id="angle-measurement-visible" 
           checked={visible} 
-          onChange={e => updateMeasurer(x => x.visible = e.target.checked)}
+          onChange={e => mutateMeasurer(x => x.visible = e.target.checked)}
           className="rounded"
         />
 
@@ -34,7 +34,7 @@ export const AngleMeasurer = () => {
         <select 
           id="unit"
           value={unit}
-          onChange={e => updateMeasurer(x => x.units = e.target.value as AngleMeasurement.Unit)}
+          onChange={e => mutateMeasurer(x => x.units = e.target.value as AngleMeasurement.Unit)}
           className="rounded border border-gray-400 p-1 w-28"
         >
           {measurer?.unitsList.map(unit => 

@@ -4,7 +4,7 @@ import { BimComponent } from "@/domain/enums/bim/BimComponent";
 import { IBimComponentNode } from "@/domain/interfaces/bim";
 
 export const AreaMeasurer: IBimComponentNode = () => {
-  const [measurer, updateMeasurer] = useBimComponent(BimComponent.AreaMeasurer);
+  const [measurer, mutateMeasurer] = useBimComponent(BimComponent.AreaMeasurer);
 
   const visible = measurer?.visible ?? false;
 
@@ -19,7 +19,7 @@ export const AreaMeasurer: IBimComponentNode = () => {
           type="checkbox" 
           id="area-measurement-visible" 
           checked={visible} 
-          onChange={e => updateMeasurer(x => x.visible = e.target.checked)}
+          onChange={e => mutateMeasurer(x => x.visible = e.target.checked)}
           className="rounded"
         />
 

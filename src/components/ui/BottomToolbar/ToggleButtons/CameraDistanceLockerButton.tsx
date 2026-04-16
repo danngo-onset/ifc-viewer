@@ -6,13 +6,13 @@ import { WithTooltip } from "@/components/ui";
 import { IconCamera } from "@/components/ui/icons";
 
 export const CameraDistanceLockerButton = () => {
-  const [cameraDistanceLocker, updateCameraDistanceLocker] = useBimComponent(BimComponent.CameraDistanceLocker);
+  const [cameraDistanceLocker, mutateCameraDistanceLocker] = useBimComponent(BimComponent.CameraDistanceLocker);
   
   const enabled = cameraDistanceLocker?.enabled ?? false;
 
   return <WithTooltip message="Lock Camera Distance" position="top">
     <button
-      onClick={() => updateCameraDistanceLocker(x => x.enabled = !enabled)}
+      onClick={() => mutateCameraDistanceLocker(x => x.enabled = !enabled)}
       className="button-toolbar-button"
       data-active={enabled}
     >

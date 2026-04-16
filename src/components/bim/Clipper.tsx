@@ -3,7 +3,7 @@ import { BimComponent } from "@/domain/enums/bim/BimComponent";
 import { useBimComponent } from "@/hooks/bim";
 
 export const Clipper = () => {
-  const [clipper, updateClipper] = useBimComponent(BimComponent.Clipper);
+  const [clipper, mutateClipper] = useBimComponent(BimComponent.Clipper);
 
   const visible = clipper?.visible ?? false;
 
@@ -19,7 +19,7 @@ export const Clipper = () => {
           type="checkbox" 
           id="clipper-visible" 
           checked={visible} 
-          onChange={e => updateClipper(x => x.visible = e.target.checked)}
+          onChange={e => mutateClipper(x => x.visible = e.target.checked)}
           className="rounded"
         />
 
