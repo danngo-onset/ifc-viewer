@@ -9,7 +9,7 @@ import { BimComponent } from "@/domain/enums/bim/BimComponent";
 export const ModelsList = () => {
   const panelContainerRef = useRef<HTMLDivElement>(null);
 
-  const components = useBimComponent(BimComponent.Components);
+  const [components] = useBimComponent(BimComponent.Components);
   
   useEffect(() => {
     if (!components) return;

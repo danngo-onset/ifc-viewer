@@ -1,19 +1,13 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
 import { useBimComponent } from "@/hooks/bim";
 
 export const LengthMeasurer = () => {
-  const [visible, setVisible] = useState(false);
+  const [measurer, updateMeasurer] = useBimComponent(BimComponent.LengthMeasurer);
 
-  const measurer = useBimComponent(BimComponent.LengthMeasurer);
-
-  useEffect(() => {
-    if (measurer) {
-      setVisible(measurer.visible);
-    }
-  }, [measurer]);
+  const visible = measurer?.visible ?? false;
 
   return (
     <section className="w-64 bim-component-container">
@@ -26,14 +20,7 @@ export const LengthMeasurer = () => {
           type="checkbox" 
           id="length-measurement-visible" 
           checked={visible} 
-          onChange={e => {
-            if (!measurer) return;
-
-            const checked = e.target.checked;
-            setVisible(checked);
-
-            measurer.visible = checked;
-          }} 
+          onChange={e => updateMeasurer(x => x.visible = e.target.checked)}
           className="rounded"
         />
 

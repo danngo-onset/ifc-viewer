@@ -23,18 +23,13 @@ export const BottomToolbarButton = ({
   tooltipMessage,
   icon,
 }: Props) => {
-  const [enabled, setEnabled] = useState(false);
+  const [component, updateComponent] = useBimComponent(componentKey);
+
   const [showComponent, setShowComponent] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const component = useBimComponent(componentKey);
-
-  useEffect(() => {
-    if (component && typeof component.enabled === "boolean") {
-      setEnabled(component.enabled);
-    }
-  }, [component]);
+  
+  const enabled = component?.enabled ?? false;
 
   useClickOutside(containerRef, showComponent, setShowComponent);
 
@@ -50,12 +45,7 @@ export const BottomToolbarButton = ({
 
       <WithTooltip message={tooltipMessage} position="top">
         <button
-          onClick={() => {
-            if (!component) return;
-        
-            component.enabled = !enabled;
-            setEnabled(component.enabled);
-          }}
+          onClick={() => updateComponent(x => x.enabled = !enabled)}
           data-active={enabled}
           className="button-toolbar-button"
         >

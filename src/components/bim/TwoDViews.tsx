@@ -22,9 +22,8 @@ export const TwoDViews = () => {
   const panelContainerRef = useRef<HTMLDivElement>(null);
 
   const [modelLoaded, setModelLoaded] = useState(false);
-  const [viewsEnabled, setViewsEnabled] = useState(false);
 
-  const fragmentsManager = useBimComponent(BimComponent.FragmentsManager);
+  const [fragmentsManager] = useBimComponent(BimComponent.FragmentsManager);
   useEffect(() => {
     if (!fragmentsManager) return;
 
@@ -39,7 +38,10 @@ export const TwoDViews = () => {
     };
   }, [fragmentsManager]);
 
-  const views = useBimComponent(BimComponent.Views);
+  const [views, updateViews] = useBimComponent(BimComponent.Views);
+
+  const viewsEnabled = views?.enabled ?? false;
+
   useEffect(() => {
     if (!views) return;
 
@@ -155,12 +157,6 @@ export const TwoDViews = () => {
     };
   }, [views, modelLoaded]);
 
-  useEffect(() => {
-    if (views) {
-      setViewsEnabled(views.enabled);
-    }
-  }, [views]);
-
   return (
     <div className="flex flex-col gap-2">
       <div>
@@ -169,12 +165,7 @@ export const TwoDViews = () => {
         <SwitchButton 
           id="views-enabled"
           checked={viewsEnabled}
-          onClick={() => {
-            if (!views) return;
-        
-            views.enabled = !views.enabled;
-            setViewsEnabled(views.enabled);
-          }}
+          onClick={() => updateViews(x => x.enabled = !viewsEnabled)}
           colour="blue-400"
         />
       </div>

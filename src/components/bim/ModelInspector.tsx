@@ -10,8 +10,8 @@ import { BimComponent } from "@/domain/enums/bim/BimComponent";
 export const ModelInspector = () => {
   const panelContainerRef = useRef<HTMLDivElement>(null);
   
-  const components = useBimComponent(BimComponent.Components);
-  const fragmentsManager = useBimComponent(BimComponent.FragmentsManager);
+  const [components] = useBimComponent(BimComponent.Components);
+  const [fragmentsManager] = useBimComponent(BimComponent.FragmentsManager);
 
   useEffect(() => {
     if (!components || !fragmentsManager) return;

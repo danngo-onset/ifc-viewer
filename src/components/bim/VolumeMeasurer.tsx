@@ -1,20 +1,12 @@
-import { useEffect, useState } from "react";
-
 import { useBimComponent } from "@/hooks/bim";
 
 import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
 export const VolumeMeasurer = () => {
-  const [visible, setVisible] = useState(false);
+  const [measurer, updateMeasurer] = useBimComponent(BimComponent.VolumeMeasurer);
 
-  const measurer = useBimComponent(BimComponent.VolumeMeasurer);
+  const visible = measurer?.visible ?? false;
 
-  useEffect(() => {
-    if (measurer) {
-      setVisible(measurer.visible);
-    }
-  }, [measurer]);
-  
   return (
     <section className="w-48 bim-component-container">
       <ul className="bim-component-guide">
@@ -26,14 +18,7 @@ export const VolumeMeasurer = () => {
           type="checkbox" 
           id="volume-measurement-visible" 
           checked={visible} 
-          onChange={e => {
-            if (!measurer) return;
-
-            const checked = e.target.checked;
-            setVisible(checked);
-
-            measurer.visible = checked;
-          }} 
+          onChange={e => updateMeasurer(x => x.visible = e.target.checked)}
           className="rounded"
         />
 

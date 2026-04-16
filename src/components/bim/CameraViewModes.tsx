@@ -1,4 +1,4 @@
-import { useEffect, useState, type ChangeEvent } from "react";
+import { useState, type ChangeEvent } from "react";
 
 import type { NavModeID, CameraProjection } from "@thatopen/components";
 
@@ -7,19 +7,10 @@ import { useBimComponent } from "@/hooks/bim";
 import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
 export const CameraViewModes = () => {
-  const world = useBimComponent(BimComponent.World);
+  const [world] = useBimComponent(BimComponent.World);
 
-  const [navigationMode, setNavigationMode] = useState<NavModeID>("Orbit");
-  const [projection, setProjection] = useState<CameraProjection>("Perspective");
-
-  useEffect(() => {
-    if (!world) return;
-
-    setNavigationMode(world.camera.mode.id);
-    setProjection(world.camera.projection.current);
-
-    //console.log(world.camera.controls);
-  }, [world]);
+  const navigationMode = world?.camera.mode.id ?? "Orbit";
+  const projection = world?.camera.projection.current ?? "Perspective";
 
   const handleNavigationModeChange = (event: ChangeEvent<HTMLSelectElement>) => {
     if (!world) return;
@@ -57,8 +48,6 @@ export const CameraViewModes = () => {
       } */
 
     world.camera.set(selectedValue);
-
-    setNavigationMode(selectedValue);
   };
 
   const handleProjectionChange = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -74,8 +63,6 @@ export const CameraViewModes = () => {
     }
 
     world.camera.projection.set(selectedValue);
-
-    setProjection(selectedValue);
   };
 
   return (

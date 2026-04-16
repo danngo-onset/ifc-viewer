@@ -1,20 +1,12 @@
-import { useEffect, useState } from "react";
-
 import { useBimComponent } from "@/hooks/bim";
 
 import { BimComponent } from "@/domain/enums/bim/BimComponent";
 import { IBimComponentNode } from "@/domain/interfaces/bim";
 
 export const AreaMeasurer: IBimComponentNode = () => {
-  const [visible, setVisible] = useState(false);
+  const [measurer, updateMeasurer] = useBimComponent(BimComponent.AreaMeasurer);
 
-  const measurer = useBimComponent(BimComponent.AreaMeasurer);
-
-  useEffect(() => {
-    if (measurer) {
-      setVisible(measurer.visible);
-    }
-  }, [measurer]);
+  const visible = measurer?.visible ?? false;
 
   return (
     <section className="w-48 bim-component-container">
@@ -27,14 +19,7 @@ export const AreaMeasurer: IBimComponentNode = () => {
           type="checkbox" 
           id="area-measurement-visible" 
           checked={visible} 
-          onChange={e => {
-            if (!measurer) return;
-
-            const checked = e.target.checked;
-            setVisible(checked);
-
-            measurer.visible = checked;
-          }} 
+          onChange={e => updateMeasurer(x => x.visible = e.target.checked)}
           className="rounded"
         />
 
