@@ -1,19 +1,11 @@
-import { useEffect, useState } from "react";
-
 import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
 import { useBimComponent } from "@/hooks/bim";
 
 export const Clipper = () => {
-  const [visible, setVisible] = useState(false);
+  const [clipper, updateClipper] = useBimComponent(BimComponent.Clipper);
 
-  const clipper = useBimComponent(BimComponent.Clipper);
-
-  useEffect(() => {
-    if (clipper) {
-      setVisible(clipper.visible);
-    }
-  }, [clipper]);
+  const visible = clipper?.visible ?? false;
 
   return (
     <section className="w-64 bim-component-container">
@@ -27,14 +19,7 @@ export const Clipper = () => {
           type="checkbox" 
           id="clipper-visible" 
           checked={visible} 
-          onChange={e => {
-            if (!clipper) return;
-
-            const checked = e.target.checked;
-            setVisible(checked);
-
-            clipper.visible = checked;
-          }} 
+          onChange={e => updateClipper(x => x.visible = e.target.checked)}
           className="rounded"
         />
 

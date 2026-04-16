@@ -13,8 +13,8 @@ import { RightDrawer } from "@/components/ui/RightDrawer";
 import { DarkSceneToggle } from "@/components/bim";
 
 export const TopBar = () => {
-  const world = useBimComponent(BimComponent.World);
-  const fragmentsManager = useBimComponent(BimComponent.FragmentsManager);
+  const [world] = useBimComponent(BimComponent.World);
+  const [fragmentsManager] = useBimComponent(BimComponent.FragmentsManager);
 
   const { isLoading, setIsLoading, setLoadingMessage } = useUiStoreShallow(s => ({
     isLoading: s.isLoading,

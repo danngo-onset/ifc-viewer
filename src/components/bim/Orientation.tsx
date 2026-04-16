@@ -13,9 +13,9 @@ type OrientationOptions = BoundingBoxer.OrientationOptions;
 export const Orientation = () => {
   const modelLoaded = useBimStore(s => s.modelLoaded);
 
-  const components = useBimComponent(BimComponent.Components);
-  const world = useBimComponent(BimComponent.World);
-  const fragmentsManager = useBimComponent(BimComponent.FragmentsManager);
+  const [components] = useBimComponent(BimComponent.Components);
+  const [world] = useBimComponent(BimComponent.World);
+  const [fragmentsManager] = useBimComponent(BimComponent.FragmentsManager);
 
   const viewFromOrientation = useCallback(
     async (orientation: OrientationOptions) => {

@@ -3,7 +3,7 @@ import { useBimComponent } from "@/hooks/bim";
 import { BimComponent } from "@/domain/enums/bim/BimComponent";
 
 export const Highlighter = () => {
-  const highlighter = useBimComponent(BimComponent.Highlighter);
+  const [highlighter] = useBimComponent(BimComponent.Highlighter);
   
   return (
     <section className="w-64 bim-component-container">

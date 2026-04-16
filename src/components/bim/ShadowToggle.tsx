@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-
 import { useBimComponent } from "@/hooks/bim";
 
 import { BimComponent } from "@/domain/enums/bim";
@@ -7,15 +5,8 @@ import { BimComponent } from "@/domain/enums/bim";
 import { SwitchButton } from "@/components/ui/buttons";
 
 export const ShadowToggle = () => {
-  const [shadowVisible, setShadowVisible] = useState(false);
-
-  const world = useBimComponent(BimComponent.World);
-
-  useEffect(() => {
-    if (!world) return;
-
-    setShadowVisible(world.scene.shadowsEnabled);
-  }, [world]);
+  const [world, updateWorld] = useBimComponent(BimComponent.World);
+  const shadowVisible = world?.scene.shadowsEnabled ?? false;
 
   return (
     <div>
@@ -27,9 +18,10 @@ export const ShadowToggle = () => {
         onClick={async () => {
           if (!world) return;
       
-          world.scene.shadowsEnabled = !world.scene.shadowsEnabled;
+          const success = updateWorld(x => x.scene.shadowsEnabled = !shadowVisible);
+          if (!success) return;
+
           await world.scene.updateShadows();
-          setShadowVisible(world.scene.shadowsEnabled);
         }}
         colour="blue-400"
       />

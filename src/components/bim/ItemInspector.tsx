@@ -15,9 +15,9 @@ export const ItemInspector = () => {
   
   const panelContainerRef = useRef<HTMLDivElement>(null);
   
-  const components = useBimComponent(BimComponent.Components);
-  const fragmentsManager = useBimComponent(BimComponent.FragmentsManager);
-  const highlighter = useBimComponent(BimComponent.Highlighter);
+  const [components] = useBimComponent(BimComponent.Components);
+  const [fragmentsManager] = useBimComponent(BimComponent.FragmentsManager);
+  const [highlighter] = useBimComponent(BimComponent.Highlighter);
 
   useEffect(() => {
     if (!components || !fragmentsManager || !highlighter) return;

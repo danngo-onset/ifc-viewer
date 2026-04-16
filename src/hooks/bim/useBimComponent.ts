@@ -1,12 +1,19 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { serviceLocator } from "@/lib";
 
 import type { BimComponent } from "@/domain/enums/bim/BimComponent";
 
-export function useBimComponent<K extends BimComponent>(key: K) {
+type TValue<TKey extends BimComponent> = NonNullable<
+  ReturnType<typeof serviceLocator.resolve<TKey>>
+>;
+
+export function useBimComponent<TKey extends BimComponent>(key: TKey) {
   //const [component, setComponent] = useState<BimComponentTypeMap[K] | null>(null);
-  const [component, setComponent] = useState<ReturnType<typeof serviceLocator.resolve<K>>>(null);
+  const [component, setComponent] = useState<TValue<TKey>>();
+
+  // Used to trigger re-render
+  const [, bump] = useState(0);
 
   useEffect(() => {
     // Poll until component is available in container
@@ -21,5 +28,17 @@ export function useBimComponent<K extends BimComponent>(key: K) {
     return () => clearInterval(interval);
   }, [key]);
 
-  return component;
+  const updateComponent = useCallback(
+    (mutate: (x: TValue<TKey>) => void) => {
+      if (!component) return false;
+
+      mutate(component);
+      bump(v => v + 1);
+      
+      return true;
+    }, 
+    [component, bump]
+  );
+
+  return [component, updateComponent] as const;
 };

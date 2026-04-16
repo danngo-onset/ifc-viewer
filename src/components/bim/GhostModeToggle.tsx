@@ -19,7 +19,7 @@ export const GhostModeToggle = () => {
     setGhostModeEnabled: s.setGhostModeEnabled
   }));
 
-  const fragmentsManager = useBimComponent(BimComponent.FragmentsManager);
+  const [fragmentsManager] = useBimComponent(BimComponent.FragmentsManager);
 
   const setModelTransparent = () => {
     if (!fragmentsManager) return;

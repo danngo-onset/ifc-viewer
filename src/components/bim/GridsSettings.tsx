@@ -17,17 +17,12 @@ export const GridsSettings = () => {
     setSelectedGridLevel: s.setSelectedGridLevel
   }));
 
-  const [gridsVisible, setGridsVisible] = useState(false);
+  const [grids, updateGrids] = useBimComponent(BimComponent.Grids);
+  const [fragmentsManager] = useBimComponent(BimComponent.FragmentsManager);
+
   const [itemsData, setItemsData] = useState<ItemData[]>([]);
-
-  const fragmentsManager = useBimComponent(BimComponent.FragmentsManager);
-  const grids = useBimComponent(BimComponent.Grids);
-
-  useEffect(() => {
-    if (!grids) return;
-
-    setGridsVisible(grids.visible);
-  }, [grids]);
+  
+  const gridsVisible = grids?.visible ?? false;
 
   useEffect(() => {
     if (!fragmentsManager) return;
@@ -83,12 +78,7 @@ export const GridsSettings = () => {
         <SwitchButton
           id="grid-enabled"
           checked={gridsVisible}
-          onClick={() => {
-            if (!grids) return;
-
-            grids.visible = !grids.visible;
-            setGridsVisible(grids.visible);
-          }}
+          onClick={() => updateGrids(x => x.visible = !gridsVisible)}
           colour="blue-400"
         />
       </div>
