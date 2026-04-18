@@ -1,0 +1,80 @@
+---
+description: Service locator pattern, BimManager registration, and the useBimComponent mutation idiom. Read when adding/changing a BIM feature or touching @thatopen component lifecycle.
+globs: src/components/bim/**, src/hooks/bim/**, src/lib/service-locator.ts, src/lib/utils/bim/**, src/domain/enums/bim/**, src/domain/types/bim/**, src/domain/interfaces/bim/**
+---
+
+# BIM feature lifecycle — service locator + useBimComponent
+
+The pattern that ties every `@thatopen` component to React.
+
+## Key space: `BimComponent` enum
+
+[src/domain/enums/bim/BimComponent.ts](src/domain/enums/bim/BimComponent.ts) is the single source of truth for component identity. Components, World, FragmentsManager, AreaMeasurer, LengthMeasurer, Highlighter, CameraDistanceLocker, Clipper, Views, VolumeMeasurer, Grids, AngleMeasurer.
+
+**Adding a new BIM feature**:
+1. Add an enum member in `BimComponent.ts`.
+2. Add its concrete type in [BimComponentTypeMap](src/domain/types/bim/BimComponentTypeMap.ts) (`[BimComponent.New]: NewThing & IBimComponent`).
+3. Build + register it in a new `BimManager.initNew()` method.
+4. Create the React component in `src/components/bim/` — it uses `useBimComponent(BimComponent.New)`.
+
+## Type-safe resolution
+
+[BimComponentTypeMap](src/domain/types/bim/BimComponentTypeMap.ts) makes `serviceLocator.resolve(key)` return the correct type with no casting. `useBimComponent` inherits this.
+
+## `serviceLocator` — do not call from components
+
+[src/lib/service-locator.ts](src/lib/service-locator.ts) is a singleton `Map<BimComponent, IBimComponent>`. API: `register` / `resolve` / `dispose` / `disposeAll`.
+
+- **Inside components**: use `useBimComponent` (never `serviceLocator.resolve` directly — you'll skip the polling and type-safety the hook provides).
+- **Inside Zustand actions or `BimManager` itself**: `serviceLocator.resolve` is expected — see [bimStore.setDarkSceneEnabled](src/store/bimStore.ts#L39) for precedent.
+
+## `BimManager` — the registration site
+
+[BimManager](src/lib/utils/bim/BimManager.ts) is the singleton that owns every `@thatopen` instance's construction and lifecycle. Each `init*()` method:
+
+1. Builds the instance from `this.components.get(...)` or equivalent.
+2. Wires event listeners with `{ signal: abortController.signal }` so they auto-clean.
+3. Calls `serviceLocator.register(BimComponent.X, instance)`.
+4. Returns a cleanup function.
+
+**Don't** subscribe to `@thatopen` events from a React `useEffect` or a Zustand action — do it here, with abortable listeners.
+
+## `useBimComponent(key)` — the consumer hook
+
+Signature from [src/hooks/bim/useBimComponent.ts](src/hooks/bim/useBimComponent.ts):
+
+```ts
+const [component, mutateComponent] = useBimComponent(BimComponent.LengthMeasurer);
+// component: LengthMeasurement | undefined   (undefined until BimManager registers it)
+// mutateComponent: (fn: (x: LengthMeasurement) => void) => boolean
+```
+
+### Mutation idiom
+
+`@thatopen` instances are mutable by design — cloning them breaks internal state. So:
+
+```tsx
+<input
+  type="checkbox"
+  checked={component?.visible ?? false}
+  onChange={e => mutateComponent(x => { x.visible = e.target.checked })}
+/>
+```
+
+`mutateComponent` mutates the registered instance in place, then force-renders via `useReducer`. **Do not** call `setComponent` yourself — there is no setter exposed, and you shouldn't need one.
+
+### Why polling
+
+`BimManager.init*()` is async. The hook polls `serviceLocator.resolve(key)` every 100 ms until the instance appears, then stops. Don't "optimize" this into a prop without subscription support on `serviceLocator`.
+
+### Known issue
+
+The effect calls `setComponent` synchronously on the first resolve, which triggers a React "setState in effect" warning. The fix is a lazy initializer (`useState(() => serviceLocator.resolve(key) ?? undefined)`) — not yet applied, but don't replicate the pattern in new hooks.
+
+## Checklist for a new BIM feature
+
+- [ ] Enum added in `BimComponent.ts`
+- [ ] Type added in `BimComponentTypeMap.ts` (intersected with `IBimComponent` if it exposes `enabled` / `dispose`)
+- [ ] `BimManager.initX()` written, registered, cleanup returned
+- [ ] React component in `src/components/bim/` uses `useBimComponent` (not `serviceLocator.resolve`)
+- [ ] Toolbar entry wrapped via `BottomToolbarButton` (see `ui-composition.mdc`)

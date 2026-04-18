@@ -1,0 +1,153 @@
+---
+description: Repeating component patterns — measurer templates, toolbar button wrappers, panel wrappers, BUI mounts, resize handles, data-attribute styling. Read when building or editing UI components.
+globs: src/components/ui/**, src/components/bim/**, src/app/globals.css
+---
+
+# UI composition patterns
+
+Most UI components fit one of these six patterns. Copy-adapt before inventing.
+
+## 1. Measurer component
+
+All four measurers ([LengthMeasurer](src/components/bim/LengthMeasurer.tsx), [AreaMeasurer](src/components/bim/AreaMeasurer.tsx), [VolumeMeasurer](src/components/bim/VolumeMeasurer.tsx), [AngleMeasurer](src/components/bim/AngleMeasurer.tsx)) follow the same shape:
+
+```tsx
+export const FooMeasurer = () => {
+  const [measurer, mutateMeasurer] = useBimComponent(BimComponent.FooMeasurer);
+  const visible = measurer?.visible ?? false;
+
+  return (
+    <section className="w-48 bim-component-container">
+      <ul className="bim-component-guide"><li>Double click to ...</li></ul>
+      <div className="justify-start! gap-2! *:cursor-pointer">
+        <input
+          type="checkbox"
+          checked={visible}
+          onChange={e => mutateMeasurer(x => { x.visible = e.target.checked })}
+        />
+        <label>Measurement visible</label>
+      </div>
+      <button className="btn-gray" onClick={() => measurer?.list.clear()}>Delete All</button>
+    </section>
+  );
+};
+```
+
+## 2. Toolbar button wrapper
+
+For anything that toggles a BIM component from the bottom toolbar, wrap [BottomToolbarButton](src/components/ui/BottomToolbar/ToggleButtons/index.tsx#L20) (defined alongside the re-exports in `ToggleButtons/index.tsx`) — it owns enable/disable, chevron, and click-outside. Don't re-implement:
+
+```tsx
+export const FooMeasurerButton = () => (
+  <BottomToolbarButton
+    componentKey={BimComponent.FooMeasurer}
+    componentNode={<FooMeasurer />}
+    tooltipMessage="Foo measurement"
+    icon={<IconFoo />}
+  />
+);
+```
+
+Camera/orientation-style dropdowns use the accordion variants in [BottomToolbar/AccordionButtons/](src/components/ui/BottomToolbar/AccordionButtons/).
+
+## 3. Nav-rail panel wrapper
+
+Every left-drawer panel (`ModelsPanel`, `ClassifierPanel`, `ModelInspectorPanel`, `ViewsPanel`, `SettingsPanel` in [src/components/ui/NavigationRailDrawer/panels/](src/components/ui/NavigationRailDrawer/panels/)) is:
+
+```tsx
+<>
+  <PanelHeader title="Foo" />
+  <section className="flex-1 overflow-y-auto">
+    <div className="nav-rail-drawer-panel">
+      <FooContent />
+    </div>
+  </section>
+</>
+```
+
+## 4. BUI mount (for @thatopen/ui web components)
+
+Complex tables/charts (`Classifier`, `ItemInspector`, `ModelInspector`, `ModelAttributes`, `TwoDViews`) embed `@thatopen/ui` web components via dynamic import:
+
+```tsx
+export const Foo = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [someDep] = useBimComponent(BimComponent.SomeDep);
+
+  useEffect(() => {
+    if (!someDep) return;
+    const container = containerRef.current;
+    let panel: HTMLElement | null = null;
+
+    (async () => {
+      const BUI = await import("@thatopen/ui");
+      panel = BUI.Component.create(() => BUI.html`<bim-panel>...</bim-panel>`);
+      if (container) {
+        container.innerHTML = "";
+        container.appendChild(panel);
+      }
+    })();
+
+    return () => {
+      if (panel && container?.contains(panel)) container.removeChild(panel);
+    };
+  }, [someDep]);
+
+  return <div ref={containerRef} />;
+};
+```
+
+ShadowDOM styling: `panel.shadowRoot?.querySelector(...)`. BUI init happens once via `BimExtensions.initBUI()` called from `BimManager`.
+
+## 5. Draggable resize handle
+
+[NavigationRailDrawer](src/components/ui/NavigationRailDrawer/NavigationRailDrawer.tsx) and [RightDrawer](src/components/ui/RightDrawer.tsx) both use:
+
+```tsx
+const [isResizing, setIsResizing] = useState(false);
+
+useEffect(() => {
+  if (!isResizing) return;
+
+  document.body.style.userSelect = "none";
+  document.body.style.cursor = "col-resize";
+  const ac = new AbortController();
+
+  document.addEventListener("mousemove", e => {
+    e.preventDefault();
+    setWidth(clamp(/* compute */, min, max));
+  }, { signal: ac.signal });
+
+  document.addEventListener("mouseup", () => {
+    setIsResizing(false);
+    document.body.style.userSelect = "";
+    document.body.style.cursor = "";
+  }, { signal: ac.signal });
+
+  return () => ac.abort();
+}, [isResizing]);
+```
+
+`AbortController` is the standard cleanup mechanism throughout this codebase — prefer it over named handler + `removeEventListener`.
+
+## 6. Data-attribute styling
+
+State-driven styling uses `data-*` attributes matched by CSS in [src/app/globals.css](src/app/globals.css), not conditional class strings:
+
+```tsx
+<button data-active={isActive} className="button-toolbar-button">…</button>
+```
+
+```css
+.button-toolbar-button[data-active="true"] { /* … */ }
+```
+
+Conventions: `data-active`, `data-open`, `data-enabled`, `data-disabled`, `data-position`. New conditional styling should join this system rather than inline `clsx`/`cn` chains.
+
+## Small conventions
+
+- **Icons**: `@radix-ui/react-icons` for stock; inline SVG components in [src/components/ui/icons/](src/components/ui/icons/) for custom (`IconCamera`, `IconCompass`, `IconPaintRoller`, `IconSitemap`). No icon fonts.
+- **Tooltip**: always via `<WithTooltip position="top|bottom" message="…">` ([WithTooltip.tsx](src/components/ui/WithTooltip.tsx)) — don't hand-roll.
+- **MUI surface**: only `Switch` via [SwitchButton](src/components/ui/buttons/SwitchButton.tsx). Don't introduce additional MUI components without a concrete reason — Tailwind + native HTML is the default.
+- **Component exports**: `export const Foo = () => { ... }` (see [follow-user-scope.mdc](.cursor/rules/follow-user-scope.mdc)).
+- **All UI is client-side**: only [src/app/layout.tsx](src/app/layout.tsx) is a server component. Every new UI file is implicitly `"use client"` via the tree.

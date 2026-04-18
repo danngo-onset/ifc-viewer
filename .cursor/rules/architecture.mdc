@@ -1,0 +1,55 @@
+---
+description: Top-level map of the IFC viewer — stack, directory layers, bootstrap flow, and the three places state lives. Read this before proposing any architectural change.
+alwaysApply: true
+---
+
+# Architecture
+
+Next.js BIM viewer. Everything 3D runs client-side on top of [@thatopen/*](https://github.com/ThatOpen) and Three.js; fragments are fetched from a backend via Axios.
+
+## Stack
+
+- **Framework**: Next.js 16 App Router, React 19, TypeScript strict, `@/*` path alias → `src/*`
+- **3D**: `@thatopen/components`, `@thatopen/components-front`, `@thatopen/fragments`, `@thatopen/ui`, `@thatopen/ui-obc` on Three.js
+- **State**: Zustand (with a shallow-selector wrapper)
+- **UI**: Tailwind v4 (utility-first), MUI — only `Switch` via `SwitchButton`, Radix icons for stock, inline SVG for custom
+- **HTTP**: Axios singleton in [src/api/http-client.ts](src/api/http-client.ts), baseURL from `NEXT_PUBLIC_API_BASE_URL`
+
+## Directory layers
+
+```
+src/
+├── domain/         Enums, interfaces, type maps, constants. No runtime code.
+├── lib/            serviceLocator, createShallowStore, BimManager, extensions.
+├── store/          Zustand stores (bimStore, uiStore) + *Shallow variants.
+├── hooks/          useBimComponent (core), useClickOutside.
+├── components/
+│   ├── bim/        Feature components that resolve @thatopen instances via useBimComponent.
+│   └── ui/         Layout & chrome (TopBar, BottomToolbar, NavigationRailDrawer, RightDrawer).
+├── app/            Next.js entry. page.tsx is "use client" and owns BimManager.
+└── api/            Axios client.
+```
+
+## Bootstrap flow
+
+1. [src/app/page.tsx](src/app/page.tsx) mounts `<main ref={containerRef}>` and calls `BimManager.getInstance(container)` in `useEffect`.
+2. [BimManager](src/lib/utils/bim/BimManager.ts) runs async `init*()` methods — each builds one `@thatopen` instance, wires events through `AbortController.signal`, and calls `serviceLocator.register(BimComponent.X, instance)`.
+3. React components in `src/components/bim/` call `useBimComponent(BimComponent.X)` which polls the locator until the instance is registered, then returns `[component, mutateComponent]`.
+4. Cleanup is returned from each `init*()`; `page.tsx` aggregates them and calls on unmount.
+
+## Three places state lives
+
+Pick the right one — they don't overlap.
+
+| Kind | Lives in | For |
+|---|---|---|
+| `@thatopen` instances | `serviceLocator` ([src/lib/service-locator.ts](src/lib/service-locator.ts)) | Runtime registry keyed by `BimComponent` enum. Accessed from React via `useBimComponent`. |
+| React-visible app state | Zustand stores ([src/store/bimStore.ts](src/store/bimStore.ts), [src/store/uiStore.ts](src/store/uiStore.ts)) | Model loaded, panel open, toggle on/off, loading spinner. |
+| `@thatopen` component internals | Mutated in place via `mutateComponent(x => { x.visible = true })` | Properties on the 3D instance itself — not immutable; the hook forces a rerender. |
+
+## Where to look next (scoped rules)
+
+- Adding a BIM feature, working in `src/components/bim/**` or `src/hooks/bim/**` → `bim-service-locator.mdc`
+- Touching stores, adding state, shallow subscriptions → `state-and-stores.mdc`
+- Building toolbar buttons, panels, BUI mounts, resize handles → `ui-composition.mdc`
+- Code style (Tailwind, exports, Zustand shallow, scope) → `follow-user-scope.mdc`

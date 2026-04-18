@@ -1,0 +1,105 @@
+---
+description: Zustand store layout (bimStore vs uiStore), side effects in actions, and the shallow-selector convention. Read when adding state, writing a new action, or subscribing to a store.
+globs: src/store/**, src/lib/create-shallow-store.ts
+---
+
+# State and stores
+
+Two Zustand stores, split by concern. A third one almost certainly isn't needed.
+
+## The two stores
+
+### [useBimStore](src/store/bimStore.ts) — scene facts
+
+```ts
+modelLoaded: boolean         // an IFC model is in the viewer
+selectedGridLevel: string    // current grid storey
+ghostModeEnabled: boolean    // transparent-material mode on
+darkSceneEnabled: boolean    // dark background on
+```
+
+### [useUiStore](src/store/uiStore.ts) — chrome
+
+```ts
+isLoading: boolean
+loadingMessage: string
+activeNavRailPanel: SideDrawerPanel
+```
+
+**Heuristic**: if a state change should visibly re-render a React component, it belongs in a store. If it's internal to a `@thatopen` instance, mutate via `mutateComponent` (see `bim-service-locator.mdc`).
+
+## Actions delegate to mutations
+
+The convention: **store actions are thin. They delegate to top-level *mutation* functions that receive `set` / `get` and perform the complex operations that produce the desired state** — including reading from `serviceLocator` and mutating the 3D scene when that's part of the transition.
+
+Keep the mutation logic in one place. Don't inline it into the action literal, and don't spread it across caller components.
+
+Shape — from [src/store/bimStore.ts](src/store/bimStore.ts):
+
+```ts
+// 1. Mutation function (module-level). Takes set + get. Does the real work.
+function setDarkSceneEnabled(set: SetState<State>, get: GetState<State>, darkModeEnabled: boolean) {
+  set({ darkSceneEnabled: darkModeEnabled });
+
+  const world = serviceLocator.resolve(BimComponent.World);
+  if (world) {
+    world.scene.three.background = darkModeEnabled
+      ? new Color(Constants.Color.DarkScene)
+      : null;
+  }
+
+  if (get().ghostModeEnabled) {
+    const fragmentsManager = serviceLocator.resolve(BimComponent.FragmentsManager);
+    if (fragmentsManager) {
+      const materials = [...fragmentsManager.core.models.materials.list.values()];
+      BimExtensions.applyGhostTintToMaterials(materials, darkModeEnabled);
+    }
+  }
+}
+
+// 2. Action (inside create()). Thin — just forwards set/get and the argument.
+export const useBimStore = create<Store>((set, get) => ({
+  darkSceneEnabled: false,
+  // ...
+  setDarkSceneEnabled: darkModeEnabled => setDarkSceneEnabled(set, get, darkModeEnabled),
+}));
+```
+
+### Rules of thumb
+
+- **Mutations** read other slices via `get()` and `@thatopen` instances via `serviceLocator.resolve(...)`. Both are expected here.
+- **Never** resolve from `serviceLocator` inside a **selector** — selectors must be pure and cheap.
+- **Simple** setters (`setModelLoaded`, `setSelectedGridLevel`) still follow the same action→mutation split for consistency, even though the mutation only calls `set(...)`.
+- If two mutations share logic, extract a helper alongside them in the store file — not into `src/lib/`.
+
+## Shallow subscriptions
+
+Every store exports a `*Shallow` variant built with [createShallowStore](src/lib/create-shallow-store.ts):
+
+```ts
+export const useBimStoreShallow = createShallowStore(useBimStore);
+```
+
+**Rule** (reinforces [follow-user-scope.mdc](.cursor/rules/follow-user-scope.mdc)): if a component needs **more than one** field or action from the same store, use the `*Shallow` variant with a **single object-returning selector**:
+
+```ts
+// ✅ one subscription, one selector returning an object
+const { darkSceneEnabled, setDarkSceneEnabled } = useBimStoreShallow(s => ({
+  darkSceneEnabled: s.darkSceneEnabled,
+  setDarkSceneEnabled: s.setDarkSceneEnabled,
+}));
+
+// ❌ two subscriptions
+const darkSceneEnabled = useBimStore(s => s.darkSceneEnabled);
+const setDarkSceneEnabled = useBimStore(s => s.setDarkSceneEnabled);
+```
+
+Single-field reads can stay on the plain `useBimStore` / `useUiStore` hook.
+
+## When *not* to add a store
+
+- The value lives on a `@thatopen` instance → use `useBimComponent` + `mutateComponent`.
+- The value is local to one component → `useState`.
+- The value is a prop path → pass it; don't detour through a store.
+
+If the concern really is new (say, auth or routing state later on), a third store is fine — just don't shoehorn unrelated fields into `bimStore` or `uiStore`.
