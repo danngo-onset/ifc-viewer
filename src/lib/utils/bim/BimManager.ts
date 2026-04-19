@@ -1,5 +1,6 @@
 import { 
-  Components, Worlds, ShadowedScene, SimpleRenderer, OrthoPerspectiveCamera, Grids, FragmentsManager, Raycasters, Clipper, Views
+  Components, Worlds, ShadowedScene, SimpleRenderer, OrthoPerspectiveCamera, Grids, FragmentsManager, Raycasters, Clipper, Views,
+  GeneralEditor
 } from "@thatopen/components";
 import type { CameraProjection, ModelIdMap } from "@thatopen/components";
 
@@ -9,9 +10,9 @@ import {
 import type { Line, Area, Volume, Angle } from "@thatopen/components-front";
 
 import { SnappingClass } from "@thatopen/fragments";
-import type { FragmentsModel, ItemData, BIMMaterial, BIMMesh } from "@thatopen/fragments";
+import { FragmentsModel, ItemData, BIMMaterial, BIMMesh } from "@thatopen/fragments";
 
-import { PCFSoftShadowMap, Color, Vector3, Sphere, Box3 } from "three";
+import { PCFSoftShadowMap, Color, Vector3, Sphere, Box3, AxesHelper } from "three";
 import type { MeshStandardMaterial} from "three";
 
 import { useBimStore, useUiStore } from "@/store";
@@ -76,10 +77,11 @@ export class BimManager {
     //world.camera.controls.infinityDolly = false;
 
 
+    this.world.scene.three.add(new AxesHelper());
     this.world.scene.setup({
       shadows: {
         cascade: 1,
-        resolution: 1024
+        resolution: 2048
       }
     });
 
@@ -131,7 +133,7 @@ export class BimManager {
 
   async initFragmentsManager() {
     const fragmentsManager = this.components.get(FragmentsManager);
-
+    //const fragmentsManager = new FragmentsModel()
     const worker = await fetch("/thatopen/worker.mjs");
     fragmentsManager.init(worker.url);
 
@@ -143,7 +145,6 @@ export class BimManager {
       model.useCamera(this.world.camera.three);
       this.world.scene.three.add(model.object);
 
-      // TODO: do we need to clean this up?
       model.tiles.onItemSet.add(({ value: mesh }: { value: BIMMesh }) => {
         if ("isMesh" in mesh) {
           const material = mesh.material as MeshStandardMaterial[];

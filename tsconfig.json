@@ -7,7 +7,9 @@
       "esnext"
     ],
     "allowJs": true,
-    "skipLibCheck": true,
+    "skipLibCheck": false,
+    "strictPropertyInitialization": false,
+    "strictNullChecks": false,
     "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
