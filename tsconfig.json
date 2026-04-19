@@ -7,7 +7,7 @@
       "esnext"
     ],
     "allowJs": true,
-    "skipLibCheck": true,
+    "skipLibCheck": false,  // overridden in tsconfig.vercel.json for deployed envs
     "strictPropertyInitialization": false,
     "strictNullChecks": false,
     "strict": true,
