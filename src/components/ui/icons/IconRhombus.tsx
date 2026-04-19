@@ -1,0 +1,6 @@
+import type { Props } from ".";
+
+export const IconRhombus = ({ classes = "" }: Props) =>
+  <svg viewBox="0 0 640 640" fill="currentColor" className={classes}>
+    <path d="M320.1 36.5L289.5 75.1L95 320.4L289.1 556.6L320.1 594.4L351.2 556.6L545.2 320.4L350.8 75.1L320.1 36.5zM320.1 113.7L483.5 319.8L320.1 518.8L156.7 319.8L320.1 113.7z"/>
+  </svg>

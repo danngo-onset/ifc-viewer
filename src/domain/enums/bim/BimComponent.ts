@@ -10,5 +10,6 @@ export const enum BimComponent {
   Views = "views",
   VolumeMeasurer = "volumeMeasurer",
   Grids = "grids",
-  AngleMeasurer = "angleMeasurer"
+  AngleMeasurer = "angleMeasurer",
+  GeneralEditor = "generalEditor"
 };

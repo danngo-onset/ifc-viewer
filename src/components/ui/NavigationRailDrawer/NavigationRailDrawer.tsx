@@ -6,7 +6,7 @@ import { useUiStore } from "@/store";
 
 import { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
 
-import { IconSitemap } from "@/components/ui/icons";
+import { IconSitemap, IconRhombus } from "@/components/ui/icons";
 
 import { PanelToggle } from ".";
 
@@ -38,7 +38,7 @@ const PANELS: {
   {
     id: SideDrawerPanel.Classifier,
     title: "Classifier",
-    icon: <IconSitemap />,
+    icon: <IconRhombus classes="rotate-90" />,
     component: <ClassifierPanel />
   },
   {

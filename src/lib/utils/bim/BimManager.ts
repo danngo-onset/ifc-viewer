@@ -1,6 +1,7 @@
 import { 
   Components, Worlds, ShadowedScene, SimpleRenderer, OrthoPerspectiveCamera, Grids, FragmentsManager, Raycasters, Clipper, Views
 } from "@thatopen/components";
+import { GeneralEditor } from "@/lib/@thatopen/components";
 import type { CameraProjection, ModelIdMap } from "@thatopen/components";
 
 import { 
@@ -131,9 +132,9 @@ export class BimManager {
   }
 
   async initFragmentsManager() {
-    const fragmentsManager = this.components.get(FragmentsManager);
-    //const fragmentsManager = new FragmentsModel()
     const worker = await fetch("/thatopen/worker.mjs");
+
+    const fragmentsManager = this.components.get(FragmentsManager);
     fragmentsManager.init(worker.url);
 
     const cameraRestHandler = async () => await fragmentsManager.core.update(true);
@@ -155,7 +156,14 @@ export class BimManager {
       });
       
       this.uiStore.setLoadingMessage("Rendering model...");
+
       await fragmentsManager.core.update(true);
+
+      const generalEditor = serviceLocator.resolve(BimComponent.GeneralEditor);
+      if (generalEditor) {
+        await generalEditor.init(model);
+      }
+
       this.uiStore.setIsLoading(false);
       this.bimStore.setModelLoaded(fragmentsManager.list.size > 0);
     };
@@ -194,6 +202,9 @@ export class BimManager {
 
 
     serviceLocator.register(BimComponent.FragmentsManager, fragmentsManager);
+
+    const generalEditor = new GeneralEditor(this.world, fragmentsManager);
+    serviceLocator.register(BimComponent.GeneralEditor, generalEditor);
 
     return () => {
       this.world.camera.controls.removeEventListener("rest", cameraRestHandler);

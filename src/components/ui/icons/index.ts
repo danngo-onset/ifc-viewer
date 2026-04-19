@@ -6,3 +6,4 @@ export * from "./IconCamera";
 export * from "./IconCompass";
 export * from "./IconSitemap";
 export * from "./IconPaintRoller";
+export * from "./IconRhombus";

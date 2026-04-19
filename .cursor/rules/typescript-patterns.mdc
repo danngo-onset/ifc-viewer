@@ -1,0 +1,14 @@
+---
+description: TypeScript patterns for module augmentation, type declarations, and class design used in this repo.
+alwaysApply: true
+---
+
+# TypeScript patterns
+
+## Module augmentation with concrete implementations
+
+When a class has both a concrete implementation file (`.ts`) and a module augmentation declaration (`index.d.ts`), define all public fields and method signatures explicitly on **both sides**. The declaration in the augmentation must match the implementation exactly.
+
+Private fields, getters, and methods do **not** require explicit return type annotations in the implementation — let TypeScript infer them. The module augmentation only declares the public API; private members are omitted entirely.
+
+Example: [`src/lib/@thatopen/components/GeneralEditor.ts`](../../src/lib/@thatopen/components/GeneralEditor.ts) (implementation) + [`src/types/@thatopen/components/index.d.ts`](../../src/types/@thatopen/components/index.d.ts) (augmentation).

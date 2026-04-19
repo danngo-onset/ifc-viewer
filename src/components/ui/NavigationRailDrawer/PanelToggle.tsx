@@ -1,4 +1,4 @@
-import { type ReactElement, type HTMLAttributes, cloneElement } from "react";
+import { type HTMLAttributes, cloneElement, JSX } from "react";
 
 import { useUiStoreShallow } from "@/store";
 
@@ -7,7 +7,7 @@ import type { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
 type Props = {
   targetPanel : SideDrawerPanel;
   title       : string;
-  icon        : ReactElement;
+  icon        : JSX.Element;
 }
 
 export const PanelToggle = ({
@@ -15,10 +15,13 @@ export const PanelToggle = ({
   title,
   icon
 }: Props) => {
-  const className = "w-4 h-4";
+  const baseClass = "size-4";
+  const existingClasses = (icon.props.classes ?? icon.props.className ?? "") as string;
+  const mergedClass = `${baseClass} ${existingClasses}`.trim();
+
   const iconEl = cloneElement(
     icon, 
-    { className: className, classes: className } as HTMLAttributes<HTMLElement>
+    { className: mergedClass, classes: mergedClass } as HTMLAttributes<HTMLElement>
   );
 
   const { activeNavRailPanel, toggleNavRailPanel } = useUiStoreShallow(s => ({

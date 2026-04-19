@@ -1,4 +1,5 @@
 import type { Components, FragmentsManager, Clipper, Views, SimpleGrid } from "@thatopen/components";
+import type { GeneralEditor } from "@/lib/@thatopen/components";
 import type { AreaMeasurement, LengthMeasurement, Highlighter, VolumeMeasurement, AngleMeasurement } from "@thatopen/components-front";
 
 import type { CameraDistanceLocker } from "@/lib/utils/bim/CameraDistanceLocker";
@@ -21,4 +22,5 @@ export interface BimComponentTypeMap extends Record<BimComponent, IBimComponent>
   [BimComponent.VolumeMeasurer]: VolumeMeasurement & IBimComponent;
   [BimComponent.Grids]: SimpleGrid & IBimComponent;
   [BimComponent.AngleMeasurer]: AngleMeasurement & IBimComponent;
+  [BimComponent.GeneralEditor]: GeneralEditor & IBimComponent;
 };
