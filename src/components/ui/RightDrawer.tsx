@@ -2,12 +2,17 @@ import { useState, useEffect, useRef } from "react";
 
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 
-import { ItemInspector } from "@/components/bim";
+import { useUiStoreShallow } from "@/store";
 
 import { CrossButton } from "./buttons";
 
 export const RightDrawer = () => {
-  const [open, setOpen] = useState(false);
+  const { open, setOpen } = useUiStoreShallow(s => ({
+    open: s.isRightDrawerOpen,
+    setOpen: s.toggleIsRightDrawerOpen,
+    //content: s.rightDrawerContent
+  }));
+
   const [width, setWidth] = useState(320); // Default width: w-80 = 320px
   const [isResizing, setIsResizing] = useState(false);
   const drawerRef = useRef<HTMLElement>(null);
@@ -67,10 +72,8 @@ export const RightDrawer = () => {
       data-open={open}
       style={{ width: `${width}px` }}
     >
-      <div className="flex items-center justify-between p-4 border-b">
+      <div className="p-4 border-b">
         <CrossButton onClick={() => setOpen(false)} />
-
-        <p className="text-sm font-medium">Menu</p>
       </div>
 
       {/* Resize handler */}
@@ -87,7 +90,7 @@ export const RightDrawer = () => {
 
       <div className="flex-1 overflow-y-auto">
         <section className="nav-rail-drawer-panel">
-          <ItemInspector />
+          
         </section>
       </div>
     </aside>

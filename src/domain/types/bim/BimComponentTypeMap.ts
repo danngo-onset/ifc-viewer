@@ -9,18 +9,20 @@ import type { IBimComponent } from "@/domain/interfaces/bim";
 
 import type { World } from "./World";
 
+type Bim<T> = T & IBimComponent;
+
 export interface BimComponentTypeMap extends Record<BimComponent, IBimComponent> {
-  [BimComponent.Components]: Components & IBimComponent;
-  [BimComponent.World]: World & IBimComponent;
-  [BimComponent.FragmentsManager]: FragmentsManager & IBimComponent;
-  [BimComponent.AreaMeasurer]: AreaMeasurement & IBimComponent;
-  [BimComponent.LengthMeasurer]: LengthMeasurement & IBimComponent;
-  [BimComponent.Highlighter]: Highlighter & IBimComponent;
-  [BimComponent.CameraDistanceLocker]: CameraDistanceLocker;
-  [BimComponent.Clipper]: Clipper & IBimComponent;
-  [BimComponent.Views]: Views & IBimComponent;
-  [BimComponent.VolumeMeasurer]: VolumeMeasurement & IBimComponent;
-  [BimComponent.Grids]: SimpleGrid & IBimComponent;
-  [BimComponent.AngleMeasurer]: AngleMeasurement & IBimComponent;
-  [BimComponent.GeneralEditor]: GeneralEditor & IBimComponent;
-};
+  [BimComponent.Components]:           Bim<Components>;
+  [BimComponent.World]:                Bim<World>;
+  [BimComponent.FragmentsManager]:     Bim<FragmentsManager>;
+  [BimComponent.AreaMeasurer]:         Bim<AreaMeasurement>;
+  [BimComponent.LengthMeasurer]:       Bim<LengthMeasurement>;
+  [BimComponent.Highlighter]:          Bim<Highlighter>;
+  [BimComponent.CameraDistanceLocker]: Bim<CameraDistanceLocker>;
+  [BimComponent.Clipper]:              Bim<Clipper>;
+  [BimComponent.Views]:                Bim<Views>;
+  [BimComponent.VolumeMeasurer]:       Bim<VolumeMeasurement>;
+  [BimComponent.Grids]:                Bim<SimpleGrid>;
+  [BimComponent.AngleMeasurer]:        Bim<AngleMeasurement>;
+  [BimComponent.GeneralEditor]:        Bim<GeneralEditor>;
+}

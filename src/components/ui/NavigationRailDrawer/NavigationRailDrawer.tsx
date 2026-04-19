@@ -11,8 +11,7 @@ import { IconSitemap, IconRhombus } from "@/components/ui/icons";
 import { PanelToggle } from ".";
 
 import { 
-  ModelInspectorPanel, ClassifierPanel, ViewsPanel,
-  SettingsPanel, ModelsPanel
+  ModelsPanel, ModelInspectorPanel, ItemInspectorPanel, ClassifierPanel, ViewsPanel, SettingsPanel
 } from "./panels";
 
 const RAIL_WIDTH = 145;
@@ -36,9 +35,15 @@ const PANELS: {
     component: <ModelInspectorPanel />
   },
   {
+    id: SideDrawerPanel.ItemInspector,
+    title: "Item Inspector",
+    icon: <IconRhombus classes="rotate-90" />,
+    component: <ItemInspectorPanel />
+  },
+  {
     id: SideDrawerPanel.Classifier,
     title: "Classifier",
-    icon: <IconRhombus classes="rotate-90" />,
+    icon: <IconSitemap />,
     component: <ClassifierPanel />
   },
   {

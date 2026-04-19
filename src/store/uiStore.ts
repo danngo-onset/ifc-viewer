@@ -1,3 +1,5 @@
+import { JSX } from "react";
+
 import { create, type SetState } from "zustand";
 
 import { createShallowStore } from "@/lib";
@@ -8,6 +10,8 @@ interface State {
   isLoading: boolean;
   loadingMessage: string;
   activeNavRailPanel: SideDrawerPanel;
+  isRightDrawerOpen: boolean;
+  //rightDrawerContent: JSX.Element;
 };
 
 interface Action {
@@ -16,6 +20,8 @@ interface Action {
   setActiveNavRailPanel: (activeNavRailPanel: SideDrawerPanel) => void;
   closeNavRailPanel: () => void;
   toggleNavRailPanel: (activeNavRailPanel: SideDrawerPanel) => void;
+  toggleIsRightDrawerOpen: (isRightDrawerOpen: boolean) => void;
+  setRightDrawerContent: (node: JSX.Element) => void;
 };
 
 type Store = State & Action;
@@ -43,16 +49,28 @@ function toggleNavRailPanel(set: SetState<State>, targetPanel: SideDrawerPanel) 
   }));
 }
 
+function toggleRightDrawerOpen(set: SetState<State>) {
+  set(s => ({ isRightDrawerOpen: !s.isRightDrawerOpen }));
+}
+
+function setRightDrawerContent(set: SetState<State>, node: JSX.Element) {
+  //set({ rightDrawerContent: node });
+}
+
 export const useUiStore = create<Store>(set => ({
   isLoading: false,
   loadingMessage: "",
   activeNavRailPanel: SideDrawerPanel.None,
+  isRightDrawerOpen: false,
+  //rightDrawerContent: <>hello</>,
 
   setIsLoading: (isLoading) => setIsLoading(set, isLoading),
   setLoadingMessage: (loadingMessage) => setLoadingMessage(set, loadingMessage),
   setActiveNavRailPanel: (activeNavRailPanel) => setActiveNavRailPanel(set, activeNavRailPanel),
   closeNavRailPanel: () => closeNavRailPanel(set),
-  toggleNavRailPanel: (targetPanel) => toggleNavRailPanel(set, targetPanel)
+  toggleNavRailPanel: (targetPanel) => toggleNavRailPanel(set, targetPanel),
+  toggleIsRightDrawerOpen: () => toggleRightDrawerOpen(set),
+  setRightDrawerContent: (node) => setRightDrawerContent(set, node)
 }));
 
 export const useUiStoreShallow = createShallowStore(useUiStore);
