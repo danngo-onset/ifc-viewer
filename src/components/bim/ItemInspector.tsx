@@ -58,7 +58,7 @@ export const ItemInspector = () => {
         };
       
         const expandTable = (e: Event) => {
-          const button = e.target as { label: string } | null;
+          const button = e.target as Partial<{ label: string }>;
           if (!button) return;
 
           propertiesTable.expanded = !propertiesTable.expanded;

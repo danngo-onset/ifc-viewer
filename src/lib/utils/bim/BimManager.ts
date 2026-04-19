@@ -1,6 +1,5 @@
 import { 
-  Components, Worlds, ShadowedScene, SimpleRenderer, OrthoPerspectiveCamera, Grids, FragmentsManager, Raycasters, Clipper, Views,
-  GeneralEditor
+  Components, Worlds, ShadowedScene, SimpleRenderer, OrthoPerspectiveCamera, Grids, FragmentsManager, Raycasters, Clipper, Views
 } from "@thatopen/components";
 import type { CameraProjection, ModelIdMap } from "@thatopen/components";
 
