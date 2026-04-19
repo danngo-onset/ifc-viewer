@@ -233,7 +233,5 @@ export const ModelAttributes = () => {
     };
   }, [components]);
   
-  return (
-    <div className="overflow-auto max-h-1/2" ref={panelContainerRef} />
-  );
+  return <div className="overflow-auto max-h-1/2" ref={panelContainerRef} />
 };

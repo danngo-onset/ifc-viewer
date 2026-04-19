@@ -40,18 +40,18 @@ function setDarkSceneEnabled(set: SetState<State>, get: GetState<State>, darkMod
   set({ darkSceneEnabled: darkModeEnabled });
 
   const world = serviceLocator.resolve(BimComponent.World);
-  if (world) {
-    world.scene.three.background = darkModeEnabled ? new Color(Constants.Color.DarkScene) 
-                                                   : null;
-  }
+  if (!world) return;
 
-  if (get().ghostModeEnabled) {
-    const fragmentsManager = serviceLocator.resolve(BimComponent.FragmentsManager);
-    if (fragmentsManager) {
-      const materials = [...fragmentsManager.core.models.materials.list.values()];
-      BimExtensions.applyGhostTintToMaterials(materials, darkModeEnabled);
-    }
-  }
+  world.scene.three.background = darkModeEnabled ? new Color(Constants.Color.DarkScene) 
+                                                 : null;
+  
+  if (!get().ghostModeEnabled) return;
+
+  const fragmentsManager = serviceLocator.resolve(BimComponent.FragmentsManager);
+  if (!fragmentsManager) return;
+
+  const materials = [...fragmentsManager.core.models.materials.list.values()];
+  BimExtensions.applyGhostTintToMaterials(materials, darkModeEnabled);
 }
 
 export const useBimStore = create<Store>((set, get) => ({

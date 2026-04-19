@@ -142,7 +142,5 @@ export const ItemInspector = () => {
     );
   }
 
-  return (
-    <div className="overflow-auto" ref={panelContainerRef} />
-  );
+  return <div className="overflow-auto" ref={panelContainerRef} />
 };

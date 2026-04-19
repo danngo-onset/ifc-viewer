@@ -90,7 +90,5 @@ export const ModelInspector = () => {
     };
   }, [components, fragmentsManager]);
 
-  return (
-    <div className="overflow-auto max-h-1/2" ref={panelContainerRef} />
-  );
+  return <div className="overflow-auto max-h-1/2" ref={panelContainerRef} />
 };

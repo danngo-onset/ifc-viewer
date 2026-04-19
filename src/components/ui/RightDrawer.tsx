@@ -1,16 +1,22 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, JSX } from "react";
 
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 
 import { useUiStoreShallow } from "@/store";
 
 import { CrossButton } from "./buttons";
+import { RightDrawerContent } from "@/domain/enums/bim/RightDrawerContent";
+
+const contentMap: Record<RightDrawerContent, JSX.Element> = {
+  [RightDrawerContent.None]: <></>,
+  [RightDrawerContent.ItemEditorHistory]: <>hello</>
+};
 
 export const RightDrawer = () => {
-  const { open, setOpen } = useUiStoreShallow(s => ({
+  const { open, setOpen, content } = useUiStoreShallow(s => ({
     open: s.isRightDrawerOpen,
     setOpen: s.toggleIsRightDrawerOpen,
-    //content: s.rightDrawerContent
+    content: s.rightDrawerContent
   }));
 
   const [width, setWidth] = useState(320); // Default width: w-80 = 320px
@@ -90,7 +96,7 @@ export const RightDrawer = () => {
 
       <div className="flex-1 overflow-y-auto">
         <section className="nav-rail-drawer-panel">
-          
+          {contentMap[content]}
         </section>
       </div>
     </aside>

@@ -52,5 +52,5 @@ export const AngleMeasurer = () => {
         Delete All
       </button>
     </section>
-  )
+  );
 };

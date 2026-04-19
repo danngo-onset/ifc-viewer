@@ -1,17 +1,16 @@
-import { JSX } from "react";
-
-import { create, type SetState } from "zustand";
+import { create, type SetState, type GetState } from "zustand";
 
 import { createShallowStore } from "@/lib";
 
-import { SideDrawerPanel } from "@/domain/enums/SideDrawerPanel";
+import { SideDrawerPanel } from "@/domain/enums";
+import { RightDrawerContent } from "@/domain/enums/bim";
 
 interface State {
   isLoading: boolean;
   loadingMessage: string;
   activeNavRailPanel: SideDrawerPanel;
   isRightDrawerOpen: boolean;
-  //rightDrawerContent: JSX.Element;
+  rightDrawerContent: RightDrawerContent;
 };
 
 interface Action {
@@ -21,7 +20,7 @@ interface Action {
   closeNavRailPanel: () => void;
   toggleNavRailPanel: (activeNavRailPanel: SideDrawerPanel) => void;
   toggleIsRightDrawerOpen: (isRightDrawerOpen: boolean) => void;
-  setRightDrawerContent: (node: JSX.Element) => void;
+  setRightDrawerContent: (rightDrawerContent: RightDrawerContent) => void;
 };
 
 type Store = State & Action;
@@ -53,16 +52,18 @@ function toggleRightDrawerOpen(set: SetState<State>) {
   set(s => ({ isRightDrawerOpen: !s.isRightDrawerOpen }));
 }
 
-function setRightDrawerContent(set: SetState<State>, node: JSX.Element) {
-  //set({ rightDrawerContent: node });
+function setRightDrawerContent(set: SetState<State>, get: GetState<State> ,rightDrawerContent: RightDrawerContent) {
+  if (!get().isRightDrawerOpen) return;
+  
+  set({ rightDrawerContent });
 }
 
-export const useUiStore = create<Store>(set => ({
+export const useUiStore = create<Store>((set, get) => ({
   isLoading: false,
   loadingMessage: "",
   activeNavRailPanel: SideDrawerPanel.None,
   isRightDrawerOpen: false,
-  //rightDrawerContent: <>hello</>,
+  rightDrawerContent: RightDrawerContent.None,
 
   setIsLoading: (isLoading) => setIsLoading(set, isLoading),
   setLoadingMessage: (loadingMessage) => setLoadingMessage(set, loadingMessage),
@@ -70,7 +71,7 @@ export const useUiStore = create<Store>(set => ({
   closeNavRailPanel: () => closeNavRailPanel(set),
   toggleNavRailPanel: (targetPanel) => toggleNavRailPanel(set, targetPanel),
   toggleIsRightDrawerOpen: () => toggleRightDrawerOpen(set),
-  setRightDrawerContent: (node) => setRightDrawerContent(set, node)
+  setRightDrawerContent: (value) => setRightDrawerContent(set, get, value)
 }));
 
 export const useUiStoreShallow = createShallowStore(useUiStore);

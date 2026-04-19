@@ -57,7 +57,5 @@ export const ModelsList = () => {
     };
   }, [components]);
   
-  return (
-    <div className="overflow-auto" ref={panelContainerRef} />
-  );
+  return <div className="overflow-auto" ref={panelContainerRef} />
 };
