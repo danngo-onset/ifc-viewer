@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "npx rimraf .next && next dev --turbopack",
+    "dev:fresh": "npm i && npm run dev",
     "build": "next build",
     "build:dev": "npm run lint && next build",
     "start": "next start",
