@@ -24,7 +24,7 @@ export class GeneralEditor implements IBimComponent {
 
     private _controlType: "global" | "local" = "global";
 
-    // Store a list of materials, local transform IDs  and geometry IDs
+    // Store a list of materials, local transform IDs and geometry IDs
     // It'll be used to allow the user to change the material, local transform or geometry of a sample
     // The reason why we store the whole material and not only the ID is to display its colour in the select menu
     private _materials: Map<number, RawMaterial> = null;

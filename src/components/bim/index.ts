@@ -16,4 +16,3 @@ export * from "./GridsSettings";
 export * from "./GhostModeToggle";
 export * from "./DarkSceneToggle";
 export * from "./AngleMeasurer";
-export * from "./ItemEditor";

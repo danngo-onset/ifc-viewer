@@ -1,6 +1,7 @@
 import { PanelHeader } from "@/components/ui/NavigationRailDrawer";
 
-import { ItemInspector, ItemEditor } from "@/components/bim";
+import { ItemInspector } from "@/components/bim";
+import { ItemEditor } from "@/components/bim/ItemEditor";
 
 export const ItemInspectorPanel = () => <>
   <PanelHeader title="Item Inspector" />
