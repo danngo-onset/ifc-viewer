@@ -10,7 +10,8 @@ const eslintConfig = defineConfig([
       "@typescript-eslint/no-unused-vars": "off",
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-empty-object-type": "off",
-      "prefer-const": "warn"
+      "prefer-const": "warn",
+      "require-await": "warn"
     },
   },
   // Override default ignores of eslint-config-next.
